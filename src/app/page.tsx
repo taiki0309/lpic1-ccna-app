@@ -35,15 +35,15 @@ export default function Home() {
               </span>
             </div>
             <h1 className="text-3xl font-extrabold tracking-tight text-[var(--foreground)] sm:text-4xl">
-              今日も、<span style={{
+              さあ、<span style={{
                 background: "linear-gradient(135deg, #58a6ff 0%, #bc8cff 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
-              }}>一問一答</span>。
+              }}>今日の学習</span>を始めよう！
             </h1>
             <p className="mt-1 text-sm text-[var(--text-muted)]">
-              LPIC-1 / CCNA の合格を、着実に近づけよう。
+              LPIC-1・CCNA の合格に向けて、今日も一歩ずつ着実に。
             </p>
           </div>
           <div className="hidden sm:flex flex-col items-end gap-2">
@@ -103,7 +103,7 @@ export default function Home() {
               title="LPIC-1"
               subtitle="Linux 技術者認定 Level 1"
               desc="Linux の基礎から実践まで。コマンド演習・ターミナルシミュレーター・環境構築ガイドを収録。"
-              tags={["4択問題", "コマンド練習", "環境構築", "ターミナルシム"]}
+              tags={["4択問題", "コマンド練習", "環境構築ガイド", "ターミナル演習"]}
               accentColor="#58a6ff"
               gradient="linear-gradient(135deg, #1d6fca, #58a6ff)"
               glowColor="rgba(88,166,255,0.15)"
@@ -115,8 +115,8 @@ export default function Home() {
               emoji="🌐"
               title="CCNA"
               subtitle="Cisco ネットワーク技術者認定"
-              desc="IPアドレッシング・ルーティング・VLAN を Cisco CLI シミュレーターで実践的に学習。"
-              tags={["4択問題", "CLI シム", "ネットワーク図", "D&D形式"]}
+              desc="IPアドレッシング・ルーティング・VLAN を、Cisco ルーターを模した画面で実践的に学習。"
+              tags={["4択問題", "ネットワーク演習", "ネットワーク図", "ドラッグ&ドロップ"]}
               accentColor="#bc8cff"
               gradient="linear-gradient(135deg, #6e40c9, #bc8cff)"
               glowColor="rgba(188,140,255,0.15)"
@@ -283,7 +283,7 @@ function QuickLink({
 
 const quickLinks = [
   { href: "/dashboard", icon: "📊", label: "進捗確認", iconBg: "rgba(88,166,255,0.15)" },
-  { href: "/ccna/simulation", icon: "🖥️", label: "CLIシム", iconBg: "rgba(188,140,255,0.15)" },
+  { href: "/ccna/simulation", icon: "🖥️", label: "ネットワーク演習", iconBg: "rgba(188,140,255,0.15)" },
   { href: "/lpic1/guide", icon: "📖", label: "入門ガイド", iconBg: "rgba(63,185,80,0.15)" },
   { href: "/lpic1/practice", icon: "⌨️", label: "コマンド練習", iconBg: "rgba(227,179,65,0.15)" },
 ];

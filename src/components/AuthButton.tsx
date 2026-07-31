@@ -14,7 +14,7 @@ export default function AuthButton() {
         id="logout-btn"
         onClick={() => {
           signOut();
-          router.push('/');
+          router.push('/login');
         }}
         className="inline-flex items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-6 py-3 text-sm font-semibold text-[var(--text-muted)] transition-all duration-300 hover:scale-105 hover:border-[#f85149] hover:text-[#f85149]"
       >

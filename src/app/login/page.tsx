@@ -39,13 +39,13 @@ export default function LoginPage() {
               className="inline-block h-2 w-2 rounded-full bg-[var(--accent-secondary)] shadow-[0_0_8px_var(--accent-secondary)]"
               aria-hidden="true"
             />
-            LPIC-1 対策アプリ
+            LPIC×CCNA 学習室
           </div>
           <h1 className="text-3xl font-extrabold tracking-tight text-[var(--foreground)]">
-            ログイン / サインアップ
+            ログイン / 新規登録
           </h1>
           <p className="mt-2 text-sm text-[var(--text-muted)]">
-            メールアドレスとパスワードで認証してください
+            メールアドレスとパスワードでアカウントにアクセス
           </p>
         </div>
 

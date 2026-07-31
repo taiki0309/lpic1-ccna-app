@@ -1,8 +1,10 @@
 "use client";
 
-import React from "react";
+import React, { Suspense } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useAuthenticator } from "@aws-amplify/ui-react";
+import { useRouter } from "next/navigation";
 import ThemeToggle from "./ThemeToggle";
 
 const navItems = [
@@ -13,9 +15,40 @@ const navItems = [
   { href: "/quiz", icon: "📝", label: "演習" },
 ];
 
-const bottomItems = [
-  { href: "/login", icon: "👤", label: "アカウント" },
-];
+function SidebarAccountButton() {
+  const { authStatus, signOut } = useAuthenticator((ctx) => [ctx.authStatus]);
+  const router = useRouter();
+  const pathname = usePathname();
+
+  if (authStatus === "authenticated") {
+    return (
+      <button
+        type="button"
+        onClick={() => {
+          signOut();
+          router.push("/login");
+        }}
+        className="sidebar-item"
+        title="ログアウト"
+      >
+        <span className="sidebar-icon">🔓</span>
+        <span>ログアウト</span>
+      </button>
+    );
+  }
+
+  const isActive = pathname?.startsWith("/login");
+  return (
+    <Link
+      href="/login"
+      className={`sidebar-item${isActive ? " active" : ""}`}
+      title="ログイン / 新規登録"
+    >
+      <span className="sidebar-icon">🔐</span>
+      <span>ログイン</span>
+    </Link>
+  );
+}
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -51,19 +84,18 @@ export default function Sidebar() {
       {/* 区切り線 */}
       <div className="sidebar-divider" />
 
-      {/* テーマ切り替え */}
+      {/* 下部：ログイン/ログアウト & テーマ切替 */}
       <div className="sidebar-bottom">
-        {bottomItems.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className={`sidebar-item${isActive(item.href) ? " active" : ""}`}
-            title={item.label}
-          >
-            <span className="sidebar-icon">{item.icon}</span>
-            <span>{item.label}</span>
-          </Link>
-        ))}
+        <Suspense
+          fallback={
+            <div className="sidebar-item">
+              <span className="sidebar-icon">👤</span>
+              <span>...</span>
+            </div>
+          }
+        >
+          <SidebarAccountButton />
+        </Suspense>
         <div className="sidebar-item" style={{ padding: "8px 4px" }}>
           <ThemeToggle compact />
         </div>
