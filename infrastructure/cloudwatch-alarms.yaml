@@ -1,0 +1,161 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: |
+  LPIC×CCNA 学習室 - CloudWatch アラーム & ダッシュボード
+  対象: App Runner + Lambda + DynamoDB
+
+Parameters:
+  AlertEmail:
+    Type: String
+    Description: アラート通知先メールアドレス
+    Default: ""
+  AppRunnerServiceName:
+    Type: String
+    Default: lpic-ccna-app
+  LambdaFunctionName:
+    Type: String
+    Default: lpic-ccna-submit-answer
+
+Resources:
+  # ── SNS トピック（アラート通知） ─────────────────────────────
+  AlertTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: lpic-ccna-alerts
+      DisplayName: "LPIC×CCNA 学習室 アラート"
+      Subscription:
+        - !If
+          - HasAlertEmail
+          - Protocol: email
+            Endpoint: !Ref AlertEmail
+          - !Ref AWS::NoValue
+
+  # ── Lambda エラー率アラーム ──────────────────────────────────
+  LambdaErrorAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: lpic-ccna-lambda-errors
+      AlarmDescription: "Lambda (submitAnswer) のエラー率が高い"
+      Namespace: AWS/Lambda
+      MetricName: Errors
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref LambdaFunctionName
+      Statistic: Sum
+      Period: 300        # 5分
+      EvaluationPeriods: 1
+      Threshold: 5       # 5分で5回以上エラー
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      AlarmActions:
+        - !Ref AlertTopic
+      TreatMissingData: notBreaching
+
+  # ── Lambda レイテンシアラーム ────────────────────────────────
+  LambdaLatencyAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: lpic-ccna-lambda-latency
+      AlarmDescription: "Lambda の平均実行時間が3秒を超えた"
+      Namespace: AWS/Lambda
+      MetricName: Duration
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref LambdaFunctionName
+      Statistic: Average
+      Period: 300
+      EvaluationPeriods: 2
+      Threshold: 3000    # 3000ms = 3秒
+      ComparisonOperator: GreaterThanThreshold
+      AlarmActions:
+        - !Ref AlertTopic
+      TreatMissingData: notBreaching
+
+  # ── DynamoDB 読み取りスロットリングアラーム ──────────────────
+  DynamoThrottleAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: lpic-ccna-dynamo-throttle
+      AlarmDescription: "DynamoDB の読み取りスロットリングが発生した"
+      Namespace: AWS/DynamoDB
+      MetricName: ReadThrottleEvents
+      Dimensions:
+        - Name: TableName
+          Value: Questions
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: 10
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      AlarmActions:
+        - !Ref AlertTopic
+      TreatMissingData: notBreaching
+
+  # ── CloudWatch ダッシュボード ────────────────────────────────
+  AppDashboard:
+    Type: AWS::CloudWatch::Dashboard
+    Properties:
+      DashboardName: lpic-ccna-overview
+      DashboardBody: !Sub |
+        {
+          "widgets": [
+            {
+              "type": "metric",
+              "x": 0, "y": 0, "width": 12, "height": 6,
+              "properties": {
+                "title": "Lambda: エラー数 & 実行回数",
+                "metrics": [
+                  ["AWS/Lambda", "Errors",      "FunctionName", "${LambdaFunctionName}", {"label": "エラー", "color": "#d62728"}],
+                  ["AWS/Lambda", "Invocations", "FunctionName", "${LambdaFunctionName}", {"label": "実行回数", "color": "#1f77b4"}]
+                ],
+                "period": 300,
+                "stat": "Sum",
+                "view": "timeSeries"
+              }
+            },
+            {
+              "type": "metric",
+              "x": 12, "y": 0, "width": 12, "height": 6,
+              "properties": {
+                "title": "Lambda: 平均実行時間 (ms)",
+                "metrics": [
+                  ["AWS/Lambda", "Duration", "FunctionName", "${LambdaFunctionName}", {"label": "実行時間", "stat": "Average"}]
+                ],
+                "period": 300,
+                "view": "timeSeries"
+              }
+            },
+            {
+              "type": "metric",
+              "x": 0, "y": 6, "width": 12, "height": 6,
+              "properties": {
+                "title": "DynamoDB: 読み取り / 書き込みキャパシティ",
+                "metrics": [
+                  ["AWS/DynamoDB", "ConsumedReadCapacityUnits",  "TableName", "Questions", {"label": "読み取りRCU"}],
+                  ["AWS/DynamoDB", "ConsumedWriteCapacityUnits", "TableName", "UserAnswers", {"label": "書き込みWCU"}]
+                ],
+                "period": 300,
+                "stat": "Sum",
+                "view": "timeSeries"
+              }
+            },
+            {
+              "type": "log",
+              "x": 12, "y": 6, "width": 12, "height": 6,
+              "properties": {
+                "title": "最近のエラーログ",
+                "query": "SOURCE '/aws/apprunner/${AppRunnerServiceName}' | fields @timestamp, message, service | filter level = 'ERROR' | sort @timestamp desc | limit 20",
+                "view": "table"
+              }
+            }
+          ]
+        }
+
+Conditions:
+  HasAlertEmail: !Not [!Equals [!Ref AlertEmail, ""]]
+
+Outputs:
+  AlertTopicArn:
+    Value: !Ref AlertTopic
+    Description: アラート通知 SNS トピック ARN
+  DashboardUrl:
+    Value: !Sub "https://${AWS::Region}.console.aws.amazon.com/cloudwatch/home?region=${AWS::Region}#dashboards:name=lpic-ccna-overview"
+    Description: CloudWatch ダッシュボード URL

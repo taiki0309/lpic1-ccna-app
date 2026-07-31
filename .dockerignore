@@ -1,0 +1,33 @@
+# ── Node modules & build ───────────────────────────
+node_modules
+.next
+out
+build
+
+# ── OS & editor files ──────────────────────────────
+.DS_Store
+*.pem
+Thumbs.db
+
+# ── Environment & secrets ──────────────────────────
+.env*
+!.env.local.example
+
+# ── Git ────────────────────────────────────────────
+.git
+.gitignore
+
+# ── Dev tooling ────────────────────────────────────
+.eslintrc*
+eslint.config.*
+*.tsbuildinfo
+README.md
+CLAUDE.md
+AGENTS.md
+
+# ── Infrastructure / CI (not needed in container) ──
+infrastructure/
+.github/
+
+# ── Certificates (local HTTPS dev) ────────────────
+certificates/

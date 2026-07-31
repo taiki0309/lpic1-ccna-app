@@ -1,0 +1,88 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: |
+  LPIC×CCNA 学習室 - S3 教材ファイル配信バケット
+  用途: 学習教材PDF・画像・音声ファイルの安全な配信
+
+Parameters:
+  BucketName:
+    Type: String
+    Default: lpic-ccna-assets
+    Description: S3 バケット名（グローバルで一意である必要があります）
+  CloudFrontDistributionId:
+    Type: String
+    Default: ""
+    Description: 既存の CloudFront ディストリビューション ID（OAC 設定に使用）
+
+Resources:
+  # ── S3 バケット ───────────────────────────────────────────────
+  AssetsBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref BucketName
+      # パブリックアクセスを完全にブロック（CloudFront 経由のみ許可）
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      # バージョニング有効（誤削除からの復旧）
+      VersioningConfiguration:
+        Status: Enabled
+      # 暗号化
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      # CORS（Next.js Image Optimization 対応）
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders: ["*"]
+            AllowedMethods: [GET, HEAD]
+            AllowedOrigins:
+              - "https://*.cloudfront.net"
+              - "https://*.awsapprunner.com"
+            MaxAge: 3600
+      Tags:
+        - Key: Project
+          Value: lpic-ccna-app
+        - Key: Environment
+          Value: production
+
+  # ── CloudFront OAC（バケットへの直接アクセスを禁止） ─────────
+  CloudFrontOAC:
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties:
+      OriginAccessControlConfig:
+        Name: lpic-ccna-assets-oac
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4
+
+  # ── バケットポリシー（CloudFront OAC のみ許可） ───────────────
+  AssetsBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref AssetsBucket
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: AllowCloudFrontServicePrincipal
+            Effect: Allow
+            Principal:
+              Service: cloudfront.amazonaws.com
+            Action: s3:GetObject
+            Resource: !Sub "${AssetsBucket.Arn}/*"
+            Condition:
+              StringEquals:
+                "AWS:SourceArn": !Sub "arn:aws:cloudfront::${AWS::AccountId}:distribution/${CloudFrontDistributionId}"
+
+Outputs:
+  BucketName:
+    Value: !Ref AssetsBucket
+    Description: S3 バケット名
+  BucketArn:
+    Value: !GetAtt AssetsBucket.Arn
+    Description: S3 バケット ARN
+  OACId:
+    Value: !GetAtt CloudFrontOAC.Id
+    Description: CloudFront OAC ID（CloudFront ディストリビューション設定に使用）

@@ -1,5 +1,6 @@
 import { QueryCommand } from "@aws-sdk/lib-dynamodb";
 import { docClient, USER_ANSWERS_TABLE } from "@/lib/dynamodb";
+import { logger } from "@/lib/logger";
 
 interface DynamoAnswer {
   PK?: string;
@@ -36,8 +37,10 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const userId = searchParams.get("userId") || "test-user-001";
 
+  const start = Date.now();
   try {
     const pk = `USER#${userId}`;
+    logger.info("api/progress", "学習進捗データ取得開始", { userId, pk });
     const result = await docClient.send(
       new QueryCommand({
         TableName: USER_ANSWERS_TABLE,
@@ -204,6 +207,12 @@ export async function GET(request: Request) {
       .sort((a, b) => (b.answeredAt || "").localeCompare(a.answeredAt || ""))
       .slice(0, 10);
 
+    logger.info("api/progress", "学習進捗データ取得成功", {
+      userId,
+      totalAnswered: lpic1Answered + ccnaAnswered,
+      badgeCount: badges.length,
+      durationMs: Date.now() - start,
+    });
     return Response.json({
       success: true,
       certStats,
@@ -212,7 +221,11 @@ export async function GET(request: Request) {
       recentHistory,
     });
   } catch (err) {
-    console.error("[api/progress] GET error:", err);
+    logger.error("api/progress", "学習進捗データ取得エラー", {
+      userId,
+      error: err instanceof Error ? err.message : String(err),
+      durationMs: Date.now() - start,
+    });
     return Response.json(
       {
         success: false,

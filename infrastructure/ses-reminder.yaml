@@ -1,0 +1,92 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: |
+  LPIC×CCNA 学習室 - 学習リマインドメール Lambda + SES + EventBridge
+
+Parameters:
+  SenderEmail:
+    Type: String
+    Description: 送信元メールアドレス（SES で事前に検証が必要）
+    Default: "noreply@example.com"
+  UserAnswersTable:
+    Type: String
+    Default: UserAnswers
+  AppUrl:
+    Type: String
+    Default: "https://d28til9vu58hhk.cloudfront.net"
+
+Globals:
+  Function:
+    Runtime: nodejs20.x
+    Timeout: 60
+    MemorySize: 256
+    Environment:
+      Variables:
+        AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
+        USER_ANSWERS_TABLE: !Ref UserAnswersTable
+        SENDER_EMAIL: !Ref SenderEmail
+        APP_URL: !Ref AppUrl
+
+Resources:
+  # ── Lambda 実行ロール ────────────────────────────────────────
+  ReminderFunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: lpic-ccna-reminder-role
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: ReminderPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:Scan
+                  - dynamodb:Query
+                Resource:
+                  - !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${UserAnswersTable}"
+              - Effect: Allow
+                Action:
+                  - ses:SendEmail
+                  - sesv2:SendEmail
+                Resource: "*"
+
+  # ── Lambda 関数 ──────────────────────────────────────────────
+  ReminderFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: lpic-ccna-reminder
+      CodeUri: ./lambda/reminder/
+      Handler: index.handler
+      Role: !GetAtt ReminderFunctionRole.Arn
+      Description: "毎日20時に学習リマインドメールを送信"
+      Events:
+        # 毎日 20:00 JST（= 11:00 UTC）に実行
+        DailyReminder:
+          Type: Schedule
+          Properties:
+            Schedule: cron(0 11 * * ? *)
+            Name: lpic-ccna-daily-reminder
+            Description: "毎日20時JST 学習リマインド"
+            Enabled: true
+
+  # ── SES メール送信元の検証（手動対応が必要） ─────────────────
+  # 注: SES の ID 検証は CloudFormation から直接できないため、
+  # AWS コンソール > SES > Verified Identities から手動で
+  # 送信元メールアドレスを検証してください。
+
+Outputs:
+  ReminderFunctionArn:
+    Value: !GetAtt ReminderFunction.Arn
+    Description: リマインド Lambda 関数 ARN
+  ReminderFunctionName:
+    Value: !Ref ReminderFunction
+    Description: リマインド Lambda 関数名

@@ -1,5 +1,6 @@
 import { ScanCommand, GetCommand, QueryCommand } from "@aws-sdk/lib-dynamodb";
 import { docClient, TABLE_NAME } from "@/lib/dynamodb";
+import { logger } from "@/lib/logger";
 
 // ─── DynamoDB アイテムの型 ─────────────────────────────────
 // テーブルスキーマ（拡張版）:
@@ -58,7 +59,9 @@ export async function GET(request: Request) {
   const cert = searchParams.get("cert"); // "lpic1" or "ccna"
   const category = searchParams.get("category");
 
+  const start = Date.now();
   try {
+    logger.info("api/questions", "問題データ取得開始", { cert: cert ?? "all", category: category ?? "all", id });
     // ── 1件取得（後方互換）────────────────────────────────
     if (id) {
       const result = await docClient.send(
@@ -129,12 +132,13 @@ export async function GET(request: Request) {
 
     const questions = items.map(toQuestion);
 
+    logger.info("api/questions", "問題データ取得成功", { count: questions.length, durationMs: Date.now() - start });
     return Response.json({ questions });
   } catch (err) {
     const message =
       err instanceof Error ? err.message : "不明なエラーが発生しました。";
 
-    console.error("[API /api/questions] DynamoDB エラー:", message);
+    logger.error("api/questions", "DynamoDB エラー", { error: message, durationMs: Date.now() - start });
 
     return Response.json(
       { error: message, questions: [] },
