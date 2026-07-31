@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "LPIC-1 対策アプリ | Linux学習をスマートに",
-  description: "LPIC-1（Linux Professional Institute Certification Level 1）の試験対策に特化した学習アプリ。問題演習・解説でスコアアップを目指そう。",
+  title: "LPIC-1 & CCNA 対策アプリ | ITインフラ学習をスマートに",
+  description: "LPIC-1（Linux技術者認定）およびCCNA（ネットワーク技術者認定）の試験対策に特化した学習アプリ。問題演習・シミュレーターでスコアアップを目指そう。",
 };
 
 export default function RootLayout({
