@@ -3,7 +3,7 @@
 import React from "react";
 import { useTheme } from "./ThemeProvider";
 
-export default function ThemeToggle() {
+export default function ThemeToggle({ compact = false }: { compact?: boolean }) {
   const { theme, setTheme } = useTheme();
 
   const options: { id: "light" | "dark" | "system"; label: string; icon: string }[] = [
@@ -11,6 +11,26 @@ export default function ThemeToggle() {
     { id: "dark", label: "ダーク", icon: "🌙" },
     { id: "system", label: "自動", icon: "💻" },
   ];
+
+  if (compact) {
+    // Sidebar mode: cycle through themes on click
+    const currentIndex = options.findIndex((o) => o.id === theme);
+    const next = options[(currentIndex + 1) % options.length];
+    const current = options[currentIndex] ?? options[0];
+    return (
+      <button
+        type="button"
+        onClick={() => setTheme(next.id)}
+        title={`テーマ: ${current.label} → ${next.label}に切替`}
+        aria-label={`テーマ切り替え（現在: ${current.label}）`}
+        className="flex flex-col items-center gap-0.5 w-full rounded-xl px-2 py-2 text-[var(--text-muted)] hover:bg-[var(--surface-2)] hover:text-[var(--foreground)] transition-all duration-200"
+        style={{ fontSize: "0.6rem", fontWeight: 600 }}
+      >
+        <span style={{ fontSize: "1.35rem", lineHeight: 1 }}>{current.icon}</span>
+        <span>テーマ</span>
+      </button>
+    );
+  }
 
   return (
     <div
@@ -41,3 +61,4 @@ export default function ThemeToggle() {
     </div>
   );
 }
+

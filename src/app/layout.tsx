@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import AmplifyProvider from "@/components/AmplifyProvider";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
 
 const geistSans = Geist({
@@ -16,8 +17,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "LPIC-1 & CCNA 対策アプリ | ITインフラ学習をスマートに",
-  description: "LPIC-1（Linux技術者認定）およびCCNA（ネットワーク技術者認定）の試験対策に特化した学習アプリ。問題演習・シミュレーターでスコアアップを目指そう。",
+  title: "LPIC×CCNA 学習室 | ITインフラ資格対策",
+  description: "LPIC-1・CCNAの試験対策アプリ。4択問題・CLIシミュレーター・環境構築ガイドで、初心者から合格まで一本道。",
 };
 
 export default function RootLayout({
@@ -28,14 +29,19 @@ export default function RootLayout({
   return (
     <html
       lang="ja"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col">
+      <body>
         <AmplifyProvider>
           <ThemeProvider>
-            <Header />
-            <div className="flex-1">{children}</div>
+            <div className="app-shell">
+              <Sidebar />
+              <div className="main-content flex flex-col">
+                <Header />
+                <div className="flex-1">{children}</div>
+              </div>
+            </div>
           </ThemeProvider>
         </AmplifyProvider>
       </body>
