@@ -26,14 +26,6 @@ const quickLinks = [
     color: "#3fb950",
     gradient: "linear-gradient(135deg, #196c2e, #3fb950)",
   },
-  {
-    href: "/lpic1/guide",
-    icon: "📖",
-    label: "環境構築ガイド",
-    desc: "初心者向けステップガイド",
-    color: "#bc8cff",
-    gradient: "linear-gradient(135deg, #6e40c9, #bc8cff)",
-  },
 ];
 
 export default function Lpic1TopPage() {
@@ -60,7 +52,7 @@ export default function Lpic1TopPage() {
         </nav>
 
         {/* クイックアクション */}
-        <section aria-label="学習メニュー" className="mb-10 grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <section aria-label="学習メニュー" className="mb-10 grid grid-cols-1 gap-4 sm:grid-cols-2">
           {quickLinks.map((link) => (
             <Link
               key={link.href}

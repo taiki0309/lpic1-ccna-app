@@ -273,21 +273,21 @@ export default function CcnaSimulationPage() {
 
       <header className="mb-4 sm:mb-6">
         <div className="flex items-center gap-2">
-          <span className="text-2xl sm:text-3xl">🛠️</span>
+          <span className="text-2xl sm:text-3xl">💻</span>
           <h1 className="text-xl sm:text-3xl font-extrabold text-[var(--foreground)] tracking-tight">
-            CCNA シミュレーション ＆ トポロジー演習
+            CCNA 実戦シミュレーション演習
           </h1>
         </div>
         <p className="mt-1 text-xs sm:text-sm text-[var(--text-muted)]">
-          本番試験対応 — Cisco CLI・ドラッグ&ドロップ・トポロジー図解・S3シミュレーション演習
+          本番試験対応 — Cisco CLIコマンド入力 ＆ ドラッグ&ドロップ演習
         </p>
       </header>
 
-      {/* タブナビゲーション（横スクロール対応で縦幅を節約し問題面を広く表示） */}
-      <div className="mb-6 flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-2 border-b border-[var(--border)] shrink-0">
+      {/* タブナビゲーション */}
+      <div className="mb-6 flex items-center gap-2 border-b border-[var(--border)] pb-2 shrink-0">
         <button
           onClick={() => setActiveTab("cli")}
-          className={`flex shrink-0 items-center gap-1.5 rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 text-xs font-bold transition-all whitespace-nowrap ${
+          className={`flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-bold transition-all whitespace-nowrap ${
             activeTab === "cli"
               ? "bg-[var(--accent-primary)] text-white shadow-md"
               : "bg-[var(--surface-2)] text-[var(--text-muted)] hover:text-[var(--foreground)]"
@@ -298,7 +298,7 @@ export default function CcnaSimulationPage() {
         </button>
         <button
           onClick={() => setActiveTab("dnd")}
-          className={`flex shrink-0 items-center gap-1.5 rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 text-xs font-bold transition-all whitespace-nowrap ${
+          className={`flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-bold transition-all whitespace-nowrap ${
             activeTab === "dnd"
               ? "bg-[var(--accent-primary)] text-white shadow-md"
               : "bg-[var(--surface-2)] text-[var(--text-muted)] hover:text-[var(--foreground)]"
@@ -306,34 +306,6 @@ export default function CcnaSimulationPage() {
         >
           <span>🖱️</span>
           <span>2. ドラッグ＆ドロップ</span>
-        </button>
-        <button
-          onClick={() => setActiveTab("topology")}
-          className={`flex shrink-0 items-center gap-1.5 rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 text-xs font-bold transition-all whitespace-nowrap ${
-            activeTab === "topology"
-              ? "bg-[var(--accent-primary)] text-white shadow-md"
-              : "bg-[var(--surface-2)] text-[var(--text-muted)] hover:text-[var(--foreground)]"
-          }`}
-        >
-          <span>🗺️</span>
-          <span>3. トポロジー図解</span>
-          <span className="rounded bg-emerald-500/20 px-1.5 py-0.5 text-[10px] text-emerald-400">
-            NEW
-          </span>
-        </button>
-        <button
-          onClick={() => setActiveTab("s3view")}
-          className={`flex shrink-0 items-center gap-1.5 rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 text-xs font-bold transition-all whitespace-nowrap ${
-            activeTab === "s3view"
-              ? "bg-[var(--accent-primary)] text-white shadow-md"
-              : "bg-[var(--surface-2)] text-[var(--text-muted)] hover:text-[var(--foreground)]"
-          }`}
-        >
-          <span>☁️</span>
-          <span>4. S3画像演習</span>
-          <span className="rounded bg-amber-500/20 px-1.5 py-0.5 text-[10px] text-amber-400 font-bold">
-            S3対応
-          </span>
         </button>
       </div>
 

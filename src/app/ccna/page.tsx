@@ -20,9 +20,9 @@ const quickLinks = [
   },
   {
     href: "/ccna/simulation",
-    icon: "🖥️",
+    icon: "💻",
     label: "シミュレーション",
-    desc: "CLI・ドラッグ&ドロップ・トポロジー",
+    desc: "CLI・ドラッグ&ドロップ演習",
     color: "#58a6ff",
     gradient: "linear-gradient(135deg, #1d6fca, #58a6ff)",
   },

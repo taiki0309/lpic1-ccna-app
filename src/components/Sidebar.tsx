@@ -12,22 +12,7 @@ const menuGroups = [
       { href: "/", label: "ホーム", icon: "🏠", exact: true },
       { href: "/lpic1", label: "LPIC-1 コース", icon: "🐧" },
       { href: "/ccna", label: "CCNA コース", icon: "🌐" },
-      { href: "/ccna/simulation", label: "CCNA 実機シミュレーション", icon: "🗺️" },
-    ],
-  },
-  {
-    title: "環境構築・実機ガイド",
-    items: [
-      {
-        href: "/lpic1/guide/linux-install",
-        label: "Linux環境構築 (Ubuntu)",
-        icon: "💿",
-      },
-      {
-        href: "/lpic1/practice",
-        label: "Linux CLI コマンド練習",
-        icon: "💻",
-      },
+      { href: "/ccna/simulation", label: "CCNA 実機シミュレーション", icon: "💻" },
     ],
   },
   {

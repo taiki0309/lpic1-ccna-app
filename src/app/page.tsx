@@ -62,8 +62,8 @@ export default function Home() {
               emoji="🐧"
               title="LPIC-1 対策コース"
               subtitle="Linux 技術者認定 Level 1"
-              desc="Linux の基礎知識から実践まで。カテゴリ別問題演習・コマンド練習・環境構築ガイドを網羅。"
-              tags={["4択問題", "コマンド練習", "環境構築ガイド", "ターミナル演習"]}
+              desc="Linux の基礎知識から実践まで。カテゴリ別問題演習・CLIコマンド入力練習で合格力を徹底強化。"
+              tags={["4択問題", "コマンド入力練習", "実戦テスト"]}
               accentColor="#58a6ff"
               gradient="linear-gradient(135deg, #1d6fca, #58a6ff)"
               glowColor="rgba(88,166,255,0.15)"
@@ -75,8 +75,8 @@ export default function Home() {
               emoji="🌐"
               title="CCNA 対策コース"
               subtitle="Cisco ネットワーク技術者認定"
-              desc="IPアドレッシング・ルーティング・VLAN を、カテゴリ別演習・トポロジー図解問題等で実践学習。"
-              tags={["4択問題", "ネットワーク図", "トポロジー演習", "ドラッグ&ドロップ"]}
+              desc="IPアドレッシング・ルーティング・VLAN を、選択問題とCisco CLI演習・ドラッグ&ドロップで実践学習。"
+              tags={["4択問題", "CLIシミュレーター", "ドラッグ&ドロップ", "実戦テスト"]}
               accentColor="#bc8cff"
               gradient="linear-gradient(135deg, #6e40c9, #bc8cff)"
               glowColor="rgba(188,140,255,0.15)"
