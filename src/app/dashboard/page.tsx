@@ -323,7 +323,16 @@ export default function DashboardPage() {
 
         {/* クイックアクション */}
         <section aria-label="クイックアクション">
-          <h2 className="mb-4 text-lg font-bold text-[var(--foreground)]">今日の学習を始める</h2>
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-lg font-bold text-[var(--foreground)]">今日の学習を始める</h2>
+            <Link
+              href="/admin/questions"
+              className="text-xs font-bold px-3 py-1.5 rounded-lg bg-amber-500/20 border border-amber-500/50 text-amber-300 hover:bg-amber-500/30 transition flex items-center gap-1.5"
+            >
+              <span>🛠️</span>
+              <span>問題データベース管理 (全60問投入)</span>
+            </Link>
+          </div>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             {[
               { href: "/lpic1/quiz", label: "LPIC-1 問題演習", color: "#58a6ff" },

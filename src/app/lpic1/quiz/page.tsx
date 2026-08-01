@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { submitAnswer } from "@/lib/submitAnswer";
+import { SEED_QUESTIONS } from "@/lib/questionSeedData";
 
 // ─── 型定義 ───────────────────────────────────────────────
 interface Question {
@@ -113,6 +114,23 @@ const FALLBACK_QUESTIONS: Question[] = [
 type FeedbackState = "none" | "correct" | "incorrect";
 type DataSource = "dynamodb" | "fallback";
 
+function getFallbackQuestions(category: string | null): Question[] {
+  const filtered = SEED_QUESTIONS.filter(
+    (q) => q.cert === "lpic1" && (!category || q.category === category)
+  );
+  if (filtered.length > 0) {
+    return filtered.map((q) => ({
+      id: q.questionId,
+      category: q.category,
+      question: q.text,
+      choices: q.options,
+      correctIndex: q.correctIndex,
+      explanation: q.explanation,
+    }));
+  }
+  return FALLBACK_QUESTIONS;
+}
+
 function Lpic1QuizInner() {
   const searchParams = useSearchParams();
   const category = searchParams.get("category");
@@ -144,7 +162,7 @@ function Lpic1QuizInner() {
         const data = await res.json();
 
         if (!data.questions || data.questions.length === 0) {
-          setQuestions(FALLBACK_QUESTIONS);
+          setQuestions(getFallbackQuestions(category));
           setDataSource("fallback");
         } else {
           setQuestions(data.questions);
@@ -153,7 +171,7 @@ function Lpic1QuizInner() {
       } catch (err) {
         const message = err instanceof Error ? err.message : "不明なエラー";
         setFetchError(message);
-        setQuestions(FALLBACK_QUESTIONS);
+        setQuestions(getFallbackQuestions(category));
         setDataSource("fallback");
       } finally {
         setIsLoading(false);

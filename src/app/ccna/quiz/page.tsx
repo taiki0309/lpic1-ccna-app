@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { submitAnswer } from "@/lib/submitAnswer";
+import { SEED_QUESTIONS } from "@/lib/questionSeedData";
 
 interface Question {
   id: string | number;
@@ -103,6 +104,23 @@ const FALLBACK_QUESTIONS: Question[] = [
 type FeedbackState = "none" | "correct" | "incorrect";
 type DataSource = "dynamodb" | "fallback";
 
+function getFallbackQuestions(category: string | null): Question[] {
+  const filtered = SEED_QUESTIONS.filter(
+    (q) => q.cert === "ccna" && (!category || q.category === category)
+  );
+  if (filtered.length > 0) {
+    return filtered.map((q) => ({
+      id: q.questionId,
+      category: q.category,
+      question: q.text,
+      choices: q.options,
+      correctIndex: q.correctIndex,
+      explanation: q.explanation,
+    }));
+  }
+  return FALLBACK_QUESTIONS;
+}
+
 function CcnaQuizInner() {
   const searchParams = useSearchParams();
   const category = searchParams.get("category");
@@ -130,7 +148,7 @@ function CcnaQuizInner() {
         if (!res.ok) throw new Error(`サーバーエラー: ${res.status}`);
         const data = await res.json();
         if (!data.questions || data.questions.length === 0) {
-          setQuestions(FALLBACK_QUESTIONS);
+          setQuestions(getFallbackQuestions(category));
           setDataSource("fallback");
         } else {
           setQuestions(data.questions);
@@ -139,7 +157,7 @@ function CcnaQuizInner() {
       } catch (err) {
         const message = err instanceof Error ? err.message : "不明なエラー";
         setFetchError(message);
-        setQuestions(FALLBACK_QUESTIONS);
+        setQuestions(getFallbackQuestions(category));
         setDataSource("fallback");
       } finally {
         setIsLoading(false);

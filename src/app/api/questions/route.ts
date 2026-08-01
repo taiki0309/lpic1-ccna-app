@@ -1,4 +1,4 @@
-import { ScanCommand, GetCommand, QueryCommand } from "@aws-sdk/lib-dynamodb";
+import { ScanCommand, GetCommand, QueryCommand, PutCommand } from "@aws-sdk/lib-dynamodb";
 import { docClient, TABLE_NAME } from "@/lib/dynamodb";
 import { logger } from "@/lib/logger";
 
@@ -144,5 +144,51 @@ export async function GET(request: Request) {
       { error: message, questions: [] },
       { status: 503 }
     );
+  }
+}
+
+// ─── POST /api/questions ─────────────────────────────────
+// 新規問題の登録（1件）
+export async function POST(request: Request) {
+  const start = Date.now();
+  try {
+    const body = await request.json();
+    const { cert, category, text, options, correctIndex, explanation, difficulty } = body;
+
+    if (!cert || !category || !text || !options || correctIndex === undefined) {
+      return Response.json(
+        { error: "必須項目（cert, category, text, options, correctIndex）が不足しています。" },
+        { status: 400 }
+      );
+    }
+
+    const questionId = `q-${cert}-${Date.now()}`;
+    const item = {
+      PK: `CERT#${cert}`,
+      SK: `Q#${questionId}`,
+      questionId,
+      cert,
+      category,
+      text,
+      options,
+      correctIndex: Number(correctIndex),
+      explanation: explanation || "解説はありません。",
+      difficulty: difficulty || "intermediate",
+      createdAt: new Date().toISOString(),
+    };
+
+    await docClient.send(
+      new PutCommand({
+        TableName: TABLE_NAME,
+        Item: item,
+      })
+    );
+
+    logger.info("api/questions", "問題作成成功", { questionId, durationMs: Date.now() - start });
+    return Response.json({ success: true, questionId, item });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "問題の作成に失敗しました。";
+    logger.error("api/questions", "問題作成エラー", { error: message, durationMs: Date.now() - start });
+    return Response.json({ error: message }, { status: 500 });
   }
 }
