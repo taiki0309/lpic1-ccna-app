@@ -9,6 +9,7 @@ import AuthButton from "./AuthButton";
 // Thin top bar visible on mobile (where sidebar is hidden)
 export default function Header() {
   const pathname = usePathname();
+  if (pathname === "/login") return null;
 
   const navLinks = [
     { href: "/lpic1", label: "LPIC-1", icon: "🐧" },

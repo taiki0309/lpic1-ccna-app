@@ -29,14 +29,6 @@ export async function getUserId(): Promise<string> {
 export async function submitAnswer(
   params: SubmitAnswerParams
 ): Promise<{ success: boolean; data?: unknown; error?: string }> {
-  const url = process.env.NEXT_PUBLIC_SUBMIT_ANSWER_URL;
-  if (!url) {
-    console.warn(
-      "[submitAnswer] NEXT_PUBLIC_SUBMIT_ANSWER_URL が環境変数に設定されていません。"
-    );
-    return { success: false, error: "URL未設定" };
-  }
-
   try {
     const userId = params.userId || (await getUserId());
 
@@ -49,26 +41,42 @@ export async function submitAnswer(
       isCorrect: params.isCorrect,
     };
 
-    const res = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
-
-    if (!res.ok) {
-      const errText = await res.text();
-      console.error(
-        "[submitAnswer] Lambda 関数 URL への POST が失敗しました:",
-        res.status,
-        errText
-      );
-      return { success: false, error: `HTTP ${res.status}: ${errText}` };
+    // 1. まず Next.js 同一ドメイン内の API (/api/submit) へ送信（CORS不要・確実な記録）
+    try {
+      const res = await fetch("/api/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (res.ok) {
+        const data = await res.json().catch(() => null);
+        return { success: true, data };
+      }
+    } catch (apiErr) {
+      console.warn("[submitAnswer] /api/submit エラー。Lambda URL を試行します:", apiErr);
     }
 
-    const data = await res.json().catch(() => null);
-    return { success: true, data };
+    // 2. フォールバックとして Lambda 関数 URL へ送信
+    const url = process.env.NEXT_PUBLIC_SUBMIT_ANSWER_URL;
+    if (url) {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        const errText = await res.text();
+        return { success: false, error: `HTTP ${res.status}: ${errText}` };
+      }
+
+      const data = await res.json().catch(() => null);
+      return { success: true, data };
+    }
+
+    return { success: false, error: "回答記録エンドポイントが利用できません" };
   } catch (err) {
     console.error("[submitAnswer] 通信エラー:", err);
     return {

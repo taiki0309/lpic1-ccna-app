@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import AmplifyProvider from "@/components/AmplifyProvider";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import AuthGuard from "@/components/AuthGuard";
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
 
@@ -35,13 +36,15 @@ export default function RootLayout({
       <body>
         <AmplifyProvider>
           <ThemeProvider>
-            <div className="app-shell">
-              <Sidebar />
-              <div className="main-content flex flex-col">
-                <Header />
-                <div className="flex-1">{children}</div>
+            <AuthGuard>
+              <div className="app-shell">
+                <Sidebar />
+                <div className="main-content flex flex-col">
+                  <Header />
+                  <div className="flex-1">{children}</div>
+                </div>
               </div>
-            </div>
+            </AuthGuard>
           </ThemeProvider>
         </AmplifyProvider>
       </body>

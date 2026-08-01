@@ -52,6 +52,7 @@ function SidebarAccountButton() {
 
 export default function Sidebar() {
   const pathname = usePathname();
+  if (pathname === "/login") return null;
 
   const isActive = (href: string, exact = false) => {
     if (exact) return pathname === href;
