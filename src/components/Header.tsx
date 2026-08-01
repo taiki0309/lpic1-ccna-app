@@ -18,34 +18,35 @@ export default function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-40 flex sm:hidden w-full items-center justify-between border-b border-[var(--border)] bg-[var(--header-bg)] backdrop-blur-md px-4 py-3 transition-colors duration-300">
+    <header className="sticky top-0 z-40 flex sm:hidden w-full items-center justify-between gap-1.5 border-b border-[var(--border)] bg-[var(--header-bg)] backdrop-blur-md px-3 py-2 transition-colors duration-300">
       {/* ロゴ */}
-      <Link href="/" className="flex items-center gap-2 font-extrabold text-[var(--foreground)] text-base tracking-tight">
-        📚 <span>学習室</span>
+      <Link href="/" className="flex shrink-0 items-center gap-1.5 font-extrabold text-[var(--foreground)] text-sm tracking-tight whitespace-nowrap">
+        <span>📚</span>
+        <span>学習室</span>
       </Link>
 
       {/* モバイルナビ */}
-      <nav className="flex items-center gap-1">
+      <nav className="flex shrink-0 items-center gap-0.5">
         {navLinks.map((link) => {
           const isActive = pathname?.startsWith(link.href);
           return (
             <Link
               key={link.href}
               href={link.href}
-              className={`flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-all duration-200 ${
+              className={`flex items-center gap-1 rounded-lg px-2 py-1.5 text-xs font-medium transition-all duration-200 ${
                 isActive
                   ? "bg-[var(--surface-2)] text-[var(--accent-primary)]"
                   : "text-[var(--text-muted)] hover:bg-[var(--surface-2)] hover:text-[var(--foreground)]"
               }`}
             >
-              {link.icon}
+              <span>{link.icon}</span>
             </Link>
           );
         })}
       </nav>
 
-      <div className="flex items-center gap-2">
-        <ThemeToggle />
+      <div className="flex shrink-0 items-center gap-1.5">
+        <ThemeToggle iconOnly={true} />
         <Suspense fallback={<div className="h-8 w-16 skeleton" />}>
           <AuthButton />
         </Suspense>

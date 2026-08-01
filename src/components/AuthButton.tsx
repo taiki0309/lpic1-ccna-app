@@ -16,9 +16,10 @@ export default function AuthButton() {
           signOut();
           router.push('/login');
         }}
-        className="inline-flex items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-6 py-3 text-sm font-semibold text-[var(--text-muted)] transition-all duration-300 hover:scale-105 hover:border-[#f85149] hover:text-[#f85149]"
+        className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-1.5 text-xs font-semibold text-[var(--text-muted)] transition-all duration-300 hover:scale-105 hover:border-[#f85149] hover:text-[#f85149] sm:px-5 sm:py-2 sm:text-sm"
       >
-        🔓 ログアウト
+        <span>🔓</span>
+        <span>ログアウト</span>
       </button>
     );
   }
@@ -27,9 +28,11 @@ export default function AuthButton() {
     <Link
       id="login-btn"
       href="/login"
-      className="inline-flex items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-6 py-3 text-sm font-semibold text-[var(--text-muted)] transition-all duration-300 hover:scale-105 hover:border-[var(--accent-primary)] hover:text-[var(--foreground)]"
+      className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-1.5 text-xs font-semibold text-[var(--text-muted)] transition-all duration-300 hover:scale-105 hover:border-[var(--accent-primary)] hover:text-[var(--foreground)] sm:px-5 sm:py-2 sm:text-sm"
     >
-      🔐 ログイン / サインアップ
+      <span>🔐</span>
+      <span className="sm:hidden">ログイン</span>
+      <span className="hidden sm:inline">ログイン / サインアップ</span>
     </Link>
   );
 }
