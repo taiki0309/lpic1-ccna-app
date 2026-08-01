@@ -22,6 +22,16 @@ function SidebarAccountButton() {
 
   const getDisplayName = (usr: any): string => {
     if (!usr) return 'ユーザー';
+    const customName =
+      usr.attributes?.name ||
+      usr.attributes?.preferred_username ||
+      usr.attributes?.nickname ||
+      usr.attributes?.given_name ||
+      usr.name ||
+      usr.displayName;
+    if (typeof customName === 'string' && customName.trim().length > 0) {
+      return customName.trim();
+    }
     const id =
       usr.signInDetails?.loginId ||
       usr.attributes?.email ||
