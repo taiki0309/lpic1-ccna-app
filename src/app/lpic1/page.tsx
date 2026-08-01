@@ -59,22 +59,6 @@ export default function Lpic1TopPage() {
           <span className="text-[var(--foreground)]">LPIC-1</span>
         </nav>
 
-        {/* ヘッダー */}
-        <header className="mb-6 flex items-center gap-4">
-          <div
-            className="flex h-14 w-14 sm:h-16 sm:w-16 shrink-0 items-center justify-center rounded-2xl text-xl sm:text-2xl font-black text-white shadow-lg"
-            style={{ background: "linear-gradient(135deg, #1d6fca, #58a6ff)" }}
-          >
-            L1
-          </div>
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-[var(--foreground)]">LPIC-1</h1>
-            <p className="text-xs sm:text-sm text-[var(--text-muted)]">
-              Linux Professional Institute Certification Level 1
-            </p>
-          </div>
-        </header>
-
         {/* クイックアクション */}
         <section aria-label="学習メニュー" className="mb-10 grid grid-cols-1 gap-4 sm:grid-cols-3">
           {quickLinks.map((link) => (

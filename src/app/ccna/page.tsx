@@ -57,22 +57,6 @@ export default function CcnaTopPage() {
           <span className="text-[var(--foreground)]">CCNA</span>
         </nav>
 
-        {/* ヘッダー */}
-        <header className="mb-6 flex items-center gap-4">
-          <div
-            className="flex h-14 w-14 sm:h-16 sm:w-16 shrink-0 items-center justify-center rounded-2xl text-xl sm:text-2xl font-black text-white shadow-lg"
-            style={{ background: "linear-gradient(135deg, #6e40c9, #bc8cff)" }}
-          >
-            CC
-          </div>
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-[var(--foreground)]">CCNA</h1>
-            <p className="text-xs sm:text-sm text-[var(--text-muted)]">
-              Cisco Certified Network Associate — 200-301
-            </p>
-          </div>
-        </header>
-
         {/* 重要バナー：シミュレーション問題対応 */}
         <div className="mb-8 flex items-start gap-3 rounded-2xl border border-[#bc8cff] bg-[rgba(188,140,255,0.08)] p-5">
           <span className="text-2xl">🎮</span>

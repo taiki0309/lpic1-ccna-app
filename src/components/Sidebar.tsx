@@ -86,13 +86,8 @@ export default function Sidebar() {
 
   return (
     <aside className="sidebar">
-      {/* タイトル */}
-      <Link href="/" className="sidebar-logo" title="ITインフラ技術者認定学習アプリ">
-        <span className="text-xs font-extrabold tracking-tight">ITインフラ技術者認定学習アプリ</span>
-      </Link>
-
       {/* メインナビ */}
-      <nav className="sidebar-nav" aria-label="メインナビゲーション">
+      <nav className="sidebar-nav pt-4" aria-label="メインナビゲーション">
         {menuGroups.map((group) => (
           <div key={group.title} className="w-full mb-3">
             <div className="sidebar-category-title">{group.title}</div>
