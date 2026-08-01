@@ -150,7 +150,7 @@ export default function Home() {
 
         {/* ── フッター ── */}
         <footer className="mt-12 text-center text-xs text-[var(--text-muted)] border-t border-[var(--border)] pt-6">
-          <p>LPIC-1（Exam 101 & 102）・CCNA（200-301）対応 オンライン学習ポータル</p>
+          <p>LPIC-1（Exam 101 & 102）・CCNA（200-301）対応 オンライン学習アプリ</p>
         </footer>
       </div>
     </div>

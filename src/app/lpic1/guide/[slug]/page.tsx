@@ -425,11 +425,13 @@ export default async function Lpic1GuideDetail({
 
             {/* 補足ノート */}
             {step.note && (
-              <div className="flex items-start gap-2.5 rounded-xl border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-xs leading-relaxed text-amber-300">
-                <span className="shrink-0 text-sm">💡</span>
+              <div className="flex items-start gap-3 rounded-xl border border-amber-500/50 bg-[var(--surface-2)] px-4 py-3.5 text-xs leading-relaxed text-[var(--foreground)] shadow-sm">
+                <span className="shrink-0 text-base">💡</span>
                 <div>
-                  <strong className="font-bold text-amber-200">ワンポイントアドバイス: </strong>
-                  <span>{step.note}</span>
+                  <strong className="font-extrabold text-amber-600 dark:text-amber-400 mr-1.5">
+                    ワンポイントアドバイス:
+                  </strong>
+                  <span className="font-medium text-[var(--foreground)]">{step.note}</span>
                 </div>
               </div>
             )}

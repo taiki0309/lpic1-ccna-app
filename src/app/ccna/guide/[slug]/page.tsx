@@ -308,9 +308,14 @@ export default async function CcnaGuideDetailPage({ params }: { params: Params }
               )}
 
               {step.note && (
-                <div className="flex items-start gap-2 rounded-xl border border-[#bc8cff] bg-[rgba(188,140,255,0.08)] px-4 py-3 text-xs leading-relaxed text-[#bc8cff]">
-                  <span className="shrink-0">💡</span>
-                  <span>{step.note}</span>
+                <div className="flex items-start gap-3 rounded-xl border border-[#bc8cff]/50 bg-[var(--surface-2)] px-4 py-3.5 text-xs leading-relaxed text-[var(--foreground)] shadow-sm">
+                  <span className="shrink-0 text-base">💡</span>
+                  <div>
+                    <strong className="font-extrabold text-[#8250df] dark:text-[#bc8cff] mr-1.5">
+                      ワンポイントアドバイス:
+                    </strong>
+                    <span className="font-medium text-[var(--foreground)]">{step.note}</span>
+                  </div>
                 </div>
               )}
             </section>

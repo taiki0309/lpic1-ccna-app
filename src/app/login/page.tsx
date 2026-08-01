@@ -39,7 +39,7 @@ export default function LoginPage() {
               className="inline-block h-2 w-2 rounded-full bg-[var(--accent-secondary)] shadow-[0_0_8px_var(--accent-secondary)]"
               aria-hidden="true"
             />
-            ITインフラ技術者認定ポータル
+            ITインフラ技術者認定学習アプリ
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[var(--foreground)]">
             LPIC×CCNA 学習室へようこそ！

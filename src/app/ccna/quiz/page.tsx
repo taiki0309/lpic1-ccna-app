@@ -6,6 +6,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { submitAnswer } from "@/lib/submitAnswer";
 import { SEED_QUESTIONS } from "@/lib/questionSeedData";
 import { isCategoryMatch } from "@/lib/categoryMatcher";
+import { shuffleQuestions } from "@/lib/shuffleQuestions";
 
 interface Question {
   id: string | number;
@@ -377,16 +378,16 @@ function CcnaQuizInner() {
         );
 
         if (filteredApi.length === 0) {
-          setQuestions(getFilteredQuestions(categoryParam));
+          setQuestions(shuffleQuestions(getFilteredQuestions(categoryParam)));
           setDataSource("fallback");
         } else {
-          setQuestions(filteredApi);
+          setQuestions(shuffleQuestions(filteredApi));
           setDataSource("dynamodb");
         }
       } catch (err) {
         const message = err instanceof Error ? err.message : "不明なエラー";
         setFetchError(message);
-        setQuestions(getFilteredQuestions(categoryParam));
+        setQuestions(shuffleQuestions(getFilteredQuestions(categoryParam)));
         setDataSource("fallback");
       } finally {
         setIsLoading(false);
@@ -433,6 +434,7 @@ function CcnaQuizInner() {
     setFeedback("none");
     setScore(0);
     setIsFinished(false);
+    setQuestions((prev) => shuffleQuestions(prev));
   };
 
   const handleCategorySelect = (slug: string) => {

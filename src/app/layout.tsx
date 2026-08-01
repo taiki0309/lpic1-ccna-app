@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import AuthGuard from "@/components/AuthGuard";
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
+import BottomNav from "@/components/BottomNav";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,8 +19,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "LPIC×CCNA 学習室 | ITインフラ資格対策",
-  description: "LPIC-1・CCNAの試験対策アプリ。4択問題・CLIシミュレーター・環境構築ガイドで、初心者から合格まで一本道。",
+  title: "ITインフラ技術者認定学習アプリ - LPIC & CCNA",
+  description: "LPIC-1 および CCNA 資格取得をサポートする実践学習アプリ",
 };
 
 export default function RootLayout({
@@ -39,9 +40,10 @@ export default function RootLayout({
             <AuthGuard>
               <div className="app-shell">
                 <Sidebar />
-                <div className="main-content flex flex-col">
+                <div className="main-content flex flex-col min-h-screen">
                   <Header />
-                  <div className="flex-1">{children}</div>
+                  <div className="flex-1 pb-16 md:pb-0">{children}</div>
+                  <BottomNav />
                 </div>
               </div>
             </AuthGuard>

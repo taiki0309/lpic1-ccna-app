@@ -1,16 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { submitAnswer } from "@/lib/submitAnswer";
 
-// ─── 練習問題定義 ─────────────────────────────────────────
 interface CommandQuestion {
   id: string;
   category: string;
   description: string;
   prompt: string;
   expectedCommand: string;
+  aliases?: string[];
   hint: string;
   explanation: string;
 }
@@ -19,20 +19,22 @@ const COMMAND_QUESTIONS: CommandQuestion[] = [
   {
     id: "cmd-1",
     category: "ファイル操作",
-    description: "現在のディレクトリにある全ファイル（隠しファイルを含む）を詳細表示してください。",
+    description: "カレントディレクトリに新しい空のファイル「test.txt」を作成してください。",
     prompt: "user@linux:~$ ",
-    expectedCommand: "ls -la",
-    hint: "ls コマンドに -l（詳細）と -a（隠しファイル）オプションを組み合わせます",
-    explanation: "`ls -la` は -l（long format: 詳細表示）と -a（all: 隠しファイルを含む）を組み合わせたコマンドです。`ls -al` でも同様です。",
+    expectedCommand: "touch test.txt",
+    aliases: ["> test.txt"],
+    hint: "空ファイルを作成したりタイムスタンプを更新するコマンドは `touch` です。",
+    explanation: "`touch <ファイル名>` で空のファイルを作成します。既存のファイルの場合はタイムスタンプのみが更新されます。",
   },
   {
     id: "cmd-2",
     category: "ファイル操作",
-    description: "/home/user/documents ディレクトリを作成してください（存在しない場合も安全に実行）。",
+    description: "ファイル「test.txt」をディレクトリ「/tmp」にコピーしてください。",
     prompt: "user@linux:~$ ",
-    expectedCommand: "mkdir -p /home/user/documents",
-    hint: "mkdir に -p オプションをつけると、親ディレクトリも含めて作成でき、既存の場合もエラーになりません",
-    explanation: "`mkdir -p` は --parents の略で、中間ディレクトリを自動作成し、ディレクトリが既に存在してもエラーを出しません。",
+    expectedCommand: "cp test.txt /tmp",
+    aliases: ["cp test.txt /tmp/", "cp -i test.txt /tmp"],
+    hint: "ファイルをコピーするコマンドは `cp <コピー元> <コピー先>` です。",
+    explanation: "`cp test.txt /tmp` により指定ファイルが /tmp ディレクトリ内に複製されます。",
   },
   {
     id: "cmd-3",
@@ -40,123 +42,145 @@ const COMMAND_QUESTIONS: CommandQuestion[] = [
     description: "script.sh に対して、所有者に実行権限を追加してください。",
     prompt: "user@linux:~$ ",
     expectedCommand: "chmod u+x script.sh",
-    hint: "chmod の記号モード: u=user(所有者), +x=実行権限を追加",
-    explanation: "`chmod u+x` は user（所有者）に execute（実行）権限を追加します。",
+    aliases: ["chmod 744 script.sh", "chmod 755 script.sh", "chmod +x script.sh"],
+    hint: "u=user(所有者)、+x=実行権限追加。コマンドは `chmod u+x <ファイル名>` です。",
+    explanation: "シンボルモードの `chmod u+x` を用いることで、所有者（user）に実行（execute）の権限を付与できます。",
   },
   {
     id: "cmd-4",
-    category: "テキスト処理",
-    description: "/var/log/syslog ファイルから 'error' を含む行を大文字・小文字を区別せずに検索してください。",
+    category: "パーミッション",
+    description: "data.txt の所有者を「admin」、所有グループを「admins」に変更してください。",
     prompt: "user@linux:~$ ",
-    expectedCommand: "grep -i error /var/log/syslog",
-    hint: "grep に -i オプションで大文字・小文字を無視できます",
-    explanation: "`grep -i`（--ignore-case）は大文字・小文字を区別せずにパターンを検索します。",
+    expectedCommand: "chown admin:admins data.txt",
+    aliases: ["chown admin.admins data.txt", "sudo chown admin:admins data.txt"],
+    hint: "`chown <ユーザー>:<グループ> <ファイル名>` です。",
+    explanation: "`chown admin:admins data.txt` で、所有者と所有グループを同時に変更することができます。",
   },
   {
     id: "cmd-5",
-    category: "プロセス管理",
-    description: "CPU使用率が高い順にプロセス一覧を表示してください（ps コマンドを使用）。",
+    category: "テキスト処理",
+    description: "app.log から文字列「ERROR」を含む行だけを大文字・小文字を無視して検索して表示してください。",
     prompt: "user@linux:~$ ",
-    expectedCommand: "ps aux --sort=-%cpu",
-    hint: "ps aux でプロセス一覧を取得し、--sort=-%cpu オプションで降順ソートができます",
-    explanation: "`ps aux` は全ユーザーのプロセスを詳細表示します。`--sort=-%cpu` の - は降順を意味します。",
+    expectedCommand: "grep -i ERROR app.log",
+    aliases: ["grep -i error app.log", "grep -i 'ERROR' app.log", "grep -i \"ERROR\" app.log"],
+    hint: "大文字小文字を区別しない正規表現検索は `grep -i <パターン> <ファイル>` です。",
+    explanation: "`grep -i` を用いることで大文字・小文字を区別せず、目的のエラーログ行のみを抽出できます。",
   },
   {
     id: "cmd-6",
-    category: "ファイルシステム",
-    description: "現在マウントされているファイルシステムのディスク使用量を人間が読みやすい形式で表示してください。",
+    category: "プロセス管理",
+    description: "プロセスID「1234」のプロセスを強制終了（SIGKILL / シグナル9）してください。",
     prompt: "user@linux:~$ ",
-    expectedCommand: "df -h",
-    hint: "df コマンドに -h（human-readable）オプションを付けます",
-    explanation: "`df -h`（disk free, human-readable）はGB・MBなど読みやすい単位でディスク使用量を表示します。",
+    expectedCommand: "kill -9 1234",
+    aliases: ["kill -SIGKILL 1234", "kill -KILL 1234"],
+    hint: "シグナル番号9（強制終了）を指定する kill コマンドは `kill -9 <PID>` です。",
+    explanation: "`kill -9 1234` により、SIGKILL シグナルを送り対象プロセスを即座に強制終了します。",
   },
   {
     id: "cmd-7",
-    category: "シェル",
-    description: "HOME 環境変数の値を表示してください。",
+    category: "プロセス管理",
+    description: "現在実行中のプロセスのリアルタイム状況を表示・監視してください（標準ツール）。",
     prompt: "user@linux:~$ ",
-    expectedCommand: "echo $HOME",
-    hint: "echo コマンドと $ を使って環境変数の値を参照します",
-    explanation: "`echo $HOME` は HOME 環境変数を展開して表示します。",
+    expectedCommand: "top",
+    aliases: ["htop", "ps aux"],
+    hint: "CPUやメモリのリアルタイム監視・プロセス表示ツールは `top` です。",
+    explanation: "`top` コマンドで、実行中プロセスの負荷やメモリ消費量を継続監視できます。",
   },
   {
     id: "cmd-8",
     category: "パッケージ管理",
-    description: "apt を使って nginx パッケージをインストールしてください（確認プロンプトなし）。",
+    description: "Debian/Ubuntu系Linuxで、最新のパッケージリスト情報をサーバーから取得して更新してください。",
     prompt: "user@linux:~$ ",
-    expectedCommand: "apt install -y nginx",
-    hint: "-y オプションで全ての確認に自動的に yes と答えます",
-    explanation: "`apt install -y` は --yes の略で、対話プロンプトをスキップします。",
+    expectedCommand: "sudo apt update",
+    aliases: ["apt update", "apt-get update", "sudo apt-get update"],
+    hint: "パッケージリストの更新は `apt update` (または `sudo apt update`) です。",
+    explanation: "`sudo apt update` でリポジトリから最新のパッケージ一覧を取得します。",
   },
 ];
 
-type Status = "idle" | "correct" | "incorrect" | "revealed";
-
-interface QuestionState {
+type QuestionState = {
   input: string;
-  status: Status;
-  showHint: boolean;
+  status: "idle" | "correct" | "incorrect" | "revealed";
   attempts: number;
-}
+};
 
 export default function Lpic1PracticePage() {
   const [currentIdx, setCurrentIdx] = useState(0);
-  const [states, setStates] = useState<Record<string, QuestionState>>(
-    Object.fromEntries(
-      COMMAND_QUESTIONS.map((q) => [
-        q.id,
-        { input: "", status: "idle", showHint: false, attempts: 0 },
-      ])
-    )
-  );
+  const [states, setStates] = useState<Record<string, QuestionState>>({});
+  // 正解した問題のIDのみ保持（正解を見たりスキップした場合はスコア/ポイントに含めない）
   const [completed, setCompleted] = useState<Set<string>>(new Set());
+  const [showHint, setShowHint] = useState(false);
 
-  const question = COMMAND_QUESTIONS[currentIdx];
-  const state = states[question.id];
+  const question = COMMAND_QUESTIONS[currentIdx] || COMMAND_QUESTIONS[0];
+  const state = states[question.id] || { input: "", status: "idle", attempts: 0 };
 
-  const updateState = (id: string, patch: Partial<QuestionState>) => {
-    setStates((prev) => ({ ...prev, [id]: { ...prev[id], ...patch } }));
+  const updateState = (qId: string, newState: Partial<QuestionState>) => {
+    setStates((prev) => ({
+      ...prev,
+      [qId]: { ...(prev[qId] || { input: "", status: "idle", attempts: 0 }), ...newState },
+    }));
+  };
+
+  const checkCommandMatch = (userInput: string, expected: string, aliases: string[] = []): boolean => {
+    const normalize = (str: string) =>
+      str
+        .trim()
+        .replace(/\s+/g, " ")
+        .replace(/["']/g, "")
+        .toLowerCase();
+
+    const normalizedUser = normalize(userInput);
+    if (normalizedUser === normalize(expected)) return true;
+
+    return aliases.some((alias) => normalize(alias) === normalizedUser);
   };
 
   const handleSubmit = () => {
     if (!state.input.trim()) return;
-    const normalized = state.input.trim().replace(/\s+/g, " ");
-    const isCorrect =
-      normalized.toLowerCase() === question.expectedCommand.toLowerCase() ||
-      normalized === question.expectedCommand;
+    const isCorrect = checkCommandMatch(
+      state.input,
+      question.expectedCommand,
+      question.aliases
+    );
 
     if (isCorrect) {
       updateState(question.id, { status: "correct", attempts: state.attempts + 1 });
+      // 「正解をみる」を使わず自力正解した場合のみ進捗・正答スコアに追加！
       setCompleted((prev) => new Set([...prev, question.id]));
+
+      submitAnswer({
+        cert: "lpic1",
+        questionId: question.id,
+        category: question.category,
+        selectedIndex: 0,
+        isCorrect: true,
+      });
     } else {
       updateState(question.id, { status: "incorrect", attempts: state.attempts + 1 });
     }
-
-    submitAnswer({
-      cert: "lpic1",
-      questionId: question.id,
-      category: question.category || "GNUとUnixコマンド",
-      selectedIndex: 0,
-      isCorrect,
-    });
   };
 
+  // ※ ご指摘⑤対応:「正解を見る」を使っても正答率・ポイントには加算しない！
   const handleReveal = () => {
     updateState(question.id, {
       status: "revealed",
       input: question.expectedCommand,
     });
-    setCompleted((prev) => new Set([...prev, question.id]));
+    // setCompleted は実行しない（＝ポイントは加算されない）
   };
 
   const handleNext = () => {
+    setShowHint(false);
     if (currentIdx < COMMAND_QUESTIONS.length - 1) {
       setCurrentIdx((i) => i + 1);
     }
   };
 
   const handlePrev = () => {
-    if (currentIdx > 0) setCurrentIdx((i) => i - 1);
+    setShowHint(false);
+    if (currentIdx > 0) {
+      setCurrentIdx((i) => i - 1);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -176,83 +200,85 @@ export default function Lpic1PracticePage() {
         className="pointer-events-none fixed inset-0 -z-10"
         style={{
           background:
-            "radial-gradient(ellipse 70% 50% at 50% 0%, rgba(63,185,80,0.10) 0%, transparent 60%)",
+            "radial-gradient(ellipse 70% 50% at 50% 0%, rgba(88,166,255,0.10) 0%, transparent 60%)",
         }}
       />
 
       <div className="mx-auto max-w-3xl">
-        {/* パンくず */}
-        <nav className="mb-6 flex items-center gap-2 text-sm text-[var(--text-muted)]">
-          <Link href="/" className="hover:text-[var(--foreground)] transition-colors">ホーム</Link>
+        <nav className="mb-6 flex items-center gap-2 text-sm font-bold text-[var(--text-muted)]">
+          <Link href="/" className="hover:text-[var(--foreground)] transition-colors">
+            ホーム
+          </Link>
           <span>/</span>
-          <Link href="/lpic1" className="hover:text-[var(--foreground)] transition-colors">LPIC-1</Link>
+          <Link href="/lpic1" className="hover:text-[var(--foreground)] transition-colors">
+            LPIC-1
+          </Link>
           <span>/</span>
-          <span className="text-[var(--foreground)]">コマンド練習</span>
+          <span className="text-[var(--foreground)]">Linux CLI コマンド練習</span>
         </nav>
 
-        {/* ヘッダー */}
         <header className="mb-8">
           <h1 className="mb-2 text-2xl font-extrabold text-[var(--foreground)]">
-            ⌨️ Linux CLI コマンド練習
+            ⌨️ Linux CLI コマンド実務練習
           </h1>
           <p className="text-sm text-[var(--text-muted)]">
-            説明を読んでコマンドを入力し「実行」または Enter で判定できます。正解を見たりスキップして次に進むことも可能です。
+            指示されたコマンドを入力し「実行」または Enter キーで判定できます。
+            <span className="font-bold text-[var(--accent-secondary)] ml-1">
+              ※ 自力入力で正解した問題のみがポイント・正答数にカウントされます。
+            </span>
           </p>
         </header>
 
-        {/* 進捗バー */}
+        {/* 進捗とスコア */}
         <div className="mb-6">
           <div className="mb-1 flex justify-between text-xs text-[var(--text-muted)] font-bold">
-            <span>進捗</span>
-            <span>{totalCompleted} / {totalQuestions} 完了</span>
+            <span>自力クリア進捗</span>
+            <span>
+              {totalCompleted} / {totalQuestions} クリア
+            </span>
           </div>
-          <div className="h-2 overflow-hidden rounded-full bg-[var(--surface-2)]">
+          <div className="h-2.5 overflow-hidden rounded-full bg-[var(--surface-2)]">
             <div
               className="h-full rounded-full transition-all duration-500"
               style={{
                 width: `${(totalCompleted / totalQuestions) * 100}%`,
-                background: "linear-gradient(90deg, #196c2e, #3fb950)",
+                background: "linear-gradient(90deg, #1d6fca, #58a6ff)",
               }}
             />
           </div>
         </div>
 
-        {/* 問題ナビゲーション */}
-        <div className="mb-4 flex gap-2 overflow-x-auto pb-1">
-          {COMMAND_QUESTIONS.map((q, i) => (
-            <button
-              key={q.id}
-              onClick={() => setCurrentIdx(i)}
-              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-xs font-bold transition-all duration-200"
-              style={{
-                background: completed.has(q.id)
-                  ? "rgba(63,185,80,0.20)"
-                  : i === currentIdx
-                  ? "rgba(88,166,255,0.20)"
-                  : "var(--surface-2)",
-                border: `1px solid ${
-                  completed.has(q.id)
-                    ? "#3fb950"
-                    : i === currentIdx
-                    ? "#58a6ff"
-                    : "var(--border)"
-                }`,
-                color: completed.has(q.id)
-                  ? "#3fb950"
-                  : i === currentIdx
-                  ? "#58a6ff"
-                  : "var(--text-muted)",
-              }}
-            >
-              {i + 1}
-            </button>
-          ))}
+        {/* 問題選択番号バッジ */}
+        <div className="mb-6 flex flex-wrap gap-2">
+          {COMMAND_QUESTIONS.map((q, i) => {
+            const isCleared = completed.has(q.id);
+            const isCurrent = i === currentIdx;
+            return (
+              <button
+                key={q.id}
+                type="button"
+                onClick={() => {
+                  setCurrentIdx(i);
+                  setShowHint(false);
+                }}
+                className={`flex h-9 w-9 items-center justify-center rounded-xl text-xs font-extrabold transition-all ${
+                  isCleared
+                    ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500"
+                    : isCurrent
+                    ? "bg-[var(--accent-primary)] text-white shadow-md scale-110"
+                    : "bg-[var(--surface-2)] border border-[var(--border)] text-[var(--text-muted)] hover:border-[var(--accent-primary)] hover:text-[var(--foreground)]"
+                }`}
+              >
+                {i + 1}
+              </button>
+            );
+          })}
         </div>
 
         {/* 問題カード */}
         <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 shadow-xl sm:p-8">
-          <div className="mb-4 flex items-center gap-2">
-            <span className="rounded-full border border-[var(--border)] bg-[var(--surface-2)] px-3 py-1 text-xs font-bold text-[var(--accent-secondary)]">
+          <div className="mb-4 flex items-center justify-between">
+            <span className="rounded-full border border-[var(--border)] bg-[var(--surface-2)] px-3 py-1 text-xs font-bold text-[var(--accent-primary)]">
               {question.category}
             </span>
             <span className="text-xs text-[var(--text-muted)] font-bold">
@@ -264,125 +290,160 @@ export default function Lpic1PracticePage() {
             {question.description}
           </h2>
 
-          {/* ターミナル入力エリア */}
+          {/* ターミナル入力エリア（文字色問題・入力反応を完全解決） */}
           <div
-            className="mb-4 overflow-hidden rounded-xl border border-[var(--border)] shadow-md"
-            style={{ background: "#0d1117" }}
+            className="mb-4 overflow-hidden rounded-xl border border-[var(--border)] shadow-lg"
+            style={{ background: "#0e131f" }}
           >
-            <div className="flex items-center gap-1.5 border-b border-[var(--border)] px-4 py-2 bg-[#161b22]">
+            <div
+              className="flex items-center gap-1.5 border-b border-[var(--border)] px-4 py-2"
+              style={{ background: "#161b26" }}
+            >
               <span className="h-3 w-3 rounded-full bg-[#f85149]" />
               <span className="h-3 w-3 rounded-full bg-[#e3b341]" />
               <span className="h-3 w-3 rounded-full bg-[#3fb950]" />
-              <span className="ml-2 text-xs font-mono font-bold text-gray-400">bash / terminal</span>
+              <span className="ml-2 text-xs font-mono font-bold" style={{ color: "#8b949e" }}>
+                bash — Linux CLI Interactive
+              </span>
             </div>
-            <div className="flex items-center gap-2 px-4 py-3 font-mono text-sm">
-              <span className="shrink-0 font-bold text-[#3fb950]">{question.prompt}</span>
+            <div className="flex items-center gap-2 px-4 py-3.5 font-mono text-base">
+              <span className="shrink-0 font-bold" style={{ color: "#3fb950" }}>
+                {question.prompt}
+              </span>
               <input
                 id="command-input"
                 type="text"
                 value={state.input}
-                onChange={(e) => updateState(question.id, { input: e.target.value, status: "idle" })}
+                onChange={(e) =>
+                  updateState(question.id, { input: e.target.value, status: "idle" })
+                }
                 onKeyDown={handleKeyDown}
                 disabled={state.status === "correct" || state.status === "revealed"}
-                placeholder="コマンドを入力... (Enterで実行)"
-                className="flex-1 bg-transparent font-bold text-[var(--foreground)] outline-none placeholder:text-[var(--border)] disabled:opacity-70"
+                placeholder="コマンドを入力してください... (Enterで判定)"
+                style={{
+                  color: "#4ade80",
+                  backgroundColor: "transparent",
+                  fontWeight: 700,
+                  fontSize: "1rem",
+                }}
+                className="flex-1 outline-none placeholder:text-gray-500 disabled:opacity-80"
                 autoComplete="off"
                 spellCheck={false}
               />
             </div>
+
+            {/* 結果メッセージ表示欄 */}
             {state.status !== "idle" && (
               <div
-                className="border-t border-[var(--border)] px-4 py-2.5 font-mono text-xs font-bold"
+                className="border-t border-[var(--border)] px-4 py-3 font-mono text-xs font-bold"
                 style={{
+                  background:
+                    state.status === "correct"
+                      ? "rgba(63, 185, 80, 0.12)"
+                      : state.status === "revealed"
+                      ? "rgba(188, 140, 255, 0.12)"
+                      : "rgba(248, 81, 73, 0.12)",
                   color:
                     state.status === "correct"
                       ? "#3fb950"
                       : state.status === "revealed"
-                      ? "#e3b341"
+                      ? "#bc8cff"
                       : "#f85149",
                 }}
               >
-                {state.status === "correct" && "✓ 正解！"}
-                {state.status === "revealed" && `→ 正解: ${question.expectedCommand}`}
-                {state.status === "incorrect" && `✗ 不正解 — ヒントや「正解を見る」を試してください`}
+                {state.status === "correct" && "✓ [正解] 完璧です！ポイントを獲得しました。"}
+                {state.status === "incorrect" &&
+                  "✗ [不正解] コマンドまたはオプションが異なります。「ヒント」も確認できます。"}
+                {state.status === "revealed" &&
+                  `💡 [正解を表示] ${question.expectedCommand} (※ 正解閲覧時はポイント未加算)`}
               </div>
             )}
           </div>
 
-          {/* ヒント */}
-          {state.showHint && (
-            <div className="mb-4 rounded-xl border border-[#e3b341] bg-[rgba(227,179,65,0.08)] px-4 py-3 text-sm font-semibold text-[#e3b341]">
-              💡 ヒント: {question.hint}
-            </div>
-          )}
-
-          {/* 解説（正解・答えを見る後） */}
+          {/* 解説欄（正解時・正解閲覧時） */}
           {(state.status === "correct" || state.status === "revealed") && (
-            <div className="mb-4 rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-4 py-3 text-sm leading-relaxed text-[var(--foreground)]">
-              <p className="mb-1 font-bold text-[var(--accent-primary)]">📘 解答・解説</p>
-              <p className="mb-2 font-mono text-xs font-bold text-[#e3b341]">
-                正解コマンド: {question.expectedCommand}
+            <div className="mb-6 rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-4 text-sm">
+              <p className="font-extrabold text-[var(--accent-primary)] mb-1">💡 解説</p>
+              <p className="text-[var(--foreground)] leading-relaxed font-medium">
+                {question.explanation}
               </p>
-              {question.explanation}
             </div>
           )}
 
-          {/* ボタン群（いつでも正解確認やスキップができる親切設計） */}
-          <div className="flex flex-wrap gap-2.5 sm:gap-3">
-            <button
-              id="submit-command-btn"
-              onClick={handleSubmit}
-              disabled={!state.input.trim() || state.status === "correct" || state.status === "revealed"}
-              className="flex-1 min-w-[120px] rounded-xl py-3 text-xs sm:text-sm font-extrabold text-white transition-all duration-200 hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
-              style={{ background: "linear-gradient(135deg, #196c2e, #3fb950)" }}
-            >
-              実行 (Enter)
-            </button>
+          {/* ヒント表示部 */}
+          {showHint && state.status !== "correct" && state.status !== "revealed" && (
+            <div className="mb-6 rounded-xl border border-amber-500/40 bg-amber-500/10 p-4 text-sm text-amber-300 font-bold">
+              <p className="mb-1 text-xs uppercase tracking-wide opacity-80">ヒント</p>
+              <p>{question.hint}</p>
+            </div>
+          )}
 
-            {!state.showHint && (
+          {/* アクションボタン群 */}
+          <div className="flex flex-wrap items-center gap-3">
+            {state.status === "idle" || state.status === "incorrect" ? (
+              <>
+                <button
+                  type="button"
+                  onClick={handleSubmit}
+                  disabled={!state.input.trim()}
+                  className="flex-1 rounded-xl py-3 px-4 font-extrabold text-white transition-all hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40 shadow-md"
+                  style={{ background: "linear-gradient(135deg, #196c2e, #3fb950)" }}
+                >
+                  実行 (Enter)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowHint(!showHint)}
+                  className="rounded-xl border border-amber-500/40 bg-amber-500/10 px-4 py-3 font-extrabold text-amber-400 hover:bg-amber-500/20"
+                >
+                  {showHint ? "ヒントを閉じる" : "💡 ヒント"}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleReveal}
+                  className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-4 py-3 font-extrabold text-[var(--foreground)] hover:border-[var(--accent-primary)]"
+                >
+                  🔑 正解を見る
+                </button>
+              </>
+            ) : (
               <button
-                id="hint-btn"
-                onClick={() => updateState(question.id, { showHint: true })}
-                className="rounded-xl border border-[#e3b341] bg-[rgba(227,179,65,0.08)] px-4 py-3 text-xs sm:text-sm font-bold text-[#e3b341] transition-all hover:bg-[rgba(227,179,65,0.15)]"
+                type="button"
+                onClick={handleNext}
+                className="w-full rounded-xl py-3 px-6 font-extrabold text-white transition-all hover:opacity-90"
+                style={{ background: "linear-gradient(135deg, #1d6fca, #58a6ff)" }}
               >
-                💡 ヒント
+                {currentIdx < COMMAND_QUESTIONS.length - 1
+                  ? "次の問題へ進む →"
+                  : "結果・完了一覧を見る"}
               </button>
             )}
 
-            {state.status !== "revealed" && state.status !== "correct" && (
-              <button
-                id="reveal-btn"
-                onClick={handleReveal}
-                className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-4 py-3 text-xs sm:text-sm font-bold text-[var(--foreground)] transition-all hover:border-[var(--accent-primary)]"
-              >
-                🔑 正解を見る
-              </button>
-            )}
-
             <button
-              id="next-skip-btn"
+              type="button"
               onClick={handleNext}
-              disabled={currentIdx >= COMMAND_QUESTIONS.length - 1}
-              className="rounded-xl bg-[var(--surface-2)] border border-[var(--border)] px-4 py-3 text-xs sm:text-sm font-extrabold text-[var(--accent-primary)] hover:border-[var(--accent-primary)] transition-all disabled:opacity-40"
+              className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-4 py-3 text-xs font-bold text-[var(--text-muted)] hover:text-[var(--foreground)]"
             >
-              ⏭️ 次へ (スキップ) →
+              ⏭️ スキップ
             </button>
           </div>
         </div>
 
-        {/* 前後問題ナビ */}
-        <div className="mt-4 flex gap-3">
+        {/* 前後ナビゲーションバー */}
+        <div className="mt-8 flex justify-between">
           <button
+            type="button"
             onClick={handlePrev}
             disabled={currentIdx === 0}
-            className="flex-1 rounded-xl border border-[var(--border)] bg-[var(--surface)] py-3 text-sm font-bold text-[var(--text-muted)] transition-all hover:border-[var(--accent-primary)] hover:text-[var(--foreground)] disabled:opacity-40"
+            className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-6 py-2.5 text-sm font-bold text-[var(--foreground)] disabled:opacity-40"
           >
             ← 前の問題
           </button>
           <button
+            type="button"
             onClick={handleNext}
-            disabled={currentIdx >= COMMAND_QUESTIONS.length - 1}
-            className="flex-1 rounded-xl border border-[var(--border)] bg-[var(--surface)] py-3 text-sm font-bold text-[var(--text-muted)] transition-all hover:border-[var(--accent-primary)] hover:text-[var(--foreground)] disabled:opacity-40"
+            disabled={currentIdx === COMMAND_QUESTIONS.length - 1}
+            className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-6 py-2.5 text-sm font-bold text-[var(--foreground)] disabled:opacity-40"
           >
             次の問題 →
           </button>
