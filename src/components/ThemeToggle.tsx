@@ -56,7 +56,7 @@ export default function ThemeToggle({
     <div
       role="group"
       aria-label="外観選択"
-      className="inline-flex items-center rounded-full border border-[var(--border)] bg-[var(--surface)] p-1 shadow-inner"
+      className="inline-flex items-center rounded-full border border-[var(--border)] bg-[var(--surface)] p-0.5 sm:p-1 shadow-inner shrink-0"
     >
       {options.map((opt) => {
         const isActive = currentTheme === opt.id;
@@ -66,9 +66,9 @@ export default function ThemeToggle({
             type="button"
             onClick={() => setTheme(opt.id)}
             aria-pressed={isActive}
-            className={`relative flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-300 ${
+            className={`relative flex items-center gap-1 sm:gap-1.5 rounded-full px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs font-bold transition-all duration-300 whitespace-nowrap ${
               isActive
-                ? "bg-[var(--accent-primary)] text-white shadow-md scale-105 font-bold"
+                ? "bg-[var(--accent-primary)] text-white shadow-md scale-105"
                 : "text-[var(--text-muted)] hover:text-[var(--foreground)] hover:bg-[var(--surface-2)]"
             }`}
             title={`${opt.label}モードに切り替え`}

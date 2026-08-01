@@ -87,10 +87,9 @@ export default function Sidebar() {
 
   return (
     <aside className="sidebar">
-      {/* ロゴ */}
+      {/* タイトル */}
       <Link href="/" className="sidebar-logo" title="ITインフラ技術者認定学習アプリ">
-        <span role="img" aria-label="shield">🛡️</span>
-        <span className="text-xs font-extrabold tracking-tight">ITインフラ学習アプリ</span>
+        <span className="text-xs font-extrabold tracking-tight">ITインフラ技術者認定学習アプリ</span>
       </Link>
 
       {/* メインナビ */}
