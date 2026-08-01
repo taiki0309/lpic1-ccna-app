@@ -1,6 +1,7 @@
 import { ScanCommand, GetCommand, QueryCommand, PutCommand } from "@aws-sdk/lib-dynamodb";
 import { docClient, TABLE_NAME } from "@/lib/dynamodb";
 import { logger } from "@/lib/logger";
+import { isCategoryMatch } from "@/lib/categoryMatcher";
 
 // ─── DynamoDB アイテムの型 ─────────────────────────────────
 // テーブルスキーマ（拡張版）:
@@ -122,9 +123,9 @@ export async function GET(request: Request) {
       items = (result.Items ?? []) as DynamoQuestion[];
     }
 
-    // カテゴリフィルタ（クライアント要求）
-    if (category) {
-      items = items.filter((item) => item.category === category);
+    // カテゴリフィルタ（クライアント要求：英語スラッグ・日本語双方対応）
+    if (category && category !== "all") {
+      items = items.filter((item) => isCategoryMatch(item.category || "", category));
     }
 
     // ソート

@@ -17,7 +17,6 @@ export default function Home() {
       />
 
       <div className="mx-auto max-w-5xl px-5 py-10 sm:px-8">
-
         {/* ── ページヘッダー ── */}
         <header className="mb-8 flex items-center justify-between animate-fade-in-up">
           <div>
@@ -35,41 +34,44 @@ export default function Home() {
               </span>
             </div>
             <h1 className="text-3xl font-extrabold tracking-tight text-[var(--foreground)] sm:text-4xl">
-              さあ、<span style={{
-                background: "linear-gradient(135deg, #58a6ff 0%, #bc8cff 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-              }}>今日の学習</span>を始めよう！
+              さあ、
+              <span
+                style={{
+                  background:
+                    "linear-gradient(135deg, #58a6ff 0%, #bc8cff 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                }}
+              >
+                今日の学習
+              </span>
+              を始めよう！
             </h1>
             <p className="mt-1 text-sm text-[var(--text-muted)]">
-              LPIC-1・CCNA の合格に向けて、今日も一歩ずつ着実に。
+              LPIC-1・CCNA の合格に向けて、今日も一歩頑張りましょう。
             </p>
           </div>
           <div className="hidden sm:flex flex-col items-end gap-2">
-            <Suspense
-              fallback={
-                <div className="h-9 w-32 skeleton" />
-              }
-            >
+            <Suspense fallback={<div className="h-9 w-32 skeleton" />}>
               <AuthButton />
             </Suspense>
           </div>
         </header>
 
         {/* ── 今日のミッションカード ── */}
-        <section aria-label="今日のミッション" className="mb-8">
+        <section aria-label="今日のミッション" className="mb-10">
           <h2 className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[var(--text-muted)]">
             <span>🎯</span> 今日のミッション
           </h2>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <MissionCard
               href="/lpic1/quiz"
               icon="⚔️"
               iconBg="rgba(88,166,255,0.15)"
               iconColor="#58a6ff"
               title="弱点克服クエスト"
-              desc="苦手カテゴリから5問チャレンジ"
+              desc="苦手カテゴリから厳選問題チャレンジ"
               badge="LPIC-1"
               badgeColor="#58a6ff"
               ctaLabel="始める"
@@ -81,7 +83,7 @@ export default function Home() {
               iconBg="rgba(188,140,255,0.15)"
               iconColor="#bc8cff"
               title="今日のチャレンジ"
-              desc="CCNA 10問ランダム演習"
+              desc="CCNA カテゴリ別実戦問題演習"
               badge="CCNA"
               badgeColor="#bc8cff"
               ctaLabel="挑戦する"
@@ -91,18 +93,18 @@ export default function Home() {
         </section>
 
         {/* ── 資格コース選択 ── */}
-        <section aria-label="資格コースを選択" className="mb-8">
-          <h2 className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[var(--text-muted)]">
-            <span>📚</span> 資格コース
+        <section aria-label="資格コースを選択" className="mb-10">
+          <h2 className="mb-4 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[var(--text-muted)]">
+            <span>📚</span> 資格学習コース
           </h2>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <CertCard
               id="lpic1-card"
               href="/lpic1"
               emoji="🐧"
-              title="LPIC-1"
+              title="LPIC-1 対策コース"
               subtitle="Linux 技術者認定 Level 1"
-              desc="Linux の基礎から実践まで。コマンド演習・ターミナルシミュレーター・環境構築ガイドを収録。"
+              desc="Linux の基礎知識から実践まで。カテゴリ別問題演習・コマンド練習・環境構築ガイドを網羅。"
               tags={["4択問題", "コマンド練習", "環境構築ガイド", "ターミナル演習"]}
               accentColor="#58a6ff"
               gradient="linear-gradient(135deg, #1d6fca, #58a6ff)"
@@ -113,10 +115,10 @@ export default function Home() {
               id="ccna-card"
               href="/ccna"
               emoji="🌐"
-              title="CCNA"
+              title="CCNA 対策コース"
               subtitle="Cisco ネットワーク技術者認定"
-              desc="IPアドレッシング・ルーティング・VLAN を、Cisco ルーターを模した画面で実践的に学習。"
-              tags={["4択問題", "ネットワーク演習", "ネットワーク図", "ドラッグ&ドロップ"]}
+              desc="IPアドレッシング・ルーティング・VLAN を、カテゴリ別演習・トポロジー図解問題等で実践学習。"
+              tags={["4択問題", "ネットワーク図", "トポロジー演習", "ドラッグ&ドロップ"]}
               accentColor="#bc8cff"
               gradient="linear-gradient(135deg, #6e40c9, #bc8cff)"
               glowColor="rgba(188,140,255,0.15)"
@@ -125,21 +127,30 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ── 機能リンクグリッド ── */}
-        <section aria-label="主な機能" className="mb-8">
-          <h2 className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[var(--text-muted)]">
-            <span>⚡</span> クイックアクセス
-          </h2>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            {quickLinks.map((item, i) => (
-              <QuickLink key={item.href} {...item} animDelay={`delay-${(i + 1) * 100}`} />
-            ))}
+        {/* ── 学習管理・サポート ── */}
+        <section aria-label="学習サポート" className="mb-8">
+          <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="space-y-1 text-center sm:text-left">
+              <h3 className="text-base font-extrabold text-[var(--foreground)]">
+                📈 学習の進捗状況をチェック
+              </h3>
+              <p className="text-xs text-[var(--text-muted)]">
+                どのカテゴリが得意でどこが苦手か、グラフと正答率でひと目で確認できます。
+              </p>
+            </div>
+            <Link
+              href="/dashboard"
+              className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-[var(--accent-primary)] px-5 py-2.5 text-xs font-bold text-white hover:opacity-90 transition-opacity"
+            >
+              <span>📊 進捗ボードを見る</span>
+              <span>→</span>
+            </Link>
           </div>
         </section>
 
         {/* ── フッター ── */}
-        <footer className="mt-4 text-center text-xs text-[var(--text-muted)]">
-          <p>LPIC-1（Exam 101 & 102）・CCNA（200-301）対応</p>
+        <footer className="mt-12 text-center text-xs text-[var(--text-muted)] border-t border-[var(--border)] pt-6">
+          <p>LPIC-1（Exam 101 & 102）・CCNA（200-301）対応 オンライン学習ポータル</p>
         </footer>
       </div>
     </div>
@@ -149,23 +160,38 @@ export default function Home() {
 // ── サブコンポーネント ──────────────────────────────────────────────
 
 function MissionCard({
-  href, icon, iconBg, iconColor, title, desc, badge, badgeColor, ctaLabel, animDelay,
+  href,
+  icon,
+  iconBg,
+  iconColor,
+  title,
+  desc,
+  badge,
+  badgeColor,
+  ctaLabel,
+  animDelay,
 }: {
-  href: string; icon: string; iconBg: string; iconColor: string; title: string;
-  desc: string; badge: string; badgeColor: string; ctaLabel: string; animDelay: string;
+  href: string;
+  icon: string;
+  iconBg: string;
+  iconColor: string;
+  title: string;
+  desc: string;
+  badge: string;
+  badgeColor: string;
+  ctaLabel: string;
+  animDelay: string;
 }) {
   return (
     <Link
       href={href}
       className={`card-hover group relative flex items-center gap-4 overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 animate-fade-in-up ${animDelay}`}
     >
-      {/* アクセントライン */}
       <div
-        className="absolute left-0 top-0 h-full w-1 rounded-l-2xl"
+        className="absolute left-0 top-0 h-full w-1.5 rounded-l-2xl"
         style={{ background: iconColor }}
         aria-hidden="true"
       />
-      {/* アイコン */}
       <div
         className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-2xl"
         style={{ background: iconBg }}
@@ -183,7 +209,9 @@ function MissionCard({
           </span>
         </div>
         <p className="font-bold text-[var(--foreground)] truncate">{title}</p>
-        <p className="text-xs text-[var(--text-muted)] mt-0.5 truncate">{desc}</p>
+        <p className="text-xs text-[var(--text-muted)] mt-0.5 truncate">
+          {desc}
+        </p>
       </div>
       <div
         className="shrink-0 rounded-xl px-4 py-2 text-sm font-bold text-white transition-all duration-200 group-hover:scale-105 group-hover:opacity-90"
@@ -196,25 +224,43 @@ function MissionCard({
 }
 
 function CertCard({
-  id, href, emoji, title, subtitle, desc, tags, accentColor, gradient, glowColor, animDelay,
+  id,
+  href,
+  emoji,
+  title,
+  subtitle,
+  desc,
+  tags,
+  accentColor,
+  gradient,
+  glowColor,
+  animDelay,
 }: {
-  id: string; href: string; emoji: string; title: string; subtitle: string;
-  desc: string; tags: string[]; accentColor: string; gradient: string;
-  glowColor: string; animDelay: string;
+  id: string;
+  href: string;
+  emoji: string;
+  title: string;
+  subtitle: string;
+  desc: string;
+  tags: string[];
+  accentColor: string;
+  gradient: string;
+  glowColor: string;
+  animDelay: string;
 }) {
   return (
     <Link
       id={id}
       href={href}
-      className={`card-hover group relative flex flex-col gap-4 overflow-hidden rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-6 animate-fade-in-up ${animDelay}`}
+      className={`card-hover group relative flex flex-col gap-4 overflow-hidden rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-6 sm:p-7 animate-fade-in-up ${animDelay}`}
     >
-      {/* ホバー時グロー */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-        style={{ background: `radial-gradient(ellipse 80% 60% at 50% 0%, ${glowColor} 0%, transparent 70%)` }}
+        style={{
+          background: `radial-gradient(ellipse 80% 60% at 50% 0%, ${glowColor} 0%, transparent 70%)`,
+        }}
       />
-      {/* ヘッダー行 */}
       <div className="flex items-center justify-between">
         <div
           className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-3xl shadow-lg animate-float"
@@ -230,12 +276,14 @@ function CertCard({
           {subtitle.split(" ")[0]}
         </span>
       </div>
-      {/* テキスト */}
       <div>
-        <h2 className="mb-1 text-xl font-extrabold text-[var(--foreground)]">{title}</h2>
-        <p className="text-xs text-[var(--text-muted)] leading-relaxed">{desc}</p>
+        <h2 className="mb-1.5 text-xl font-extrabold text-[var(--foreground)]">
+          {title}
+        </h2>
+        <p className="text-xs text-[var(--text-muted)] leading-relaxed">
+          {desc}
+        </p>
       </div>
-      {/* タグ */}
       <ul className="flex flex-wrap gap-1.5">
         {tags.map((tag) => (
           <li
@@ -246,44 +294,12 @@ function CertCard({
           </li>
         ))}
       </ul>
-      {/* CTA */}
       <div
         className="flex items-center gap-1 text-sm font-bold transition-transform duration-300 group-hover:translate-x-1"
         style={{ color: accentColor }}
       >
-        学習を開始する →
+        コース学習を開始する →
       </div>
     </Link>
   );
 }
-
-function QuickLink({
-  href, icon, label, iconBg, animDelay,
-}: {
-  href: string; icon: string; label: string; iconBg: string; animDelay: string;
-}) {
-  return (
-    <Link
-      href={href}
-      className={`card-hover group flex flex-col items-center gap-2 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 text-center animate-fade-in-up ${animDelay}`}
-    >
-      <div
-        className="flex h-10 w-10 items-center justify-center rounded-xl text-xl"
-        style={{ background: iconBg }}
-        aria-hidden="true"
-      >
-        {icon}
-      </div>
-      <span className="text-xs font-semibold text-[var(--foreground)]">{label}</span>
-    </Link>
-  );
-}
-
-// ── データ ─────────────────────────────────────────────────────────
-
-const quickLinks = [
-  { href: "/dashboard", icon: "📊", label: "進捗確認", iconBg: "rgba(88,166,255,0.15)" },
-  { href: "/ccna/simulation", icon: "🖥️", label: "ネットワーク演習", iconBg: "rgba(188,140,255,0.15)" },
-  { href: "/lpic1/guide", icon: "📖", label: "入門ガイド", iconBg: "rgba(63,185,80,0.15)" },
-  { href: "/lpic1/practice", icon: "⌨️", label: "コマンド練習", iconBg: "rgba(227,179,65,0.15)" },
-];

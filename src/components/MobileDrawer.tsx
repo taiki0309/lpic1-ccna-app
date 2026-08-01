@@ -9,13 +9,11 @@ import ThemeToggle from "./ThemeToggle";
 interface MobileDrawerProps {
   isOpen: boolean;
   onClose: () => void;
-  onOpenSystemModal?: () => void;
 }
 
 export default function MobileDrawer({
   isOpen,
   onClose,
-  onOpenSystemModal,
 }: MobileDrawerProps) {
   const pathname = usePathname();
   const { authStatus, user, signOut } = useAuthenticator((ctx) => [
@@ -88,15 +86,19 @@ export default function MobileDrawer({
           label: "Linux環境構築 (Ubuntu+VirtualBox)",
           icon: "💿",
         },
-        { href: "/lpic1/guide", label: "環境構築ガイド一覧", icon: "📖" },
+        {
+          href: "/lpic1/practice",
+          label: "Linuxコマンド練習",
+          icon: "💻",
+        },
       ],
     },
     {
       title: "学習管理・ステータス",
       icon: "📊",
       items: [
-        { href: "/dashboard", label: "進捗ダッシュボード", icon: "📈" },
-        { href: "/quiz", label: "演習・問題確認", icon: "📝" },
+        { href: "/dashboard", label: "学習進捗・ステータス", icon: "📈" },
+        { href: "/quiz", label: "問題演習・テスト", icon: "📝" },
       ],
     },
   ];
@@ -104,19 +106,19 @@ export default function MobileDrawer({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex">
-      {/* オーバーレイ */}
+    <div className="fixed inset-0 z-50 sm:hidden">
+      {/* 背景オーバーレイ */}
       <div
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300 animate-fade-in"
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
         onClick={onClose}
         aria-hidden="true"
       />
 
-      {/* ドロワーパネル（左側） */}
-      <aside className="relative flex h-full w-[280px] sm:w-[320px] flex-col bg-[var(--surface)] border-r border-[var(--border)] shadow-2xl transition-transform duration-300 transform translate-x-0 overflow-y-auto">
-        {/* ヘッダー部（社内ポータル風メニュータイトル＆閉じるボタン） */}
-        <div className="flex items-center justify-between border-b border-[var(--border)] px-4 py-3.5 bg-[var(--surface-2)]">
-          <div className="flex items-center gap-2 font-black text-sm text-[var(--foreground)] tracking-wide">
+      {/* ドロワーパネル */}
+      <aside className="relative flex h-full w-[280px] flex-col border-r border-[var(--border)] bg-[var(--sidebar-bg)] shadow-2xl transition-transform">
+        {/* ドロワーヘッダー */}
+        <div className="flex h-14 items-center justify-between border-b border-[var(--border)] px-4">
+          <div className="flex items-center gap-2 font-extrabold text-[var(--foreground)]">
             <span className="text-base">📋</span>
             <span>メニュー</span>
           </div>
@@ -149,25 +151,13 @@ export default function MobileDrawer({
                 </div>
               </div>
               <div className="flex items-center gap-1.5 mt-1">
-                {onOpenSystemModal && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      onClose();
-                      onOpenSystemModal();
-                    }}
-                    className="flex-1 rounded-lg bg-[var(--surface-2)] border border-[var(--border)] py-1.5 px-2 text-[11px] font-semibold text-[var(--accent-primary)] hover:bg-[var(--border)] transition-colors text-center"
-                  >
-                    ⏱️ セッション/システム確認
-                  </button>
-                )}
                 <button
                   type="button"
                   onClick={() => {
                     signOut();
                     onClose();
                   }}
-                  className="rounded-lg bg-[rgba(248,81,73,0.1)] border border-[rgba(248,81,73,0.3)] py-1.5 px-2.5 text-[11px] font-semibold text-[#f85149] hover:bg-[rgba(248,81,73,0.2)] transition-colors"
+                  className="w-full rounded-lg bg-[rgba(248,81,73,0.1)] border border-[rgba(248,81,73,0.3)] py-1.5 px-2.5 text-[11px] font-semibold text-[#f85149] hover:bg-[rgba(248,81,73,0.2)] transition-colors text-center"
                 >
                   ログアウト
                 </button>
@@ -190,7 +180,7 @@ export default function MobileDrawer({
         </div>
 
         {/* ナビゲーション（カテゴリー別） */}
-        <div className="flex-1 px-3 py-4 space-y-5">
+        <div className="flex-1 px-3 py-4 space-y-5 overflow-y-auto">
           {menuGroups.map((group) => (
             <div key={group.title} className="space-y-1">
               <div className="flex items-center gap-1.5 px-2 text-[11px] font-extrabold text-[var(--text-muted)] tracking-wider uppercase">
@@ -222,23 +212,6 @@ export default function MobileDrawer({
               </div>
             </div>
           ))}
-
-          {/* セッション・システム情報リンク */}
-          {onOpenSystemModal && (
-            <div className="pt-2 border-t border-[var(--border)]">
-              <button
-                type="button"
-                onClick={() => {
-                  onClose();
-                  onOpenSystemModal();
-                }}
-                className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-xs font-bold text-[var(--accent-purple)] hover:bg-[var(--surface-2)] transition-colors"
-              >
-                <span className="text-base shrink-0">🛡️</span>
-                <span>セッション時間・権限確認</span>
-              </button>
-            </div>
-          )}
         </div>
 
         {/* ドロワーフッター：テーマ切り替えなど */}

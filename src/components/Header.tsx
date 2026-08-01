@@ -6,13 +6,11 @@ import { usePathname } from "next/navigation";
 import ThemeToggle from "./ThemeToggle";
 import AuthButton from "./AuthButton";
 import MobileDrawer from "./MobileDrawer";
-import SystemInfoModal from "./SystemInfoModal";
 
 // Top bar visible on mobile & provides drawer trigger
 export default function Header() {
   const pathname = usePathname();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [isSystemModalOpen, setIsSystemModalOpen] = useState(false);
 
   if (pathname === "/login") return null;
 
@@ -69,18 +67,8 @@ export default function Header() {
           })}
         </nav>
 
-        {/* 右側：セッション確認ボタン、テーマ切替、ユーザー認証 */}
+        {/* 右側：テーマ切替、ユーザー認証 */}
         <div className="flex shrink-0 items-center gap-1.5">
-          <button
-            type="button"
-            onClick={() => setIsSystemModalOpen(true)}
-            className="flex items-center gap-1 rounded-lg border border-[var(--border)] bg-[var(--surface-2)] px-2.5 py-1.5 text-[11px] font-bold text-[var(--accent-purple)] hover:border-[var(--accent-purple)] transition-all"
-            title="③セッション時間 / ④suzukiユーザー権限 / ⑤CloudFront確認"
-          >
-            <span>🛡️</span>
-            <span className="hidden sm:inline">セッション/構成確認</span>
-          </button>
-
           <ThemeToggle iconOnly={true} />
           <Suspense fallback={<div className="h-8 w-16 skeleton" />}>
             <AuthButton />
@@ -92,13 +80,6 @@ export default function Header() {
       <MobileDrawer
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
-        onOpenSystemModal={() => setIsSystemModalOpen(true)}
-      />
-
-      {/* セッション・構成確認モーダル */}
-      <SystemInfoModal
-        isOpen={isSystemModalOpen}
-        onClose={() => setIsSystemModalOpen(false)}
       />
     </>
   );

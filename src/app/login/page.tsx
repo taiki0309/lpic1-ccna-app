@@ -20,7 +20,7 @@ function LoginRedirector() {
 
 export default function LoginPage() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[var(--background)] px-4">
+    <main className="flex min-h-screen items-center justify-center bg-[var(--background)] px-4 py-12">
       {/* 背景グラデーション */}
       <div
         aria-hidden="true"
@@ -34,18 +34,18 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         {/* ヘッダー */}
         <div className="mb-8 text-center">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-sm text-[var(--text-muted)]">
+          <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--surface)] px-4 py-1.5 text-xs font-extrabold text-[var(--accent-primary)]">
             <span
               className="inline-block h-2 w-2 rounded-full bg-[var(--accent-secondary)] shadow-[0_0_8px_var(--accent-secondary)]"
               aria-hidden="true"
             />
-            LPIC×CCNA 学習室
+            ITインフラ技術者認定ポータル
           </div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-[var(--foreground)]">
-            ログイン / 新規登録
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[var(--foreground)]">
+            LPIC×CCNA 学習室へようこそ！
           </h1>
-          <p className="mt-2 text-sm text-[var(--text-muted)]">
-            メールアドレスとパスワードでアカウントにアクセス
+          <p className="mt-2 text-xs sm:text-sm text-[var(--text-muted)]">
+            メールアドレスとパスワードでログインして学習を継続しましょう
           </p>
         </div>
 
@@ -73,8 +73,17 @@ export default function LoginPage() {
             },
           }}
         >
-          {() => <LoginRedirector />}
+          <LoginRedirector />
         </Authenticator>
+
+        <div className="mt-8 text-center">
+          <a
+            href="/"
+            className="text-xs font-semibold text-[var(--text-muted)] hover:text-[var(--foreground)] underline transition-colors"
+          >
+            ← ホームへ戻る（未ログインで体験する）
+          </a>
+        </div>
       </div>
     </main>
   );

@@ -1,115 +1,82 @@
 "use client";
 
-import React, { useState, Suspense } from "react";
+import React, { Suspense } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useAuthenticator } from "@aws-amplify/ui-react";
-import { useRouter } from "next/navigation";
 import ThemeToggle from "./ThemeToggle";
-import SystemInfoModal from "./SystemInfoModal";
 
-const navItems = [
-  { href: "/", icon: "🏠", label: "ホーム", exact: true },
-  { href: "/lpic1", icon: "🐧", label: "LPIC-1" },
-  { href: "/ccna", icon: "🌐", label: "CCNA" },
-  { href: "/ccna/simulation", icon: "🗺️", label: "実機演習" },
-  { href: "/dashboard", icon: "📊", label: "進捗" },
-  { href: "/quiz", icon: "📝", label: "演習" },
+const menuGroups = [
+  {
+    title: "学習コース・教材",
+    items: [
+      { href: "/", label: "ホーム", icon: "🏠", exact: true },
+      { href: "/lpic1", label: "LPIC-1 コース", icon: "🐧" },
+      { href: "/ccna", label: "CCNA コース", icon: "🌐" },
+      { href: "/ccna/simulation", label: "CCNA 実機シミュレーション", icon: "🗺️" },
+    ],
+  },
+  {
+    title: "環境構築・実機ガイド",
+    items: [
+      {
+        href: "/lpic1/guide/linux-install",
+        label: "Linux環境構築 (Ubuntu)",
+        icon: "💿",
+      },
+      {
+        href: "/lpic1/practice",
+        label: "Linux CLI コマンド練習",
+        icon: "💻",
+      },
+    ],
+  },
+  {
+    title: "学習管理・演習",
+    items: [
+      { href: "/dashboard", label: "学習進捗・成績", icon: "📊" },
+      { href: "/quiz", label: "総合演習・実戦テスト", icon: "📝" },
+    ],
+  },
 ];
 
-function SidebarAccountButton({ onOpenSystem }: { onOpenSystem: () => void }) {
-  const { authStatus, user, signOut } = useAuthenticator((ctx) => [ctx.authStatus, ctx.user]);
+function SidebarAuthActions() {
+  const { authStatus, signOut } = useAuthenticator((ctx) => [ctx.authStatus]);
   const router = useRouter();
   const pathname = usePathname();
 
-  const getDisplayName = (usr: any): string => {
-    if (!usr) return 'ユーザー';
-    const customName =
-      usr.attributes?.name ||
-      usr.attributes?.preferred_username ||
-      usr.attributes?.nickname ||
-      usr.attributes?.given_name ||
-      usr.name ||
-      usr.displayName;
-    if (typeof customName === 'string' && customName.trim().length > 0) {
-      return customName.trim();
-    }
-    const id =
-      usr.signInDetails?.loginId ||
-      usr.attributes?.email ||
-      usr.username ||
-      'ユーザー';
-    if (typeof id === 'string') {
-      if (id.includes('@')) {
-        return id.split('@')[0];
-      }
-      if (/^[0-9a-f]{8}-[0-9a-f]{4}-/i.test(id)) {
-        return '学習者';
-      }
-      return id;
-    }
-    return 'ユーザー';
-  };
-
   if (authStatus === "authenticated") {
-    const name = getDisplayName(user);
     return (
-      <div className="flex flex-col gap-1.5 w-full">
-        <div className="px-3 py-1.5 rounded-lg bg-[var(--surface-2)] border border-[var(--border)] text-xs font-bold text-[var(--accent-primary)] break-all text-center" title={`ログイン中: ${name}さん`}>
-          👋 こんにちは、{name}さん
-        </div>
-        <button
-          type="button"
-          onClick={onOpenSystem}
-          className="sidebar-item !text-[var(--accent-purple)]"
-          title="③セッション時間 / ④権限確認 / ⑤CloudFront確認"
-        >
-          <span className="sidebar-icon">🛡️</span>
-          <span>ステータス</span>
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            signOut();
-            router.push("/login");
-          }}
-          className="sidebar-item"
-          title="ログアウト"
-        >
-          <span className="sidebar-icon">🔓</span>
-          <span>ログアウト</span>
-        </button>
-      </div>
+      <button
+        type="button"
+        onClick={() => {
+          signOut();
+          router.push("/login");
+        }}
+        className="sidebar-item !text-red-400 hover:!bg-red-500/10 transition-colors"
+        title="ログアウト"
+      >
+        <span className="sidebar-icon">🔓</span>
+        <span>ログアウト</span>
+      </button>
     );
   }
 
   const isActive = pathname?.startsWith("/login");
   return (
-    <div className="flex flex-col gap-1 w-full">
-      <button
-        type="button"
-        onClick={onOpenSystem}
-        className="sidebar-item !text-[var(--accent-purple)]"
-        title="③セッション時間 / ④権限確認 / ⑤CloudFront確認"
-      >
-        <span className="sidebar-icon">🛡️</span>
-        <span>ステータス</span>
-      </button>
-      <Link
-        href="/login"
-        className={`sidebar-item${isActive ? " active" : ""}`}
-        title="ログイン / 新規登録"
-      >
-        <span className="sidebar-icon">🔐</span>
-        <span>ログイン</span>
-      </Link>
-    </div>
+    <Link
+      href="/login"
+      className={`sidebar-item${isActive ? " active" : ""}`}
+      title="ログイン / 新規登録"
+    >
+      <span className="sidebar-icon">🔐</span>
+      <span>ログイン</span>
+    </Link>
   );
 }
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const [isSystemOpen, setIsSystemOpen] = useState(false);
 
   if (pathname === "/login") return null;
 
@@ -119,52 +86,55 @@ export default function Sidebar() {
   };
 
   return (
-    <>
-      <aside className="sidebar">
-        {/* ロゴ */}
-        <Link href="/" className="sidebar-logo" title="LPIC×CCNA 学習室">
-          📚
-        </Link>
+    <aside className="sidebar">
+      {/* ロゴ */}
+      <Link href="/" className="sidebar-logo" title="LPIC×CCNA 学習室">
+        <span>📚</span>
+        <span className="text-sm font-extrabold tracking-tight">LPIC×CCNA 学習室</span>
+      </Link>
 
-        {/* メインナビ */}
-        <nav className="sidebar-nav" aria-label="メインナビゲーション">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`sidebar-item${isActive(item.href, item.exact) ? " active" : ""}`}
-              title={item.label}
-              aria-current={isActive(item.href, item.exact) ? "page" : undefined}
-            >
-              <span className="sidebar-icon">{item.icon}</span>
-              <span>{item.label}</span>
-            </Link>
-          ))}
-        </nav>
-
-        {/* 区切り線 */}
-        <div className="sidebar-divider" />
-
-        {/* 下部：ログイン/ログアウト & ステータス & テーマ切替 */}
-        <div className="sidebar-bottom">
-          <Suspense
-            fallback={
-              <div className="sidebar-item">
-                <span className="sidebar-icon">👤</span>
-                <span>...</span>
-              </div>
-            }
-          >
-            <SidebarAccountButton onOpenSystem={() => setIsSystemOpen(true)} />
-          </Suspense>
-          <div className="sidebar-item" style={{ padding: "8px 4px" }}>
-            <ThemeToggle compact />
+      {/* メインナビ */}
+      <nav className="sidebar-nav" aria-label="メインナビゲーション">
+        {menuGroups.map((group) => (
+          <div key={group.title} className="w-full mb-3">
+            <div className="sidebar-category-title">{group.title}</div>
+            <div className="flex flex-col gap-1 mt-1">
+              {group.items.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`sidebar-item${
+                    isActive(item.href, item.exact) ? " active" : ""
+                  }`}
+                  title={item.label}
+                  aria-current={isActive(item.href, item.exact) ? "page" : undefined}
+                >
+                  <span className="sidebar-icon">{item.icon}</span>
+                  <span className="truncate">{item.label}</span>
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
-      </aside>
+        ))}
+      </nav>
 
-      {/* セッション・システム情報確認モーダル */}
-      <SystemInfoModal isOpen={isSystemOpen} onClose={() => setIsSystemOpen(false)} />
-    </>
+      {/* 下部：ログイン/ログアウト & テーマ切替 */}
+      <div className="sidebar-bottom">
+        <div className="flex items-center justify-between w-full px-2 py-1">
+          <span className="text-xs font-bold text-[var(--text-muted)]">テーマ設定</span>
+          <ThemeToggle compact />
+        </div>
+        <Suspense
+          fallback={
+            <div className="sidebar-item">
+              <span className="sidebar-icon">👤</span>
+              <span>...</span>
+            </div>
+          }
+        >
+          <SidebarAuthActions />
+        </Suspense>
+      </div>
+    </aside>
   );
 }

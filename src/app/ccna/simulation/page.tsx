@@ -149,10 +149,13 @@ export default function CcnaSimulationPage() {
 
   const handleCliSubmit = () => {
     if (!cliInput.trim()) return;
-    const trimmed = cliInput.trim();
-    const expected = currentStep.input;
+    const trimmed = cliInput.trim().replace(/\s+/g, " ");
+    const expected = currentStep.input.replace(/\s+/g, " ");
 
-    if (trimmed === expected) {
+    if (
+      trimmed.toLowerCase() === expected.toLowerCase() ||
+      trimmed === expected
+    ) {
       const newHistory = [
         ...cliHistory,
         { prompt: currentPrompt, command: trimmed, response: currentStep.response },
@@ -176,6 +179,23 @@ export default function CcnaSimulationPage() {
       }
     } else {
       setCliError(true);
+    }
+  };
+
+  const handleCliSkipStep = () => {
+    const newHistory = [
+      ...cliHistory,
+      { prompt: currentPrompt, command: `(スキップ: ${currentStep.input})`, response: currentStep.response },
+    ];
+    setCliHistory(newHistory);
+    setCliInput("");
+    setCliError(false);
+    setShowCliHint(false);
+
+    if (cliStepIdx + 1 >= cliQ.steps.length) {
+      setCliCompleted(true);
+    } else {
+      setCliStepIdx(cliStepIdx + 1);
     }
   };
 
@@ -385,27 +405,35 @@ export default function CcnaSimulationPage() {
 
             {/* コントロールバー */}
             <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <button
                   type="button"
                   onClick={() => setShowCliHint(!showCliHint)}
                   className="rounded-lg border border-[var(--border)] bg-[var(--surface-2)] px-3 py-1.5 text-xs font-semibold text-[var(--text-muted)] hover:text-[var(--foreground)]"
                 >
-                  💡 ヒントを表示
+                  💡 ヒント
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCliInput(currentStep.input)}
+                  className="rounded-lg border border-[var(--accent-primary)] bg-[rgba(88,166,255,0.1)] px-3 py-1.5 text-xs font-bold text-[var(--accent-primary)] hover:bg-[rgba(88,166,255,0.2)]"
+                  title="正解コマンドを入力欄に自動セット"
+                >
+                  🔑 正解を見る ({currentStep.input})
                 </button>
                 {showCliHint && (
                   <span className="text-xs text-amber-400 font-bold">
-                    {currentStep.hint}
+                    💡 {currentStep.hint}
                   </span>
                 )}
                 {cliError && (
                   <span className="text-xs text-red-400 font-bold">
-                    ⚠️ コマンドが間違っています。再確認してください。
+                    ⚠️ 異なります。ヒントや「正解を見る」を活用してください。
                   </span>
                 )}
               </div>
 
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 <button
                   type="button"
                   onClick={handleCliSubmit}
@@ -414,6 +442,16 @@ export default function CcnaSimulationPage() {
                 >
                   実行する
                 </button>
+                {!cliCompleted && (
+                  <button
+                    type="button"
+                    onClick={handleCliSkipStep}
+                    className="rounded-lg bg-[var(--surface-2)] border border-[var(--border)] px-3 py-2 text-xs font-bold text-[var(--accent-purple)] hover:border-[var(--accent-purple)]"
+                    title="このステップをスキップして進む"
+                  >
+                    ⏭️ スキップして進む
+                  </button>
+                )}
                 {cliCompleted && cliQuestionIdx + 1 < CLI_QUESTIONS.length && (
                   <button
                     type="button"
