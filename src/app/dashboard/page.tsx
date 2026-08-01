@@ -370,7 +370,7 @@ export default function DashboardPage() {
               { href: "/lpic1/quiz", label: "LPIC-1 問題演習", color: "#58a6ff" },
               { href: "/lpic1/practice", label: "コマンド練習", color: "#3fb950", desktopOnly: true },
               { href: "/ccna/quiz", label: "CCNA 問題演習", color: "#bc8cff" },
-              { href: "/ccna/simulation", label: "CCNA シミュレーション", color: "#e3b341", desktopOnly: true },
+              { href: "/ccna/simulation", label: "CCNA シミュレーション", color: "#e3b341" },
             ].map((action) => (
               <Link
                 key={action.href}

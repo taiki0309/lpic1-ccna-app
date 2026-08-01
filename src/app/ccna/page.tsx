@@ -21,11 +21,10 @@ const quickLinks = [
   {
     href: "/ccna/simulation",
     icon: "💻",
-    label: "シミュレーション (PC専用)",
-    desc: "CLI・ドラッグ&ドロップ演習",
+    label: "シミュレーション演習",
+    desc: "ドラッグ&ドロップ(スマホ対応)・CLI(PC専用)",
     color: "#58a6ff",
     gradient: "linear-gradient(135deg, #1d6fca, #58a6ff)",
-    desktopOnly: true,
   },
   {
     href: "/ccna/guide",
@@ -58,13 +57,13 @@ export default function CcnaTopPage() {
           <span className="text-[var(--foreground)]">CCNA</span>
         </nav>
 
-        {/* 重要バナー：シミュレーション問題対応 (PCのみ表示) */}
-        <div className="mb-8 hidden lg:flex pc-only items-start gap-3 rounded-2xl border border-[#bc8cff] bg-[rgba(188,140,255,0.08)] p-5">
+        {/* 重要バナー：シミュレーション問題対応 */}
+        <div className="mb-8 flex items-start gap-3 rounded-2xl border border-[#bc8cff] bg-[rgba(188,140,255,0.08)] p-5">
           <span className="text-2xl">🎮</span>
           <div>
-            <p className="font-bold text-[#bc8cff]">シミュレーション問題に対応</p>
+            <p className="font-bold text-[#bc8cff]">シミュレーション演習（スマホ・PC対応）</p>
             <p className="mt-1 text-sm text-[var(--text-muted)]">
-              本番試験形式の CLI シミュレーター・ドラッグ&ドロップ演習で実践的なスキルを磨けます。
+              本番試験形式の「ドラッグ&ドロップ演習（スマホ・PC対応）」と「CLI シミュレーター（PC専用）」で実践スキルを磨けます。
             </p>
           </div>
         </div>

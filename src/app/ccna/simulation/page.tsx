@@ -676,6 +676,7 @@ type SimTab = "cli" | "dnd" | "topology" | "s3view";
 export default function CcnaSimulationPage() {
   const [isTouchDevice, setIsTouchDevice] = useState(false);
   const [activeTab, setActiveTab] = useState<SimTab>("cli");
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
 
   // CLI State
   const [cliQuestionIdx, setCliQuestionIdx] = useState(0);
@@ -686,36 +687,18 @@ export default function CcnaSimulationPage() {
   useEffect(() => {
     const checkTouch = () => {
       const isTouch =
-        "ontouchstart" in window ||
-        navigator.maxTouchPoints > 0 ||
-        window.matchMedia("(hover: none), (pointer: coarse)").matches;
+        window.matchMedia("(hover: none) and (pointer: coarse)").matches ||
+        (window.innerWidth <= 1024 && ("ontouchstart" in window || navigator.maxTouchPoints > 0));
       setIsTouchDevice(isTouch);
+      if (isTouch) {
+        setActiveTab("dnd");
+      }
     };
     checkTouch();
     window.addEventListener("resize", checkTouch);
     return () => window.removeEventListener("resize", checkTouch);
   }, []);
 
-  if (isTouchDevice) {
-    return (
-      <main className="flex min-h-screen items-center justify-center px-4 py-12">
-        <div className="max-w-md rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-8 text-center shadow-xl">
-          <div className="mb-4 text-4xl">🖥️</div>
-          <h1 className="mb-2 text-xl font-bold text-[var(--foreground)]">PC（デスクトップ）専用機能です</h1>
-          <p className="mb-6 text-sm text-[var(--text-muted)] leading-relaxed">
-            シミュレーション機能（CLI入力およびドラッグ＆ドロップ演習）は、PC（デスクトップ環境）での利用に最適化されています。
-            スマートフォンやタブレット（iPad等）からはご利用いただけません。
-          </p>
-          <Link
-            href="/ccna"
-            className="inline-block rounded-xl bg-[var(--accent-primary)] px-6 py-2.5 text-xs font-bold text-white transition-opacity hover:opacity-90"
-          >
-            ← CCNA コースへ戻る
-          </Link>
-        </div>
-      </main>
-    );
-  }
   const [cliCompleted, setCliCompleted] = useState(false);
   const [cliError, setCliError] = useState(false);
   const [showCliHint, setShowCliHint] = useState(false);
@@ -737,6 +720,7 @@ export default function CcnaSimulationPage() {
         Object.fromEntries(DND_QUESTIONS[nextIdx].items.map((i) => [i.id, null]))
       );
       setDndChecked(false);
+      setSelectedItemId(null);
     }
   };
 
@@ -748,6 +732,7 @@ export default function CcnaSimulationPage() {
         Object.fromEntries(DND_QUESTIONS[prevIdx].items.map((i) => [i.id, null]))
       );
       setDndChecked(false);
+      setSelectedItemId(null);
     }
   };
 
@@ -839,16 +824,19 @@ export default function CcnaSimulationPage() {
   };
 
   // DnD handlers
-  const handleDrop = (layer: number) => {
-    if (!dragItem) return;
-    setAssignments((prev) => ({ ...prev, [dragItem]: layer }));
+  const handleDrop = (layer: number, itemIdToAssign?: string) => {
+    const targetId = itemIdToAssign || dragItem || selectedItemId;
+    if (!targetId) return;
+    setAssignments((prev) => ({ ...prev, [targetId]: layer }));
     setDragItem(null);
+    setSelectedItemId(null);
     setDndChecked(false);
   };
 
   const removeAssignment = (itemId: string) => {
     setAssignments((prev) => ({ ...prev, [itemId]: null }));
     setDndChecked(false);
+    setSelectedItemId(null);
   };
 
   const handleDndCheck = () => {
@@ -912,10 +900,10 @@ export default function CcnaSimulationPage() {
       </header>
 
       {/* タブナビゲーション */}
-      <div className="mb-6 flex items-center gap-2 border-b border-[var(--border)] pb-2 shrink-0">
+      <div className="mb-6 flex items-center gap-2 border-b border-[var(--border)] pb-2 shrink-0 overflow-x-auto">
         <button
           onClick={() => setActiveTab("cli")}
-          className={`flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-bold transition-all whitespace-nowrap ${
+          className={`flex items-center gap-1.5 rounded-xl px-4 py-2.5 text-xs font-bold transition-all whitespace-nowrap ${
             activeTab === "cli"
               ? "bg-[var(--accent-primary)] text-white shadow-md"
               : "bg-[var(--surface-2)] text-[var(--text-muted)] hover:text-[var(--foreground)]"
@@ -923,10 +911,16 @@ export default function CcnaSimulationPage() {
         >
           <span>💻</span>
           <span>1. Cisco CLI</span>
+          <span className="ml-1 rounded-md bg-[rgba(248,81,73,0.15)] px-1.5 py-0.5 text-[10px] font-extrabold text-[#f85149] border border-[#f85149]/30">
+            PC専用
+          </span>
         </button>
         <button
-          onClick={() => setActiveTab("dnd")}
-          className={`flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-bold transition-all whitespace-nowrap ${
+          onClick={() => {
+            setActiveTab("dnd");
+            setSelectedItemId(null);
+          }}
+          className={`flex items-center gap-1.5 rounded-xl px-4 py-2.5 text-xs font-bold transition-all whitespace-nowrap ${
             activeTab === "dnd"
               ? "bg-[var(--accent-primary)] text-white shadow-md"
               : "bg-[var(--surface-2)] text-[var(--text-muted)] hover:text-[var(--foreground)]"
@@ -934,12 +928,48 @@ export default function CcnaSimulationPage() {
         >
           <span>🖱️</span>
           <span>2. ドラッグ＆ドロップ</span>
+          <span className="ml-1 rounded-md bg-[rgba(63,185,80,0.15)] px-1.5 py-0.5 text-[10px] font-extrabold text-[#3fb950] border border-[#3fb950]/30">
+            スマホ・PC対応
+          </span>
         </button>
       </div>
 
       {/* ─── 1. CLI シミュレーター ───────────────────────────── */}
       {activeTab === "cli" && (
-        <div className="space-y-6 animate-fade-in">
+        isTouchDevice ? (
+          <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-8 text-center shadow-xl max-w-lg mx-auto my-6 animate-fade-in">
+            <div className="mb-4 text-4xl">🖥️</div>
+            <span className="inline-block rounded-full bg-[rgba(248,81,73,0.15)] px-3 py-1 text-xs font-extrabold text-[#f85149] border border-[#f85149]/30 mb-3">
+              PC（デスクトップ）専用機能
+            </span>
+            <h2 className="mb-2 text-lg font-bold text-[var(--foreground)]">
+              Cisco IOS CLI シミュレーター
+            </h2>
+            <p className="mb-6 text-xs sm:text-sm text-[var(--text-muted)] leading-relaxed">
+              コマンドライン入力（CLI）によるシミュレーター演習は、キーボードを備えたPC（デスクトップ環境）での学習に最適化されています。<br />
+              スマートフォンやタブレットからは、タップ操作に対応した<strong>「2. ドラッグ＆ドロップ問題」</strong>をご利用ください！
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveTab("dnd");
+                  setSelectedItemId(null);
+                }}
+                className="rounded-xl bg-[var(--accent-primary)] px-6 py-3 text-xs font-bold text-white shadow-md transition-all hover:opacity-90"
+              >
+                🖱️ ドラッグ＆ドロップ演習を開く →
+              </button>
+              <Link
+                href="/ccna/quiz"
+                className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-6 py-3 text-xs font-bold text-[var(--foreground)] transition-all hover:bg-[var(--border)] text-center"
+              >
+                📝 4択・コマンド補充問題へ
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-6 animate-fade-in">
           <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6">
             <div className="flex items-center justify-between border-b border-[var(--border)] pb-4">
               <div>
@@ -1063,6 +1093,7 @@ export default function CcnaSimulationPage() {
             </div>
           </div>
         </div>
+        )
       )}
 
       {/* ─── 2. ドラッグ＆ドロップ ───────────────────────────── */}
@@ -1077,22 +1108,54 @@ export default function CcnaSimulationPage() {
             </p>
           </div>
 
+          {/* スマホ・PC両対応 操作ヒント */}
+          <div className="rounded-xl border border-[rgba(88,166,255,0.3)] bg-[rgba(88,166,255,0.08)] p-3.5 flex items-start gap-3">
+            <span className="text-xl shrink-0">💡</span>
+            <div className="text-xs leading-relaxed">
+              <p className="font-bold text-[var(--accent-primary)] mb-0.5">
+                スマートフォン・PC両対応！快適な2つの操作モード
+              </p>
+              <p className="text-[var(--text-muted)]">
+                【タップ操作（スマホ・PC推奨）】アイテムをタップして選択 ➔ 配置先のカテゴリーをタップして配置<br />
+                【ドラッグ操作（PC向け）】アイテムをマウスで直接ドラッグ＆ドロップして配置
+              </p>
+            </div>
+          </div>
+
           {/* ドラッグプール */}
           <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-4">
-            <span className="text-xs font-bold text-[var(--text-muted)] block mb-3">
-              未配置の項目 (ドラッグして下のレイヤーに配置してください):
-            </span>
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs font-bold text-[var(--text-muted)]">
+                未配置の項目 ({unassigned.length} 項目):
+              </span>
+              {selectedItemId && (
+                <span className="text-xs font-bold text-[var(--accent-primary)] animate-pulse">
+                  配置先のカテゴリーをタップしてください
+                </span>
+              )}
+            </div>
             <div className="flex flex-wrap gap-2">
-              {unassigned.map((item) => (
-                <div
-                  key={item.id}
-                  draggable
-                  onDragStart={() => setDragItem(item.id)}
-                  className="cursor-grab rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-xs font-bold text-[var(--foreground)] transition-all hover:border-[var(--accent-primary)]"
-                >
-                  {item.label}
-                </div>
-              ))}
+              {unassigned.map((item) => {
+                const isSelected = selectedItemId === item.id;
+                return (
+                  <div
+                    key={item.id}
+                    draggable
+                    onDragStart={() => {
+                      setDragItem(item.id);
+                      setSelectedItemId(item.id);
+                    }}
+                    onClick={() => setSelectedItemId(isSelected ? null : item.id)}
+                    className={`cursor-pointer select-none rounded-xl border px-4 py-2.5 text-xs font-bold transition-all duration-200 ${
+                      isSelected
+                        ? "border-[var(--accent-primary)] bg-[rgba(88,166,255,0.2)] text-[var(--accent-primary)] ring-2 ring-[var(--accent-primary)]/50 scale-105 shadow-md"
+                        : "border-[var(--border)] bg-[var(--surface)] text-[var(--foreground)] hover:border-[var(--accent-primary)] active:scale-95"
+                    }`}
+                  >
+                    {isSelected ? `✨ ${item.label} (選択中)` : item.label}
+                  </div>
+                );
+              })}
               {unassigned.length === 0 && (
                 <span className="text-xs text-emerald-400 font-bold">
                   ✨ すべてのアイテムがレイヤーに配置されました！
@@ -1114,9 +1177,22 @@ export default function CcnaSimulationPage() {
                   key={layer}
                   onDragOver={(e) => e.preventDefault()}
                   onDrop={() => handleDrop(layer)}
-                  className="flex min-h-[56px] items-center gap-4 rounded-xl border p-3 transition-all duration-200"
+                  onClick={() => {
+                    if (selectedItemId) {
+                      handleDrop(layer, selectedItemId);
+                    }
+                  }}
+                  className={`flex flex-col sm:flex-row min-h-[64px] items-start sm:items-center gap-2 sm:gap-4 rounded-xl border p-3.5 transition-all duration-200 ${
+                    selectedItemId ? "cursor-pointer ring-1 ring-[var(--accent-primary)]/40 hover:border-[var(--accent-primary)] hover:bg-[rgba(88,166,255,0.04)]" : ""
+                  }`}
                   style={{
-                    borderColor: hasWrong ? "#f85149" : isCorrect ? "#3fb950" : "var(--border)",
+                    borderColor: hasWrong
+                      ? "#f85149"
+                      : isCorrect
+                      ? "#3fb950"
+                      : selectedItemId
+                      ? "var(--accent-primary)"
+                      : "var(--border)",
                     background: hasWrong
                       ? "rgba(248,81,73,0.06)"
                       : isCorrect
@@ -1124,22 +1200,35 @@ export default function CcnaSimulationPage() {
                       : "var(--surface)",
                   }}
                 >
-                  <span className="w-36 shrink-0 text-xs font-extrabold text-[var(--text-muted)]">
-                    {layerName}
-                  </span>
-                  <div className="flex flex-1 flex-wrap gap-2">
+                  <div className="flex items-center justify-between w-full sm:w-44 shrink-0">
+                    <span className="text-xs font-extrabold text-[var(--foreground)]">
+                      {layerName}
+                    </span>
+                    {selectedItemId && (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-[rgba(88,166,255,0.15)] px-2 py-0.5 text-[10px] font-bold text-[var(--accent-primary)] border border-[var(--accent-primary)]/30 animate-pulse">
+                        ＋ タップして配置
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex flex-1 flex-wrap gap-2 w-full">
                     {assignedItems.map((item) => (
                       <button
                         key={item.id}
-                        onClick={() => removeAssignment(item.id)}
-                        className="rounded-lg border border-[var(--accent-primary)] bg-[rgba(88,166,255,0.12)] px-3 py-1.5 text-xs font-bold text-[var(--accent-primary)]"
-                        title="クリックで取り外す"
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeAssignment(item.id);
+                        }}
+                        className="rounded-lg border border-[var(--accent-primary)] bg-[rgba(88,166,255,0.12)] px-3 py-1.5 text-xs font-bold text-[var(--accent-primary)] hover:bg-[rgba(248,81,73,0.15)] hover:border-[#f85149] hover:text-[#f85149] transition-colors"
+                        title="タップ/クリックで取り外す"
                       >
                         {item.label} ×
                       </button>
                     ))}
                     {assignedItems.length === 0 && (
-                      <span className="text-xs text-[var(--text-muted)]">ここにドロップ</span>
+                      <span className="text-xs text-[var(--text-muted)] py-1">
+                        {selectedItemId ? "✨ ここをタップしてアイテムを配置" : "ここにドロップまたはアイテム選択後にタップ"}
+                      </span>
                     )}
                   </div>
                 </div>
@@ -1162,6 +1251,7 @@ export default function CcnaSimulationPage() {
               onClick={() => {
                 setAssignments(Object.fromEntries(currentDndQ.items.map((i) => [i.id, null])));
                 setDndChecked(false);
+                setSelectedItemId(null);
               }}
               className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-4 py-3 text-xs font-bold text-[var(--text-muted)] hover:text-[var(--foreground)]"
             >

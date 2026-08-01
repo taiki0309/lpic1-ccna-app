@@ -93,6 +93,7 @@ export default function MobileDrawer({
       items: [
         { href: "/dashboard", label: "学習進捗・ステータス", icon: "📈" },
         { href: "/quiz", label: "問題演習・テスト", icon: "📝" },
+        { href: "/ccna/simulation", label: "CCNA シミュレーション (D&D対応)", icon: "💻" },
       ],
     },
   ];

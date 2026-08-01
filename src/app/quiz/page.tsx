@@ -157,10 +157,10 @@ export default function QuizHubPage() {
             </div>
             <div className="rounded-xl bg-[var(--surface)] p-4 border border-[var(--border)]">
               <p className="font-bold text-[var(--foreground)] mb-1">
-                3. PC版でのシミュレーション補強
+                3. シミュレーション問題演習との併用
               </p>
               <p>
-                PC で開いた際は、学習コースからコマンド練習やドラッグ＆ドロップ演習も併用すると本番対応力が確実になります。
+                スマホ・PC対応の「ドラッグ＆ドロップ演習」や、PC版「CLIコマンドシミュレーター」も併用することで、実践的な本番対応力が確実になります。
               </p>
             </div>
           </div>
