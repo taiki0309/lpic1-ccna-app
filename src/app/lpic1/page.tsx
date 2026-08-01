@@ -19,12 +19,21 @@ const quickLinks = [
     gradient: "linear-gradient(135deg, #1d6fca, #58a6ff)",
   },
   {
+    href: "/lpic1/guide",
+    icon: "📖",
+    label: "学習ガイド",
+    desc: "Linuxとは？・基礎概念入門",
+    color: "#bc8cff",
+    gradient: "linear-gradient(135deg, #6e40c9, #bc8cff)",
+  },
+  {
     href: "/lpic1/practice",
     icon: "⌨️",
-    label: "コマンド練習",
-    desc: "ターミナルシミュレーター",
+    label: "コマンド練習 (PC専用)",
+    desc: "ターミナル実務シミュレーター",
     color: "#3fb950",
     gradient: "linear-gradient(135deg, #196c2e, #3fb950)",
+    desktopOnly: true,
   },
 ];
 
@@ -52,13 +61,15 @@ export default function Lpic1TopPage() {
         </nav>
 
         {/* クイックアクション */}
-        <section aria-label="学習メニュー" className="mb-10 grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <section aria-label="学習メニュー" className="mb-10 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
           {quickLinks.map((link) => (
             <Link
               key={link.href}
               id={`lpic1-${link.href.split("/").pop()}-btn`}
               href={link.href}
-              className="group relative flex flex-col gap-3 overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+              className={`group relative flex-col gap-3 overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg ${
+                (link as any).desktopOnly ? "hidden md:flex" : "flex"
+              }`}
               style={
                 {
                   "--hover-border": link.color,

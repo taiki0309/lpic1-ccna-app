@@ -2,15 +2,15 @@ import Link from "next/link";
 
 const guides = [
   {
-    slug: "linux-install",
-    icon: "💿",
-    title: "Linux環境の構築（VirtualBox + Ubuntu 丁寧構築ガイド）",
-    desc: "【目次対応版】■手順1 ubuntuのダウンロード から ■手順5 仮想サーバへのSSH接続設定、そして ■Linuxの操作 まで、初心者でも迷わず0から構築できる完全手順ガイド。",
-    level: "初心者 (超丁寧版)",
+    slug: "what-is-linux",
+    icon: "🐧",
+    title: "Linuxとは？ OSの概念・歴史・仕組みを学ぼう",
+    desc: "Linuxの基本コンセプト、GPLライセンス、カーネルとOSの役割、主なディストリビューション（Red Hat系 vs Debian系）の違いを分かりやすく解説。",
+    level: "初心者入門",
     levelColor: "#3fb950",
-    steps: 6,
-    duration: "45〜60分",
-    tags: ["VirtualBox", "Ubuntu", "SSH接続", "インストール"],
+    steps: 5,
+    duration: "15分",
+    tags: ["Linuxとは", "オープンソース", "OS基礎", "ディストリビューション"],
   },
   {
     slug: "basic-commands",

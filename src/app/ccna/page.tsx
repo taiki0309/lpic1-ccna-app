@@ -21,10 +21,11 @@ const quickLinks = [
   {
     href: "/ccna/simulation",
     icon: "💻",
-    label: "シミュレーション",
+    label: "シミュレーション (PC専用)",
     desc: "CLI・ドラッグ&ドロップ演習",
     color: "#58a6ff",
     gradient: "linear-gradient(135deg, #1d6fca, #58a6ff)",
+    desktopOnly: true,
   },
   {
     href: "/ccna/guide",
@@ -57,26 +58,27 @@ export default function CcnaTopPage() {
           <span className="text-[var(--foreground)]">CCNA</span>
         </nav>
 
-        {/* 重要バナー：シミュレーション問題対応 */}
-        <div className="mb-8 flex items-start gap-3 rounded-2xl border border-[#bc8cff] bg-[rgba(188,140,255,0.08)] p-5">
+        {/* 重要バナー：シミュレーション問題対応 (PCのみ表示) */}
+        <div className="mb-8 hidden md:flex items-start gap-3 rounded-2xl border border-[#bc8cff] bg-[rgba(188,140,255,0.08)] p-5">
           <span className="text-2xl">🎮</span>
           <div>
             <p className="font-bold text-[#bc8cff]">シミュレーション問題に対応</p>
             <p className="mt-1 text-sm text-[var(--text-muted)]">
-              実際の CCNA 試験に出題される Cisco IOS CLI シミュレーター・ドラッグ&ドロップ・
-              ネットワーク図問題を収録。本番に近い形式で練習できます。
+              本番試験形式の CLI シミュレーター・ドラッグ&ドロップ演習で実践的なスキルを磨けます。
             </p>
           </div>
         </div>
 
         {/* クイックアクション */}
-        <section aria-label="学習メニュー" className="mb-10 grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <section aria-label="学習メニュー" className="mb-10 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
           {quickLinks.map((link) => (
             <Link
               key={link.href}
               id={`ccna-${link.href.split("/").pop()}-btn`}
               href={link.href}
-              className="group flex flex-col gap-3 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+              className={`group flex-col gap-3 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg ${
+                (link as any).desktopOnly ? "hidden md:flex" : "flex"
+              }`}
             >
               <div
                 className="flex h-12 w-12 items-center justify-center rounded-xl text-2xl"
