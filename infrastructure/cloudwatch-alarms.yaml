@@ -102,6 +102,7 @@ Resources:
               "x": 0, "y": 0, "width": 12, "height": 6,
               "properties": {
                 "title": "Lambda: エラー数 & 実行回数",
+                "region": "${AWS::Region}",
                 "metrics": [
                   ["AWS/Lambda", "Errors",      "FunctionName", "${LambdaFunctionName}", {"label": "エラー", "color": "#d62728"}],
                   ["AWS/Lambda", "Invocations", "FunctionName", "${LambdaFunctionName}", {"label": "実行回数", "color": "#1f77b4"}]
@@ -116,6 +117,7 @@ Resources:
               "x": 12, "y": 0, "width": 12, "height": 6,
               "properties": {
                 "title": "Lambda: 平均実行時間 (ms)",
+                "region": "${AWS::Region}",
                 "metrics": [
                   ["AWS/Lambda", "Duration", "FunctionName", "${LambdaFunctionName}", {"label": "実行時間", "stat": "Average"}]
                 ],
@@ -128,6 +130,7 @@ Resources:
               "x": 0, "y": 6, "width": 12, "height": 6,
               "properties": {
                 "title": "DynamoDB: 読み取り / 書き込みキャパシティ",
+                "region": "${AWS::Region}",
                 "metrics": [
                   ["AWS/DynamoDB", "ConsumedReadCapacityUnits",  "TableName", "Questions", {"label": "読み取りRCU"}],
                   ["AWS/DynamoDB", "ConsumedWriteCapacityUnits", "TableName", "UserAnswers", {"label": "書き込みWCU"}]
@@ -142,6 +145,7 @@ Resources:
               "x": 12, "y": 6, "width": 12, "height": 6,
               "properties": {
                 "title": "最近のエラーログ",
+                "region": "${AWS::Region}",
                 "query": "SOURCE '/aws/apprunner/${AppRunnerServiceName}' | fields @timestamp, message, service | filter level = 'ERROR' | sort @timestamp desc | limit 20",
                 "view": "table"
               }
