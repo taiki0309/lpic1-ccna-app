@@ -1,6 +1,16 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+interface GuideStep {
+  title: string;
+  subtitle?: string;
+  content: string;
+  details?: string[];
+  table?: { header: string[]; rows: string[][] };
+  code: string | null;
+  note: string;
+}
+
 // ─── ガイドコンテンツ定義 ──────────────────────────────────
 const guides: Record<
   string,
@@ -14,62 +24,105 @@ const guides: Record<
   }
 > = {
   "linux-install": {
-    title: "Linux 環境の構築（VirtualBox + Ubuntu）",
-    level: "初心者",
+    title: "Linux 環境の構築（VirtualBox + Ubuntu 丁寧構築ガイド）",
+    level: "初心者 (超丁寧解説版)",
     levelColor: "#3fb950",
-    duration: "30分",
-    tags: ["VirtualBox", "Ubuntu", "インストール"],
+    duration: "45〜60分",
+    tags: ["VirtualBox", "Ubuntu", "SSH接続", "仮想環境", "Linux初心者"],
     steps: [
       {
-        title: "VirtualBox をダウンロード・インストール",
-        content: "VirtualBox は無料の仮想化ソフトウェアです。Windows/Mac 両対応です。",
-        code: null,
-        note: "公式サイト https://www.virtualbox.org/wiki/Downloads から OS に合ったインストーラーをダウンロードしてください。",
-      },
-      {
-        title: "Ubuntu ISO をダウンロード",
-        content: "Ubuntu の公式サイトから ISO ファイル（インストールメディア）を取得します。",
-        code: null,
-        note: "ubuntu.com → 「Download Ubuntu Desktop」から LTS 版（22.04 または 24.04）を選びましょう。",
-      },
-      {
-        title: "VirtualBox で新規仮想マシンを作成",
+        title: "■手順1 ubuntuのダウンロード",
+        subtitle: "LTS（長期サポート版）の公式 ISO インストールメディアを取得する",
         content:
-          "VirtualBox Manager を開き「新規」→ 名前: Ubuntu, タイプ: Linux, バージョン: Ubuntu (64-bit)、メモリ: 2048MB 以上、ディスク: 20GB 以上 を設定します。",
+          "まずは仮想サーバーにインストールするための Ubuntu OS のインストーラー（ISOファイル）を公式サイトから無償ダウンロードします。LPIC-1および実務で最も広く使われている Ubuntu 22.04 LTS または 24.04 LTS を選択するのがベストです。",
+        details: [
+          "1. Ubuntu 公式サイト（https://ubuntu.com/download/desktop）にアクセスします。",
+          "2. 「Ubuntu 24.04.x LTS (Long Term Support)」の「Download」ボタンをクリックします。",
+          "3. 容量は約5GB〜6GBあります。通信回線の安定した環境でダウンロードしてください。",
+          "※ サーバー版（Ubuntu Server）をお使いの場合も手順やコマンド操作は同様に学習できます。",
+        ],
         code: null,
-        note: "ホストPCのRAMが8GB以上なら2048MB、4GBなら1024MBが安全です。",
+        note: "ダウンロードファイル名: ubuntu-24.04.1-desktop-amd64.iso (等)。保存先フォルダをメモしておきましょう。",
       },
       {
-        title: "Ubuntu をインストール",
+        title: "■手順2 VirtualBoxのインストール",
+        subtitle: "Windows / Mac に無料の仮想化ソフト Oracle VM VirtualBox を導入",
         content:
-          "仮想マシンを起動し、設定からダウンロードした ISO を「光学ドライブ」にマウントします。起動後「Install Ubuntu」を選択し、指示に従ってインストールします。",
+          "現在お使いのパソコン（ホストOS）の中に仮想的な別のコンピューター（ゲストOS）を作るために、Oracle VM VirtualBox をインストールします。",
+        details: [
+          "1. VirtualBox 公式ダウンロードページ（https://www.virtualbox.org/wiki/Downloads）へ移動します。",
+          "2. お使いのOSに合わせて「Windows hosts」または「macOS / Intel hosts」をクリックしてインストーラーを取得します。",
+          "3. インストーラーを起動し、デフォルト設定のまま「Next」→「Install」でインストールを完了します。",
+          "4. インストール中にネットワークアダプタの警告が出た場合は「Yes」を選択してください（インターネットは瞬断される場合があります）。",
+        ],
         code: null,
-        note: "「通常のインストール」を選び、ユーザー名とパスワードを設定してください。",
+        note: "併せて「Oracle VM VirtualBox Extension Pack」もダウンロード・インストールしておくと、USB接続などが拡張されます。",
       },
       {
-        title: "パッケージリストを最新化",
-        content: "インストール後、ターミナルを開いてパッケージを最新状態に更新します。",
-        code: "sudo apt update && sudo apt upgrade -y",
-        note: "パスワードを求められたら設定したパスワードを入力します（画面には表示されません）。",
-      },
-      {
-        title: "基本ツールをインストール",
-        content: "LPIC-1 学習に役立つツールを追加インストールします。",
-        code: "sudo apt install -y curl wget git vim tree net-tools",
-        note: "これらのコマンドは後の学習で頻繁に使います。",
-      },
-      {
-        title: "シェルの確認",
-        content: "現在使用しているシェルと bash のバージョンを確認します。",
-        code: "echo $SHELL\nbash --version",
-        note: "Ubuntu のデフォルトシェルは bash です。LPIC-1 の試験も bash が前提です。",
-      },
-      {
-        title: "環境構築完了！次のステップ",
+        title: "■手順3 仮想サーバの構築",
+        subtitle: "VirtualBox マネージャーで Ubuntu 用の新しい仮想マシン（VM）を設定する",
         content:
-          "これで Linux 環境が整いました。次は基本コマンドガイドに進みましょう。スナップショット機能（VirtualBox のメニュー → スナップショット）を使うと、ミスしても元に戻せます。",
+          "VirtualBox を起動し、先ほどダウンロードした Ubuntu 用の空の仮想サーバーを作成・割り当てます。以下の推奨パラメータを参考に設定してください。",
+        table: {
+          header: ["設定項目", "推奨パラメータ", "説明・補足"],
+          rows: [
+            ["名前 (Name)", "Ubuntu-LPIC1", "分かりやすい英数字の名称"],
+            ["タイプ / バージョン", "Linux / Ubuntu (64-bit)", "自動で選択されない場合は手動で指定"],
+            ["メインメモリ (RAM)", "2048 MB 〜 4096 MB", "PC搭載RAMの4分の1〜半分程度が目安 (最小2GB)"],
+            ["CPUプロセッサ数", "2 コア", "スムーズな動作のため2コア推奨 (最小1コア)"],
+            ["ハードディスク (VDI)", "25 GB 〜 40 GB", "可変サイズ (実使用分だけストレージ消費)"],
+          ],
+        },
         code: null,
-        note: "VirtualBox のゲスト追加（Guest Additions）をインストールするとクリップボード共有・画面リサイズが使えて便利です。",
+        note: "設定メニューの「ネットワーク」→「アダプター1」はデフォルトの『NAT』のまま作成します。",
+      },
+      {
+        title: "■手順4 仮想サーバへのubuntuのインストール",
+        subtitle: "作成した仮想マシンに ISO ファイルをマウントし、OSをセットアップ",
+        content:
+          "いよいよ仮想サーバーの電源を入れ、手順1でダウンロードした Ubuntu ISO から Linux OS を組み込みます。",
+        details: [
+          "1. 作成した仮想マシンを選択し、「設定」→「ストレージ」→ コントローラー:IDE の「空(Empty)」をクリックします。",
+          "2. 右側のディスクアイコンを押して、手順1の「ubuntu-xx.xx-desktop-amd64.iso」を選択し「OK」を押します。",
+          "3. 「起動 (Start)」ボタンを押すと、Ubuntu のインストーラーが立ち上がります。",
+          "4. 言語設定で「日本語」を選択し、「Ubuntu をインストール」をクリックします。",
+          "5. ユーザー設定画面で「ユーザー名」「コンピューター名」「パスワード」を設定します（※SSH接続とsudoで使うため忘れないようにしてください）。",
+          "6. 「再起動」を求められたら「Enter」を押し、仮想マシンが起動すればインストール完了です！",
+        ],
+        code: null,
+        note: "ログイン後の初回画面で「更新の通知」が出た場合は、キャンセルせず「今すぐインストール」を押しておきましょう。",
+      },
+      {
+        title: "■手順5 仮想サーバへのSSH接続設定",
+        subtitle: "ホストPC (Windows/Mac) から Terminal / TeraTerm / VSCode でリモート操作",
+        content:
+          "実務のサーバー管理では、仮想マシンの画面を直接触るのではなく「SSH（Secure Shell）」経由でコマンドを打ち込みます。VirtualBox のポートフォワーディングを設定し、SSHサーバーを起動しましょう。",
+        details: [
+          "【ステップA: Ubuntu 側に OpenSSH サーバーを導入】",
+          "仮想マシンのターミナル（端末）を開き、以下のコマンドで ssh サーバーをインストール・起動します。",
+          "【ステップB: VirtualBox のポートフォワーディング設定】",
+          "VirtualBox マネージャー → 仮想マシン選択 → 「設定」→「ネットワーク」→「高度」→「ポートフォワーディング」をクリック。",
+          "・ルール名: SSH | プロトコル: TCP | ホストIP: 127.0.0.1 | ホストポート: 2222 | ゲストポート: 22 を追加して「OK」保存。",
+          "【ステップC: ホストOS側からSSHで接続！】",
+          "PC（Windows PowerShell や Mac ターミナル、Tera Term など）からポート 2222 を指定してログインします。",
+        ],
+        code:
+          "# 1. 仮想サーバー(Ubuntu)側でSSHサーバーをインストール・稼働確認\nsudo apt update && sudo apt install -y openssh-server\nsudo systemctl status ssh\n\n# 2. お手元のパソコン(ホストOS)の PowerShell または Terminal からSSH接続\nssh -p 2222 ユーザー名@127.0.0.1\n\n# （初回確認で「Are you sure... (yes/no)?」と聞かれたら「yes」と入力してパスワード入力）",
+        note: "パスワード入力時はキーを打っても画面に文字やアスタリスクは表示されませんが、内部で入力されています。そのまま Enter を押してください。",
+      },
+      {
+        title: "■Linuxの操作",
+        subtitle: "接続したサーバーで第一歩！環境確認・パッケージ更新・基本操作を試そう",
+        content:
+          "SSH接続が成功したら、そこは完全な Linux サーバーの世界です。LPIC-1 学習で頻出のシステム確認コマンドや、最初のファイル・ユーザー確認を実際に手を動かして練習してみましょう。",
+        details: [
+          "1. 現在のログインユーザー名とホスト名、カーネルバージョンを確認する",
+          "2. サーバー内のソフトウェアとパッケージ一覧を最新化する",
+          "3. 初代テストファイルを作って、権限（パーミッション）を見てみる",
+        ],
+        code:
+          "# ── 1. システム環境・自分の情報を見る ──\nwhoami               # 現在のユーザー名\nhostname             # サーバーのホスト名\nuname -a             # LinuxカーネルバージョンとOS情報\npwd                  # 現在位置（ホームディレクトリ: /home/ユーザー名）\n\n# ── 2. パッケージ管理（システムの最新化） ──\nsudo apt update      # 最新パッケージリストの取得\nsudo apt upgrade -y  # インストール済みソフトの更新\n\n# ── 3. LPIC-1 の基礎コマンドを体験 ──\nmkdir -p ~/lpic_study               # 練習用ディレクトリを作成\ncd ~/lpic_study                     # ディレクトリに移動\necho 'Hello Linux World' > test.txt # テストファイル作成\nls -la                              # 隠しファイルと権限を確認\ncat test.txt                        # ファイル内容を表示",
+        note: "これで「■手順1 〜 ■Linuxの操作」の丁寧な環境構築がすべて完了です！学習の途中でいつでもこの環境を実験場にしてください。",
       },
     ],
   },
@@ -98,24 +151,6 @@ const guides: Record<
         code: "cp file.txt backup.txt        # ファイルをコピー\ncp -r mydir/ mydir_backup/    # ディレクトリを再帰コピー\nmv file.txt renamed.txt       # ファイルを移動/リネーム\nrm file.txt                   # ファイルを削除\nrm -rf mydir/                 # ディレクトリを強制削除（注意！）",
         note: "`rm -rf` は確認なしで削除します。ルートディレクトリに使うと OS が壊れます。",
       },
-      {
-        title: "ファイル内容の表示",
-        content: "ファイルの内容を確認するコマンドです。",
-        code: "cat file.txt              # ファイル全体を表示\nless file.txt             # ページ送りで表示（q で終了）\nhead -n 10 file.txt       # 先頭10行を表示\ntail -n 10 file.txt       # 末尾10行を表示\ntail -f /var/log/syslog   # リアルタイムで末尾を追跡",
-        note: "大きなファイルは cat より less を使いましょう。",
-      },
-      {
-        title: "テキスト検索（grep）",
-        content: "ファイル内の文字列を検索するコマンドです。",
-        code: 'grep "error" log.txt            # log.txt から error を検索\ngrep -i "error" log.txt         # 大文字/小文字を無視\ngrep -r "TODO" ./src/           # ディレクトリを再帰検索\ngrep -n "error" log.txt         # 行番号付きで表示',
-        note: "grep はパイプと組み合わせることも多い: `ls -la | grep .txt`",
-      },
-      {
-        title: "コマンドの助けを借りる",
-        content: "コマンドの使い方を調べる方法です。",
-        code: "man ls          # ls のマニュアルを表示（q で終了）\nls --help       # ヘルプを表示\nwhich ls        # コマンドのパスを確認",
-        note: "man ページは q で終了、/ で検索、n で次の検索結果に移動できます。",
-      },
     ],
   },
   "permissions": {
@@ -126,35 +161,23 @@ const guides: Record<
     tags: ["パーミッション", "chmod", "chown"],
     steps: [
       {
-        title: "パーミッションの読み方",
+        title: "rwx 表記の読み方",
         content:
-          "`ls -l` で表示されるパーミッション文字列 `-rwxr-xr--` の意味を理解しましょう。",
-        code: "ls -l file.txt\n# -rwxr-xr-- 1 user group 1024 Jan 1 00:00 file.txt\n# └─────────── パーミッション\n#  |─ ファイルタイプ (- = 通常, d = ディレクトリ, l = シンボリックリンク)\n#   ───── 所有者 (rwx)\n#      ───── グループ (r-x)\n#         ───── その他 (r--)",
-        note: "r=読み取り(4), w=書き込み(2), x=実行(1)",
+          "`ls -l` で表示される9文字のパーミッション表記を理解します。\n\n• **r (Read)** = 4 (読み取り)\n• **w (Write)** = 2 (書き込み)\n• **x (Execute)** = 1 (実行)\n\n• 最初の3文字 = 所有者 (User)\n• 次の3文字 = グループ (Group)\n• 最後の3文字 = その他 (Others)",
+        code: "rwx r-x r--  # 754  User: rwx(7), Group: r-x(5), Others: r--(4)\nrw- r-- r--  # 644  一般的なファイル\nrwx rwx r-x  # 775  共有スクリプト",
+        note: "ディレクトリの x (実行) 権限はそのディレクトリの中に移動 (cd) する権利です。",
       },
       {
-        title: "chmod で権限を変更（記号モード）",
-        content: "記号を使って直感的にパーミッションを変更できます。",
-        code: "chmod u+x script.sh    # 所有者に実行権限を追加\nchmod g-w file.txt     # グループの書き込みを除去\nchmod o=r file.txt     # その他を読み取りのみに設定\nchmod a+r file.txt     # 全員に読み取りを追加 (a = all)",
-        note: "u=所有者, g=グループ, o=その他, a=全員",
+        title: "chmod でパーミッションを変更",
+        content: "数値表記と記号表記の両方で変更する方法です。",
+        code: "# 数値表記（推奨）\nchmod 755 script.sh     # 実行権限を付与 (rwxr-xr-x)\nchmod 600 private.key   # 所有者のみアクセス可 (rw-------)\nchmod 644 config.txt    # 一般的なファイル (rw-r--r--)\n\n# 記号表記\nchmod u+x script.sh     # 所有者に実行権限を追加\nchmod g-w file.txt      # グループから書き込み権限を削除\nchmod a+r file.txt      # 全員に読み取り権限を追加",
+        note: "u=User, g=Group, o=Others, a=All, +=追加, -=削除, ==指定",
       },
       {
-        title: "chmod で権限を変更（数値モード）",
-        content: "数値を使ってパーミッションを一括設定できます。",
-        code: "chmod 755 script.sh    # rwxr-xr-x (よく使われる実行ファイル)\nchmod 644 file.txt     # rw-r--r-- (よく使われるテキストファイル)\nchmod 600 secret.key   # rw------- (秘密鍵など)\nchmod 777 public/      # rwxrwxrwx (全員フルアクセス、危険！)",
-        note: "755 = 7(所有者:rwx) 5(グループ:r-x) 5(その他:r-x)",
-      },
-      {
-        title: "chown で所有者を変更",
-        content: "ファイルの所有者・グループを変更します（root 権限が必要）。",
-        code: "sudo chown alice file.txt           # 所有者を alice に変更\nsudo chown alice:staff file.txt     # 所有者とグループを変更\nsudo chown -R alice:staff mydir/    # ディレクトリ以下を再帰変更",
-        note: "chown は root（sudo）でのみ実行できます。",
-      },
-      {
-        title: "umask で新規ファイルのデフォルト権限を設定",
-        content: "umask はファイル作成時の権限マスクです。",
-        code: "umask              # 現在の umask を確認（例: 0022）\numask 027          # umask を一時変更\n# umask 0022 の場合:\n#   ディレクトリ: 777 - 022 = 755\n#   ファイル:     666 - 022 = 644",
-        note: "umask 値を引いた値がデフォルトのパーミッションになります。",
+        title: "chown / chgrp で所有権を変更",
+        content: "ファイルの所有者やグループを変更するコマンドです。",
+        code: "sudo chown user1 file.txt          # 所有者を user1 に変更\nsudo chown user1:group1 file.txt   # 所有者とグループを同時変更\nsudo chown -R user1:group1 mydir/  # ディレクトリ全体を再帰変更\nsudo chgrp group1 file.txt         # グループのみ変更",
+        note: "-R オプションはディレクトリ内のすべてのファイル・サブディレクトリを対象にします。",
       },
     ],
   },
@@ -166,28 +189,16 @@ const guides: Record<
     tags: ["apt", "yum", "rpm", "パッケージ"],
     steps: [
       {
-        title: "apt（Debian/Ubuntu系）の基本",
-        content: "Ubuntu/Debian 系 Linux のパッケージ管理ツールです。",
-        code: "sudo apt update                  # パッケージリストを更新\nsudo apt upgrade -y              # インストール済みパッケージを更新\nsudo apt install nginx           # nginx をインストール\nsudo apt remove nginx            # nginx を削除\nsudo apt purge nginx             # 設定ファイルごと削除\napt search nginx                 # パッケージを検索\napt show nginx                   # パッケージ詳細を確認",
-        note: "install 前に必ず `apt update` でリストを最新化しましょう。",
+        title: "apt（Debian / Ubuntu 系）",
+        content: "Ubuntu/Debian で使用する標準的なパッケージ管理コマンドです。",
+        code: "sudo apt update              # パッケージリストを更新\nsudo apt upgrade -y          # パッケージを更新\nsudo apt install -y nginx    # パッケージをインストール\nsudo apt remove nginx        # パッケージを削除（設定ファイル残る）\nsudo apt purge nginx         # 完全削除（設定ファイル込み）\napt search nginx             # パッケージを検索\napt show nginx               # 詳細情報を表示",
+        note: "インストール作業前に必ず `sudo apt update` でリストを最新化してください。",
       },
       {
-        title: "dpkg（Debian パッケージの直接操作）",
-        content: "apt の低レベルコマンド。.deb ファイルを直接扱う際に使います。",
-        code: "dpkg -i package.deb          # .deb ファイルをインストール\ndpkg -l                      # インストール済みパッケージ一覧\ndpkg -l | grep nginx         # nginx がインストール済みか確認\ndpkg --get-selections        # 全パッケージの選択状態を表示",
-        note: "依存関係の解決は apt が行います。dpkg は低レベル操作です。",
-      },
-      {
-        title: "yum/dnf（Red Hat/CentOS系）",
-        content: "RHEL/CentOS/Fedora 系 Linux のパッケージ管理ツールです。",
-        code: "sudo yum update -y               # パッケージを更新\nsudo yum install httpd           # Apache をインストール\nsudo yum remove httpd            # 削除\nyum search httpd                 # 検索\nyum info httpd                   # 詳細確認\n\n# CentOS 8 以降は dnf を使用\nsudo dnf install nginx",
-        note: "CentOS 8 以降は yum のコマンドも dnf にリダイレクトされます。",
-      },
-      {
-        title: "rpm（RPM パッケージの直接操作）",
-        content: "Red Hat 系の低レベルパッケージコマンドです。",
-        code: "rpm -ivh package.rpm         # .rpm ファイルをインストール\nrpm -qa                      # インストール済みパッケージ一覧\nrpm -q nginx                 # nginx のバージョン確認\nrpm -ql nginx                # nginx がインストールしたファイル一覧\nrpm -e nginx                 # 削除（依存関係注意）",
-        note: "rpm は dpkg 相当。依存解決には yum/dnf を使いましょう。",
+        title: "dnf / yum（Red Hat / CentOS / Rocky 系）",
+        content: "RHEL 系 Linux で使用するパッケージ管理コマンドです。",
+        code: "sudo dnf check-update        # 更新可能パッケージを確認\nsudo dnf upgrade -y          # パッケージを更新\nsudo dnf install -y nginx    # インストール\nsudo dnf remove nginx        # 削除\ndnf search nginx             # 検索",
+        note: "RHEL 8 以降は yum の後継である dnf がデフォルトですが、yum コマンドもエイリアスとして使えます。",
       },
     ],
   },
@@ -199,28 +210,22 @@ const guides: Record<
     tags: ["bash", "スクリプト", "自動化"],
     steps: [
       {
-        title: "最初のシェルスクリプト",
-        content: "シェバン行（#!）で実行シェルを指定し、基本的なスクリプトを書きます。",
-        code: '#!/bin/bash\n# hello.sh - 最初のスクリプト\necho "Hello, Linux!"\necho "今日は $(date) です"',
-        note: "`chmod +x hello.sh` で実行権限を付与し、`./hello.sh` で実行します。",
+        title: "シェバンとスクリプトの実行",
+        content: "スクリプトの1行目にシェバン（#!/bin/bash）を記述して実行します。",
+        code: "#!/bin/bash\n# 最初のシェルスクリプト\n\necho \"Hello, Linux World!\"\necho \"現在時刻: $(date)\"",
+        note: "作成後 `chmod +x script.sh` で実行権限を付与し `./script.sh` で実行します。",
       },
       {
-        title: "変数",
-        content: "変数の定義と参照の方法です。",
-        code: '#!/bin/bash\nNAME="Alice"\nAGE=25\necho "名前: $NAME, 年齢: $AGE"\n\n# コマンドの出力を変数に代入\nCURRENT_DIR=$(pwd)\necho "現在のディレクトリ: $CURRENT_DIR"',
-        note: "変数名の前後にスペースを入れないこと: `NAME = Alice` は NGです。",
+        title: "変数と引数",
+        content: "変数の定義・参照方法と、コマンドライン引数の受け取り方です。",
+        code: "#!/bin/bash\n\nNAME=\"LPIC-1\"\necho \"学習ターゲット: $NAME\"\n\n# 引数の受け取り\necho \"第1引数: $1\"\necho \"引数の総数: $#\"\necho \"すべての引数: $@\"",
+        note: "変数を代入するときは `=` の前後にスペースを入れないでください。",
       },
       {
-        title: "条件分岐（if文）",
-        content: "ファイルの存在チェックや数値比較を行います。",
-        code: '#!/bin/bash\nFILE="/etc/hosts"\n\nif [ -f "$FILE" ]; then\n  echo "$FILE は存在します"\nelif [ -d "$FILE" ]; then\n  echo "$FILE はディレクトリです"\nelse\n  echo "$FILE は存在しません"\nfi\n\n# 数値比較\nif [ $1 -gt 10 ]; then\n  echo "10より大きい"\nfi',
-        note: "-f: ファイル, -d: ディレクトリ, -gt: >, -lt: <, -eq: ==",
-      },
-      {
-        title: "ループ",
-        content: "for ループと while ループの基本です。",
-        code: '#!/bin/bash\n# for ループ\nfor i in 1 2 3 4 5; do\n  echo "番号: $i"\ndone\n\n# ファイルを対象にしたループ\nfor file in *.txt; do\n  echo "ファイル: $file"\ndone\n\n# while ループ\nCOUNT=0\nwhile [ $COUNT -lt 5 ]; do\n  echo "カウント: $COUNT"\n  COUNT=$((COUNT + 1))\ndone',
-        note: "`$((式))` は算術演算に使います。",
+        title: "if 文による条件分岐",
+        content: "ファイルの存在確認や数値比較を行う `if` 文です。",
+        code: "#!/bin/bash\n\nFILE=\"/etc/passwd\"\n\nif [ -f \"$FILE\" ]; then\n  echo \"$FILE は存在します\"\nelse\n  echo \"$FILE は存在しません\"\nfi\n\n# 数値の比較\nSCORE=85\nif [ \"$SCORE\" -ge 80 ]; then\n  echo \"合格！\"\nfi",
+        note: "-f = ファイル存在, -d = ディレクトリ存在, -eq = 等しい, -ge = 以上, -le = 以下",
       },
     ],
   },
@@ -232,43 +237,32 @@ const guides: Record<
     tags: ["プロセス", "ps", "kill", "top"],
     steps: [
       {
-        title: "プロセス一覧の確認（ps）",
-        content: "現在実行中のプロセスを確認します。",
-        code: "ps aux                      # 全プロセスを詳細表示\nps -ef                      # 別フォーマットで全プロセス\nps aux | grep nginx         # nginx のプロセスを検索\nps --sort=-%cpu | head -10  # CPU使用率上位10プロセス",
-        note: "USER/PID/CPU%/MEM%/COMMAND の順で表示されます。",
+        title: "プロセスの確認（ps / top）",
+        content: "実行中のプロセスを表示するコマンドです。",
+        code: "ps aux              # すべてのユーザーのプロセスを詳細表示\nps -ef              # ツリー形式のプロセス表示\nps aux | grep nginx # 特定のプロセスを検索\n\ntop                 # リアルタイムでプロセス監視 (q で終了)\nhyper               # (または htop) グラフィカルなtop",
+        note: "ps aux の a=すべてのユーザー, u=詳細フォーマット, x=制御端末なしも含む",
       },
       {
-        title: "リアルタイム監視（top / htop）",
-        content: "プロセスをリアルタイムで監視します。",
-        code: "top                 # リアルタイムプロセス監視（q で終了）\n# top 操作キー:\n# k: プロセスをkill, P: CPU順ソート, M: メモリ順ソート\n# r: nice値変更, h: ヘルプ\n\nsudo apt install htop  # カラフルな top（別途インストール）\nhtop",
-        note: "htop は top より操作しやすく視覚的です。",
+        title: "プロセスの終了（kill）",
+        content: "PID（プロセスID）を指定してプロセスにシグナルを送り終了させます。",
+        code: "kill 1234              # SIGTERM (15) で通常終了を要請\nkill -9 1234           # SIGKILL (9) で強制終了\nkillall nginx          # 名前指定でまとめて終了\npkill -f \"python app\"  # コマンド名パターンで終了",
+        note: "強制終了 (kill -9) はデータ破損のリスクがあるため、まずは通常終了 (kill) を試してください。",
       },
       {
-        title: "プロセスの終了（kill / killall）",
-        content: "プロセスにシグナルを送って制御します。",
-        code: "kill 1234               # PID 1234 にデフォルトシグナル(SIGTERM)を送る\nkill -9 1234            # SIGKILL（強制終了）\nkillall nginx           # nginx という名前の全プロセスを終了\npkill -f 'python'       # コマンド名にマッチするプロセスを終了\n\n# シグナル一覧\nkill -l",
-        note: "SIGTERM(15)は正常終了要求、SIGKILL(9)は強制終了です。まず -15 を試しましょう。",
-      },
-      {
-        title: "バックグラウンド実行とジョブ管理",
-        content: "コマンドをバックグラウンドで実行する方法です。",
-        code: "sleep 100 &          # バックグラウンドで実行\njobs                 # バックグラウンドジョブ一覧\nfg %1                # ジョブ1をフォアグラウンドに戻す\nbg %1                # 停止中のジョブをバックグラウンドで再開\n# Ctrl+Z: 実行中のプロセスを一時停止\n# Ctrl+C: 実行中のプロセスを終了",
-        note: "& をつけてコマンドを実行するとすぐにプロンプトが返ります。",
+        title: "バックグラウンド実行とジョブ制御",
+        content: "コマンドの後ろに `&` をつけてバックグラウンドで実行する方法です。",
+        code: "sleep 100 &     # バックグラウンドで実行開始\njobs            # 現在のジョブ一覧を表示\nfg %1           # ジョブ1をフォアグラウンドに戻す\nbg %1           # 停止中のジョブ1をバックグラウンド再開\n\n# Ctrl + C = プロセス終了, Ctrl + Z = プロセス一時停止",
+        note: "`nohup コマンド &` を使うと、ログアウト後もプロセスが動き続けます。",
       },
     ],
   },
 };
 
-interface GuideStep {
-  title: string;
-  content: string;
-  code: string | null;
-  note: string | null;
-}
-
-type Params = Promise<{ slug: string }>;
-
-export default async function Lpic1GuideDetailPage({ params }: { params: Params }) {
+export default async function Lpic1GuideDetail({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
   const { slug } = await params;
   const guide = guides[slug];
 
@@ -277,126 +271,196 @@ export default async function Lpic1GuideDetailPage({ params }: { params: Params 
   }
 
   return (
-    <main className="relative min-h-screen px-4 py-12">
-      <div
-        aria-hidden="true"
-        className="pointer-events-none fixed inset-0 -z-10"
-        style={{
-          background:
-            "radial-gradient(ellipse 70% 50% at 50% 0%, rgba(188,140,255,0.10) 0%, transparent 60%)",
-        }}
-      />
+    <main className="min-h-screen px-4 py-10 max-w-4xl mx-auto">
+      {/* パンくず */}
+      <nav className="mb-6 flex items-center gap-2 text-xs font-bold text-[var(--text-muted)]">
+        <Link href="/" className="hover:text-[var(--foreground)] transition-colors">
+          ホーム
+        </Link>
+        <span>/</span>
+        <Link href="/lpic1" className="hover:text-[var(--foreground)] transition-colors">
+          LPIC-1
+        </Link>
+        <span>/</span>
+        <Link href="/lpic1/guide" className="hover:text-[var(--foreground)] transition-colors">
+          環境構築ガイド
+        </Link>
+        <span>/</span>
+        <span className="text-[var(--foreground)] truncate max-w-[200px]">{guide.title}</span>
+      </nav>
 
-      <div className="mx-auto max-w-3xl">
-        {/* パンくず */}
-        <nav className="mb-6 flex items-center gap-2 text-sm text-[var(--text-muted)]">
-          <Link href="/" className="hover:text-[var(--foreground)] transition-colors">ホーム</Link>
-          <span>/</span>
-          <Link href="/lpic1" className="hover:text-[var(--foreground)] transition-colors">LPIC-1</Link>
-          <span>/</span>
-          <Link href="/lpic1/guide" className="hover:text-[var(--foreground)] transition-colors">ガイド</Link>
-          <span>/</span>
-          <span className="truncate text-[var(--foreground)]">{guide.title}</span>
-        </nav>
-
-        {/* ヘッダー */}
-        <header className="mb-10">
-          <div className="mb-3 flex flex-wrap items-center gap-2">
+      {/* ヘッダー */}
+      <header className="mb-8 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 sm:p-8 shadow-xl">
+        <div className="mb-3 flex flex-wrap items-center gap-2">
+          <span
+            className="rounded-full border px-3 py-1 text-xs font-black"
+            style={{ borderColor: guide.levelColor, color: guide.levelColor }}
+          >
+            {guide.level}
+          </span>
+          <span className="text-xs font-bold text-[var(--text-muted)]">⏱ 学習目安: {guide.duration}</span>
+          <span className="text-xs font-bold text-[var(--text-muted)]">🔢 全 {guide.steps.length} 手順</span>
+        </div>
+        <h1 className="mb-3 text-2xl font-black leading-snug text-[var(--foreground)] sm:text-3xl">
+          {guide.title}
+        </h1>
+        <div className="flex flex-wrap gap-1.5">
+          {guide.tags.map((tag) => (
             <span
-              className="rounded-full border px-3 py-1 text-xs font-semibold"
-              style={{ borderColor: guide.levelColor, color: guide.levelColor }}
+              key={tag}
+              className="rounded-md bg-[var(--surface-2)] border border-[var(--border)] px-2.5 py-0.5 text-xs font-bold text-[var(--text-muted)]"
             >
-              {guide.level}
+              #{tag}
             </span>
-            <span className="text-xs text-[var(--text-muted)]">⏱ {guide.duration}</span>
-            <span className="text-xs text-[var(--text-muted)]">🔢 {guide.steps.length} ステップ</span>
-          </div>
-          <h1 className="mb-3 text-2xl font-extrabold leading-snug text-[var(--foreground)] sm:text-3xl">
-            {guide.title}
-          </h1>
-          <div className="flex flex-wrap gap-1.5">
-            {guide.tags.map((tag) => (
-              <span key={tag} className="rounded bg-[var(--surface-2)] px-2 py-0.5 text-xs text-[var(--text-muted)]">
-                {tag}
-              </span>
-            ))}
-          </div>
-        </header>
-
-        {/* ステップ一覧 */}
-        <div className="flex flex-col gap-8">
-          {guide.steps.map((step, i) => (
-            <section
-              key={i}
-              className="relative rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6"
-            >
-              {/* ステップ番号 */}
-              <div className="mb-4 flex items-center gap-3">
-                <div
-                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-black text-white"
-                  style={{ background: "linear-gradient(135deg, #6e40c9, #bc8cff)" }}
-                >
-                  {i + 1}
-                </div>
-                <h2 className="text-base font-bold text-[var(--foreground)]">{step.title}</h2>
-              </div>
-
-              {/* 説明文 */}
-              <p className="mb-4 text-sm leading-relaxed text-[var(--text-muted)]">
-                {step.content}
-              </p>
-
-              {/* コードブロック */}
-              {step.code && (
-                <div
-                  className="mb-4 overflow-x-auto rounded-xl border border-[var(--border)]"
-                  style={{ background: "#0d1117" }}
-                >
-                  <div className="flex items-center gap-1.5 border-b border-[var(--border)] px-4 py-2">
-                    <span className="h-2.5 w-2.5 rounded-full bg-[#f85149]" />
-                    <span className="h-2.5 w-2.5 rounded-full bg-[#e3b341]" />
-                    <span className="h-2.5 w-2.5 rounded-full bg-[#3fb950]" />
-                    <span className="ml-2 text-xs text-[var(--text-muted)] font-mono">bash</span>
-                  </div>
-                  <pre className="overflow-x-auto px-4 py-4 font-mono text-sm leading-relaxed text-[var(--foreground)]">
-                    <code>{step.code}</code>
-                  </pre>
-                </div>
-              )}
-
-              {/* 補足ノート */}
-              {step.note && (
-                <div className="flex items-start gap-2 rounded-xl border border-[#e3b341] bg-[rgba(227,179,65,0.08)] px-4 py-3 text-xs leading-relaxed text-[#e3b341]">
-                  <span className="shrink-0">💡</span>
-                  <span>{step.note}</span>
-                </div>
-              )}
-            </section>
           ))}
         </div>
+      </header>
 
-        {/* 完了・次へ */}
-        <div className="mt-10 rounded-2xl border border-[#3fb950] bg-[rgba(63,185,80,0.08)] p-6 text-center">
-          <p className="mb-2 text-2xl">🎉</p>
-          <p className="font-bold text-[#3fb950]">このガイドを完了しました！</p>
-          <p className="mt-1 text-sm text-[var(--text-muted)]">
-            コマンド練習で実力を試してみましょう。
-          </p>
-          <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:justify-center">
-            <Link
-              href="/lpic1/practice"
-              className="inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 font-semibold text-white transition-all hover:scale-105 hover:opacity-90"
-              style={{ background: "linear-gradient(135deg, #196c2e, #3fb950)" }}
-            >
-              コマンド練習へ →
-            </Link>
-            <Link
-              href="/lpic1/guide"
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-6 py-3 font-semibold text-[var(--foreground)] transition-all hover:scale-105"
-            >
-              ガイド一覧に戻る
-            </Link>
-          </div>
+      {/* ステップ（手順一覧） */}
+      <div className="flex flex-col gap-8">
+        {guide.steps.map((step, i) => (
+          <section
+            key={i}
+            className="relative rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 sm:p-8 shadow-md hover:border-gray-600 transition-colors"
+          >
+            {/* ステップヘッダー */}
+            <div className="mb-4 flex items-start gap-3">
+              <div
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-base font-black text-white shadow-lg"
+                style={{ background: "linear-gradient(135deg, #1d6fca, #3fb950)" }}
+              >
+                {i + 1}
+              </div>
+              <div>
+                <h2 className="text-lg sm:text-xl font-extrabold text-[var(--foreground)]">
+                  {step.title}
+                </h2>
+                {step.subtitle && (
+                  <p className="text-xs font-bold text-[var(--accent-primary)] mt-0.5">
+                    {step.subtitle}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {/* 本文 */}
+            <p className="mb-4 text-xs sm:text-sm leading-relaxed text-[var(--foreground)]">
+              {step.content}
+            </p>
+
+            {/* 詳細ステップリスト（詳細手順・箇条書き） */}
+            {step.details && step.details.length > 0 && (
+              <div className="mb-5 rounded-xl border border-[var(--border)] bg-[var(--surface-2)]/60 p-4 space-y-2">
+                <div className="text-xs font-extrabold text-[var(--accent-secondary)]">
+                  ▼ 操作チェックリスト＆詳細手順
+                </div>
+                <ul className="space-y-1.5 text-xs leading-relaxed text-[var(--text-muted)]">
+                  {step.details.map((item, idx) => (
+                    <li key={idx} className="flex items-start gap-2">
+                      <span className="text-[var(--accent-primary)] font-bold mt-0.5">✔</span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* パラメータ表（スペック等がある場合） */}
+            {step.table && (
+              <div className="mb-5 overflow-x-auto rounded-xl border border-[var(--border)] bg-[var(--surface-2)]">
+                <table className="w-full text-left text-xs">
+                  <thead className="border-b border-[var(--border)] bg-[var(--surface)] font-bold text-[var(--foreground)]">
+                    <tr>
+                      {step.table.header.map((th, idx) => (
+                        <th key={idx} className="px-4 py-2.5">
+                          {th}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[var(--border)] text-[var(--text-muted)]">
+                    {step.table.rows.map((row, rIdx) => (
+                      <tr key={rIdx} className="hover:bg-[var(--surface)]/50">
+                        {row.map((td, cIdx) => (
+                          <td key={cIdx} className="px-4 py-2.5 font-medium">
+                            {cIdx === 0 ? (
+                              <span className="font-bold text-[var(--foreground)]">{td}</span>
+                            ) : cIdx === 1 ? (
+                              <span className="font-mono font-bold text-[var(--accent-primary)]">
+                                {td}
+                              </span>
+                            ) : (
+                              td
+                            )}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            {/* コード・コマンドブロック */}
+            {step.code && (
+              <div
+                className="mb-5 overflow-hidden rounded-xl border border-[var(--border)]"
+                style={{ background: "#0d1117" }}
+              >
+                <div className="flex items-center justify-between border-b border-[var(--border)] bg-[#161b22] px-4 py-2.5">
+                  <div className="flex items-center gap-1.5">
+                    <span className="h-3 w-3 rounded-full bg-red-500/80" />
+                    <span className="h-3 w-3 rounded-full bg-yellow-500/80" />
+                    <span className="h-3 w-3 rounded-full bg-green-500/80" />
+                    <span className="ml-2 text-xs font-mono font-bold text-gray-400">
+                      Terminal / Bash
+                    </span>
+                  </div>
+                </div>
+                <pre className="overflow-x-auto p-4 font-mono text-xs leading-relaxed text-gray-200">
+                  <code>{step.code}</code>
+                </pre>
+              </div>
+            )}
+
+            {/* 補足ノート */}
+            {step.note && (
+              <div className="flex items-start gap-2.5 rounded-xl border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-xs leading-relaxed text-amber-300">
+                <span className="shrink-0 text-sm">💡</span>
+                <div>
+                  <strong className="font-bold text-amber-200">ワンポイントアドバイス: </strong>
+                  <span>{step.note}</span>
+                </div>
+              </div>
+            )}
+          </section>
+        ))}
+      </div>
+
+      {/* 完了・次のアクションカード */}
+      <div className="mt-12 rounded-2xl border border-[#3fb950] bg-[rgba(63,185,80,0.08)] p-8 text-center shadow-2xl">
+        <p className="mb-2 text-3xl">🎉</p>
+        <h2 className="text-xl font-extrabold text-[#3fb950]">
+          環境構築・コマンドガイドを完了しました！
+        </h2>
+        <p className="mt-2 text-xs sm:text-sm text-[var(--text-muted)] max-w-xl mx-auto leading-relaxed">
+          これでLinuxの基礎から応用、実機操作の準備が整いました。次のコマンド練習ページや問題演習で、実際に覚えた操作や知識をアウトプットしましょう！
+        </p>
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
+          <Link
+            href="/lpic1/practice"
+            className="inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-xs font-extrabold text-white transition-all hover:scale-105"
+            style={{ background: "linear-gradient(135deg, #196c2e, #3fb950)" }}
+          >
+            <span>💻 コマンド実践練習へ進む</span>
+            <span>➔</span>
+          </Link>
+          <Link
+            href="/lpic1/guide"
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-6 py-3 text-xs font-bold text-[var(--foreground)] transition-all hover:scale-105"
+          >
+            <span>📖 ガイド一覧に戻る</span>
+          </Link>
         </div>
       </div>
     </main>

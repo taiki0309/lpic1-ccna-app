@@ -1,21 +1,23 @@
 "use client";
 
-import React, { Suspense } from "react";
+import React, { useState, Suspense } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import { useRouter } from "next/navigation";
 import ThemeToggle from "./ThemeToggle";
+import SystemInfoModal from "./SystemInfoModal";
 
 const navItems = [
   { href: "/", icon: "🏠", label: "ホーム", exact: true },
   { href: "/lpic1", icon: "🐧", label: "LPIC-1" },
   { href: "/ccna", icon: "🌐", label: "CCNA" },
+  { href: "/ccna/simulation", icon: "🗺️", label: "実機演習" },
   { href: "/dashboard", icon: "📊", label: "進捗" },
   { href: "/quiz", icon: "📝", label: "演習" },
 ];
 
-function SidebarAccountButton() {
+function SidebarAccountButton({ onOpenSystem }: { onOpenSystem: () => void }) {
   const { authStatus, user, signOut } = useAuthenticator((ctx) => [ctx.authStatus, ctx.user]);
   const router = useRouter();
   const pathname = usePathname();
@@ -58,6 +60,15 @@ function SidebarAccountButton() {
         </div>
         <button
           type="button"
+          onClick={onOpenSystem}
+          className="sidebar-item !text-[var(--accent-purple)]"
+          title="③セッション時間 / ④権限確認 / ⑤CloudFront確認"
+        >
+          <span className="sidebar-icon">🛡️</span>
+          <span>ステータス</span>
+        </button>
+        <button
+          type="button"
           onClick={() => {
             signOut();
             router.push("/login");
@@ -74,19 +85,32 @@ function SidebarAccountButton() {
 
   const isActive = pathname?.startsWith("/login");
   return (
-    <Link
-      href="/login"
-      className={`sidebar-item${isActive ? " active" : ""}`}
-      title="ログイン / 新規登録"
-    >
-      <span className="sidebar-icon">🔐</span>
-      <span>ログイン</span>
-    </Link>
+    <div className="flex flex-col gap-1 w-full">
+      <button
+        type="button"
+        onClick={onOpenSystem}
+        className="sidebar-item !text-[var(--accent-purple)]"
+        title="③セッション時間 / ④権限確認 / ⑤CloudFront確認"
+      >
+        <span className="sidebar-icon">🛡️</span>
+        <span>ステータス</span>
+      </button>
+      <Link
+        href="/login"
+        className={`sidebar-item${isActive ? " active" : ""}`}
+        title="ログイン / 新規登録"
+      >
+        <span className="sidebar-icon">🔐</span>
+        <span>ログイン</span>
+      </Link>
+    </div>
   );
 }
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const [isSystemOpen, setIsSystemOpen] = useState(false);
+
   if (pathname === "/login") return null;
 
   const isActive = (href: string, exact = false) => {
@@ -95,47 +119,52 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="sidebar">
-      {/* ロゴ */}
-      <Link href="/" className="sidebar-logo" title="LPIC×CCNA 学習室">
-        📚
-      </Link>
+    <>
+      <aside className="sidebar">
+        {/* ロゴ */}
+        <Link href="/" className="sidebar-logo" title="LPIC×CCNA 学習室">
+          📚
+        </Link>
 
-      {/* メインナビ */}
-      <nav className="sidebar-nav" aria-label="メインナビゲーション">
-        {navItems.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className={`sidebar-item${isActive(item.href, item.exact) ? " active" : ""}`}
-            title={item.label}
-            aria-current={isActive(item.href, item.exact) ? "page" : undefined}
+        {/* メインナビ */}
+        <nav className="sidebar-nav" aria-label="メインナビゲーション">
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`sidebar-item${isActive(item.href, item.exact) ? " active" : ""}`}
+              title={item.label}
+              aria-current={isActive(item.href, item.exact) ? "page" : undefined}
+            >
+              <span className="sidebar-icon">{item.icon}</span>
+              <span>{item.label}</span>
+            </Link>
+          ))}
+        </nav>
+
+        {/* 区切り線 */}
+        <div className="sidebar-divider" />
+
+        {/* 下部：ログイン/ログアウト & ステータス & テーマ切替 */}
+        <div className="sidebar-bottom">
+          <Suspense
+            fallback={
+              <div className="sidebar-item">
+                <span className="sidebar-icon">👤</span>
+                <span>...</span>
+              </div>
+            }
           >
-            <span className="sidebar-icon">{item.icon}</span>
-            <span>{item.label}</span>
-          </Link>
-        ))}
-      </nav>
-
-      {/* 区切り線 */}
-      <div className="sidebar-divider" />
-
-      {/* 下部：ログイン/ログアウト & テーマ切替 */}
-      <div className="sidebar-bottom">
-        <Suspense
-          fallback={
-            <div className="sidebar-item">
-              <span className="sidebar-icon">👤</span>
-              <span>...</span>
-            </div>
-          }
-        >
-          <SidebarAccountButton />
-        </Suspense>
-        <div className="sidebar-item" style={{ padding: "8px 4px" }}>
-          <ThemeToggle compact />
+            <SidebarAccountButton onOpenSystem={() => setIsSystemOpen(true)} />
+          </Suspense>
+          <div className="sidebar-item" style={{ padding: "8px 4px" }}>
+            <ThemeToggle compact />
+          </div>
         </div>
-      </div>
-    </aside>
+      </aside>
+
+      {/* セッション・システム情報確認モーダル */}
+      <SystemInfoModal isOpen={isSystemOpen} onClose={() => setIsSystemOpen(false)} />
+    </>
   );
 }

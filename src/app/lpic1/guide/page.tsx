@@ -4,13 +4,13 @@ const guides = [
   {
     slug: "linux-install",
     icon: "💿",
-    title: "Linux環境の構築（VirtualBox + Ubuntu）",
-    desc: "VirtualBoxにUbuntuをインストールして、実際にコマンドを試せる環境を0から作ります。",
-    level: "初心者",
+    title: "Linux環境の構築（VirtualBox + Ubuntu 丁寧構築ガイド）",
+    desc: "【目次対応版】■手順1 ubuntuのダウンロード から ■手順5 仮想サーバへのSSH接続設定、そして ■Linuxの操作 まで、初心者でも迷わず0から構築できる完全手順ガイド。",
+    level: "初心者 (超丁寧版)",
     levelColor: "#3fb950",
-    steps: 8,
-    duration: "30分",
-    tags: ["VirtualBox", "Ubuntu", "インストール"],
+    steps: 6,
+    duration: "45〜60分",
+    tags: ["VirtualBox", "Ubuntu", "SSH接続", "インストール"],
   },
   {
     slug: "basic-commands",
@@ -101,119 +101,66 @@ export default function Lpic1GuidePage() {
           </p>
         </header>
 
-        {/* レベルフィルター（表示のみ） */}
-        <div className="mb-6 flex flex-wrap gap-2">
-          {[
-            { label: "すべて", color: "var(--accent-primary)", active: true },
-            { label: "初心者", color: "#3fb950", active: false },
-            { label: "初級", color: "#58a6ff", active: false },
-            { label: "中級", color: "#e3b341", active: false },
-          ].map((f) => (
-            <button
-              key={f.label}
-              className="rounded-full border px-4 py-1.5 text-sm font-semibold transition-all hover:scale-105"
-              style={{
-                borderColor: f.active ? f.color : "var(--border)",
-                background: f.active ? `${f.color}20` : "var(--surface)",
-                color: f.active ? f.color : "var(--text-muted)",
-              }}
-            >
-              {f.label}
-            </button>
-          ))}
-        </div>
-
         {/* ガイドカード一覧 */}
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {guides.map((guide) => (
             <Link
               key={guide.slug}
               href={`/lpic1/guide/${guide.slug}`}
-              className="group flex flex-col gap-4 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-[var(--accent-primary)] hover:shadow-lg"
+              className="card-hover group flex flex-col justify-between rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 transition-all duration-300 hover:border-[var(--accent-primary)]"
             >
-              <div className="flex items-start justify-between">
-                <div
-                  className="flex h-12 w-12 items-center justify-center rounded-xl text-2xl"
-                  style={{ background: `${guide.levelColor}20` }}
-                >
-                  {guide.icon}
-                </div>
-                <span
-                  className="rounded-full border px-2 py-0.5 text-xs font-semibold"
-                  style={{ borderColor: guide.levelColor, color: guide.levelColor }}
-                >
-                  {guide.level}
-                </span>
-              </div>
-
               <div>
-                <h2 className="mb-2 text-sm font-bold leading-snug text-[var(--foreground)]">
-                  {guide.title}
-                </h2>
-                <p className="text-xs leading-relaxed text-[var(--text-muted)]">
+                {/* 上部タグ・レベル */}
+                <div className="mb-4 flex items-center justify-between">
+                  <span
+                    className="rounded-full border px-2.5 py-0.5 text-xs font-semibold"
+                    style={{
+                      borderColor: guide.levelColor,
+                      color: guide.levelColor,
+                      backgroundColor: `${guide.levelColor}10`,
+                    }}
+                  >
+                    {guide.level}
+                  </span>
+                  <span className="text-xs text-[var(--text-muted)]">⏱ {guide.duration}</span>
+                </div>
+
+                {/* アイコン＋タイトル */}
+                <div className="mb-3 flex items-center gap-3">
+                  <span className="text-3xl">{guide.icon}</span>
+                  <h2 className="text-base font-extrabold leading-snug text-[var(--foreground)] group-hover:text-[var(--accent-primary)] transition-colors">
+                    {guide.title}
+                  </h2>
+                </div>
+
+                {/* 説明 */}
+                <p className="mb-4 text-xs leading-relaxed text-[var(--text-muted)]">
                   {guide.desc}
                 </p>
               </div>
 
-              <div className="flex items-center gap-3 text-xs text-[var(--text-muted)]">
-                <span>🔢 {guide.steps} ステップ</span>
-                <span>⏱ {guide.duration}</span>
-              </div>
-
-              <div className="flex flex-wrap gap-1">
-                {guide.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="rounded bg-[var(--surface-2)] px-2 py-0.5 text-xs text-[var(--text-muted)]"
-                  >
-                    {tag}
+              {/* 下部タグ＆ステップ数 */}
+              <div>
+                <div className="mb-3 flex flex-wrap gap-1">
+                  {guide.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded bg-[var(--surface-2)] px-2 py-0.5 text-xs font-medium text-[var(--text-muted)]"
+                    >
+                      #{tag}
+                    </span>
+                  ))}
+                </div>
+                <div className="flex items-center justify-between border-t border-[var(--border)] pt-3 text-xs text-[var(--text-muted)]">
+                  <span className="font-semibold">{guide.steps} ステップ</span>
+                  <span className="font-bold text-[var(--accent-primary)] group-hover:translate-x-1 transition-transform">
+                    ガイドを見る →
                   </span>
-                ))}
-              </div>
-
-              <div className="flex items-center gap-1 text-xs font-semibold text-[var(--accent-primary)] opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-1">
-                ガイドを読む →
+                </div>
               </div>
             </Link>
           ))}
         </div>
-
-        {/* 学習の進め方 */}
-        <section className="mt-12 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-8">
-          <h2 className="mb-6 text-lg font-bold text-[var(--foreground)]">
-            🗺️ 推奨学習ルート
-          </h2>
-          <div className="flex flex-col gap-4">
-            {[
-              { step: 1, title: "Linux環境の構築", link: "/lpic1/guide/linux-install", color: "#3fb950" },
-              { step: 2, title: "基本コマンドをマスター", link: "/lpic1/guide/basic-commands", color: "#3fb950" },
-              { step: 3, title: "コマンド練習でアウトプット", link: "/lpic1/practice", color: "#58a6ff" },
-              { step: 4, title: "パーミッション・パッケージ管理", link: "/lpic1/guide/permissions", color: "#58a6ff" },
-              { step: 5, title: "問題演習で実力チェック", link: "/lpic1/quiz", color: "#e3b341" },
-            ].map((item, i, arr) => (
-              <div key={item.step} className="flex items-start gap-4">
-                <div className="flex flex-col items-center">
-                  <div
-                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-black text-white"
-                    style={{ background: item.color }}
-                  >
-                    {item.step}
-                  </div>
-                  {i < arr.length - 1 && (
-                    <div className="mt-1 h-6 w-px bg-[var(--border)]" />
-                  )}
-                </div>
-                <Link
-                  href={item.link}
-                  className="group mt-1 text-sm font-semibold text-[var(--foreground)] transition-colors hover:text-[var(--accent-primary)]"
-                >
-                  {item.title}
-                  <span className="ml-1 opacity-0 transition-opacity group-hover:opacity-100"> →</span>
-                </Link>
-              </div>
-            ))}
-          </div>
-        </section>
       </div>
     </main>
   );
