@@ -42,6 +42,92 @@ const CLI_QUESTIONS = [
     ],
     explanation: "Ciscoルーターのインターフェースはデフォルトで無効（shutdown）のため、IP設定後に必ず `no shutdown` で有効化する必要があります。",
   },
+  {
+    id: "cli-4",
+    category: "CLI シミュレーション",
+    title: "VLANの作成と名前設定",
+    description: "VLAN 10 を作成し、VLAN 名を「Sales」に設定してください。",
+    initialPrompt: "Switch(config)#",
+    steps: [
+      { input: "vlan 10", response: "Switch(config-vlan)#", hint: "`vlan <番号>` で VLAN コンフィグモードに入ります" },
+      { input: "name Sales", response: "Switch(config-vlan)#", hint: "`name <名称>` で VLAN に名前をつけます" },
+    ],
+    explanation: "スイッチ上で VLAN を新規作成するにはグローバルコンフィグモードから `vlan <ID>` を実行し、`name` で管理名称を設定します。",
+  },
+  {
+    id: "cli-5",
+    category: "CLI シミュレーション",
+    title: "アクセスポートのVLAN設定",
+    description: "インターフェース FastEthernet 0/1 をアクセスモードにし、VLAN 10 を割り当ててください。",
+    initialPrompt: "Switch(config)#",
+    steps: [
+      { input: "interface FastEthernet 0/1", response: "Switch(config-if)#", hint: "`interface FastEthernet 0/1` (または `int f0/1`)" },
+      { input: "switchport mode access", response: "Switch(config-if)#", hint: "ポートをアクセスモードにします (`switchport mode access`)" },
+      { input: "switchport access vlan 10", response: "Switch(config-if)#", hint: "VLAN 10 を割り当てます (`switchport access vlan 10`)" },
+    ],
+    explanation: "端末を接続するポートは `switchport mode access` を設定した上で `switchport access vlan <ID>` で対応 VLAN に所属させます。",
+  },
+  {
+    id: "cli-6",
+    category: "CLI シミュレーション",
+    title: "802.1Q トランクポートの設定",
+    description: "GigabitEthernet 0/1 をトランクモードに設定し、許可する VLAN を 10 と 20 に制限してください。",
+    initialPrompt: "Switch(config)#",
+    steps: [
+      { input: "interface GigabitEthernet 0/1", response: "Switch(config-if)#", hint: "`interface GigabitEthernet 0/1` (または `int g0/1`)" },
+      { input: "switchport mode trunk", response: "Switch(config-if)#", hint: "トランクモードにします (`switchport mode trunk`)" },
+      { input: "switchport trunk allowed vlan 10,20", response: "Switch(config-if)#", hint: "`switchport trunk allowed vlan 10,20` で許可VLANを指定します" },
+    ],
+    explanation: "スイッチ間やルーター間を接続するポートには `switchport mode trunk` を設定し、不必要な VLAN のトラフィックが流れないよう制限します。",
+  },
+  {
+    id: "cli-7",
+    category: "CLI シミュレーション",
+    title: "OSPF ルーティングプロセスの設定",
+    description: "OSPF プロセス ID 1 を起動し、ネットワーク 192.168.1.0/24 (ワイルドカード 0.0.0.255) をエリア 0 に所属させて広告してください。",
+    initialPrompt: "Router(config)#",
+    steps: [
+      { input: "router ospf 1", response: "Router(config-router)#", hint: "`router ospf <プロセスID>` で OSPF 設定モードに入ります" },
+      { input: "network 192.168.1.0 0.0.0.255 area 0", response: "Router(config-router)#", hint: "`network <アドレス> <ワイルドカードマスク> area <エリア番号>`" },
+    ],
+    explanation: "OSPFでは、サブネットマスクの反転であるワイルドカードマスク (例: /24 なら 0.0.0.255) を使って広告するインターフェース範囲を指定します。",
+  },
+  {
+    id: "cli-8",
+    category: "CLI シミュレーション",
+    title: "デフォルト静的ルート (Default Static Route) の設定",
+    description: "全ての未知宛先トラフィックを次ホップ 203.0.113.1 へ転送するデフォルトルートを設定してください。",
+    initialPrompt: "Router(config)#",
+    steps: [
+      { input: "ip route 0.0.0.0 0.0.0.0 203.0.113.1", response: "Router(config)#", hint: "`ip route 0.0.0.0 0.0.0.0 <ネクストホップIP>` を入力します" },
+    ],
+    explanation: "宛先IP 0.0.0.0、サブネットマスク 0.0.0.0 を指定するスタティックルートはデフォルトルートと呼ばれ、インターネット境界ルーターで必須の設定です。",
+  },
+  {
+    id: "cli-9",
+    category: "CLI シミュレーション",
+    title: "SSH アクセスのためのドメイン名と鍵生成",
+    description: "ドメイン名を「cisco.local」に設定し、1024ビットの RSA 暗号鍵を生成してください。",
+    initialPrompt: "Router(config)#",
+    steps: [
+      { input: "ip domain-name cisco.local", response: "Router(config)#", hint: "`ip domain-name <ドメイン名>` でドメインを設定します" },
+      { input: "crypto key generate rsa", response: "How many bits in the modulus [512]: 1024\n% Generating 1024 bit RSA keys, keys will be non-exportable...\nRouter(config)#", hint: "`crypto key generate rsa` で SSH 用の鍵を生成します" },
+    ],
+    explanation: "Cisco デバイスでセキュアな SSH サーバを有効化するには、ホスト名とドメイン名の設定を行った後に RSA 鍵対を作成します。",
+  },
+  {
+    id: "cli-10",
+    category: "CLI シミュレーション",
+    title: "コンソール回線のパスワード認証設定",
+    description: "コンソールポート (line console 0) にパスワード「cisco」を設定し、ログイン認証を有効化してください。",
+    initialPrompt: "Router(config)#",
+    steps: [
+      { input: "line console 0", response: "Router(config-line)#", hint: "`line console 0` (または `line con 0`) で回線モードに入ります" },
+      { input: "password cisco", response: "Router(config-line)#", hint: "`password <パスワード文字列>` を設定します" },
+      { input: "login", response: "Router(config-line)#", hint: "`login` コマンドで認証を有効化します" },
+    ],
+    explanation: "物理コンソール接続にセキュリティをかけるため、`password` を設定した上で必ず `login` コマンドを実行して有効化します。",
+  },
 ];
 
 // ─── ドラッグ&ドロップ問題 ────────────────────────────────
