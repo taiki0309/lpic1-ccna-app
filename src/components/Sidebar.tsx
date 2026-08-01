@@ -22,18 +22,28 @@ function SidebarAccountButton() {
 
   const getDisplayName = (usr: any): string => {
     if (!usr) return 'ユーザー';
-    const id = usr.username || usr.signInDetails?.loginId || usr.attributes?.email || 'ユーザー';
-    if (typeof id === 'string' && id.includes('@')) {
-      return id.split('@')[0];
+    const id =
+      usr.signInDetails?.loginId ||
+      usr.attributes?.email ||
+      usr.username ||
+      'ユーザー';
+    if (typeof id === 'string') {
+      if (id.includes('@')) {
+        return id.split('@')[0];
+      }
+      if (/^[0-9a-f]{8}-[0-9a-f]{4}-/i.test(id)) {
+        return '学習者';
+      }
+      return id;
     }
-    return typeof id === 'string' ? id : 'ユーザー';
+    return 'ユーザー';
   };
 
   if (authStatus === "authenticated") {
     const name = getDisplayName(user);
     return (
       <div className="flex flex-col gap-1.5 w-full">
-        <div className="px-3 py-1.5 rounded-lg bg-[var(--surface-2)] border border-[var(--border)] text-xs font-bold text-[var(--accent-primary)] truncate text-center" title={`ログイン中: ${name}さん`}>
+        <div className="px-3 py-1.5 rounded-lg bg-[var(--surface-2)] border border-[var(--border)] text-xs font-bold text-[var(--accent-primary)] break-all text-center" title={`ログイン中: ${name}さん`}>
           👋 こんにちは、{name}さん
         </div>
         <button

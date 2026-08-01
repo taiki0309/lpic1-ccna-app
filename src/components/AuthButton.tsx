@@ -10,18 +10,28 @@ export default function AuthButton() {
 
   const getDisplayName = (usr: any): string => {
     if (!usr) return 'ユーザー';
-    const id = usr.username || usr.signInDetails?.loginId || usr.attributes?.email || 'ユーザー';
-    if (typeof id === 'string' && id.includes('@')) {
-      return id.split('@')[0];
+    const id =
+      usr.signInDetails?.loginId ||
+      usr.attributes?.email ||
+      usr.username ||
+      'ユーザー';
+    if (typeof id === 'string') {
+      if (id.includes('@')) {
+        return id.split('@')[0];
+      }
+      if (/^[0-9a-f]{8}-[0-9a-f]{4}-/i.test(id)) {
+        return '学習者';
+      }
+      return id;
     }
-    return typeof id === 'string' ? id : 'ユーザー';
+    return 'ユーザー';
   };
 
   if (authStatus === 'authenticated') {
     const name = getDisplayName(user);
     return (
       <div className="flex items-center gap-2">
-        <span className="hidden sm:inline-block rounded-xl bg-[var(--surface-2)] border border-[var(--border)] px-3 py-1.5 text-xs font-bold text-[var(--accent-primary)] truncate max-w-[160px]" title={`ログイン中: ${name}さん`}>
+        <span className="hidden sm:inline-block rounded-xl bg-[var(--surface-2)] border border-[var(--border)] px-3 py-1.5 text-xs font-bold text-[var(--accent-primary)] whitespace-nowrap" title={`ログイン中: ${name}さん`}>
           👋 こんにちは、{name}さん
         </span>
         <button

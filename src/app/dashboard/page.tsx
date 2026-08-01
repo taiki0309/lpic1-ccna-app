@@ -99,11 +99,21 @@ export default function DashboardPage() {
 
   const getDisplayName = (usr: any): string => {
     if (!usr) return 'ユーザー';
-    const id = usr.username || usr.signInDetails?.loginId || usr.attributes?.email || 'ユーザー';
-    if (typeof id === 'string' && id.includes('@')) {
-      return id.split('@')[0];
+    const id =
+      usr.signInDetails?.loginId ||
+      usr.attributes?.email ||
+      usr.username ||
+      'ユーザー';
+    if (typeof id === 'string') {
+      if (id.includes('@')) {
+        return id.split('@')[0];
+      }
+      if (/^[0-9a-f]{8}-[0-9a-f]{4}-/i.test(id)) {
+        return '学習者';
+      }
+      return id;
     }
-    return typeof id === 'string' ? id : 'ユーザー';
+    return 'ユーザー';
   };
 
   const displayName = getDisplayName(user);
