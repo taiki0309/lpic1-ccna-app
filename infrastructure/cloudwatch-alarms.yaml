@@ -6,7 +6,7 @@ Description: |
 Parameters:
   AlertEmail:
     Type: String
-    Description: アラート通知先メールアドレス
+    Description: Email address for alarm notifications
     Default: ""
   AppRunnerServiceName:
     Type: String
