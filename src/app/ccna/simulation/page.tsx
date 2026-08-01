@@ -702,6 +702,7 @@ export default function CcnaSimulationPage() {
   const [cliCompleted, setCliCompleted] = useState(false);
   const [cliError, setCliError] = useState(false);
   const [showCliHint, setShowCliHint] = useState(false);
+  const [cliRevealedStep, setCliRevealedStep] = useState(false);
 
   // DnD State
   const [dndQuestionIdx, setDndQuestionIdx] = useState(0);
@@ -777,6 +778,7 @@ export default function CcnaSimulationPage() {
       setCliInput("");
       setCliError(false);
       setShowCliHint(false);
+      setCliRevealedStep(false);
 
       if (cliStepIdx + 1 >= cliQ.steps.length) {
         setCliCompleted(true);
@@ -795,6 +797,12 @@ export default function CcnaSimulationPage() {
     }
   };
 
+  const handleCliReveal = () => {
+    setCliInput(currentStep.input);
+    setCliRevealedStep(true);
+    setCliError(false);
+  };
+
   const handleCliSkipStep = () => {
     const newHistory = [
       ...cliHistory,
@@ -804,6 +812,7 @@ export default function CcnaSimulationPage() {
     setCliInput("");
     setCliError(false);
     setShowCliHint(false);
+    setCliRevealedStep(false);
 
     if (cliStepIdx + 1 >= cliQ.steps.length) {
       setCliCompleted(true);
@@ -820,6 +829,7 @@ export default function CcnaSimulationPage() {
       setCliCompleted(false);
       setCliError(false);
       setShowCliHint(false);
+      setCliRevealedStep(false);
     }
   };
 
@@ -970,129 +980,210 @@ export default function CcnaSimulationPage() {
           </div>
         ) : (
           <div className="space-y-6 animate-fade-in">
-          <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6">
-            <div className="flex items-center justify-between border-b border-[var(--border)] pb-4">
-              <div>
-                <span className="rounded-md bg-blue-500/10 px-2 py-0.5 text-xs font-bold text-blue-400">
+            {/* 問題選択番号バッジ (LPIC-1仕様) */}
+            <div className="flex flex-wrap gap-2">
+              {CLI_QUESTIONS.map((q, i) => {
+                const isCurrent = i === cliQuestionIdx;
+                return (
+                  <button
+                    key={q.id}
+                    type="button"
+                    onClick={() => {
+                      setCliQuestionIdx(i);
+                      setCliStepIdx(0);
+                      setCliHistory([]);
+                      setCliCompleted(false);
+                      setCliError(false);
+                      setShowCliHint(false);
+                      setCliRevealedStep(false);
+                      setCliInput("");
+                    }}
+                    className={`flex h-9 w-9 items-center justify-center rounded-xl text-xs font-extrabold transition-all ${
+                      isCurrent
+                        ? "bg-[var(--accent-primary)] text-white shadow-md scale-110"
+                        : "bg-[var(--surface-2)] border border-[var(--border)] text-[var(--text-muted)] hover:border-[var(--accent-primary)] hover:text-[var(--foreground)]"
+                    }`}
+                  >
+                    {i + 1}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* 問題カード (LPIC-1仕様) */}
+            <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 shadow-xl sm:p-8">
+              <div className="mb-4 flex items-center justify-between">
+                <span className="rounded-full border border-[var(--border)] bg-[var(--surface-2)] px-3 py-1 text-xs font-bold text-[var(--accent-primary)]">
+                  {cliQ.category}
+                </span>
+                <span className="text-xs text-[var(--text-muted)] font-bold">
                   問題 {cliQuestionIdx + 1} / {CLI_QUESTIONS.length}
                 </span>
-                <h2 className="mt-2 text-lg font-bold text-[var(--foreground)]">
-                  {cliQ.title}
-                </h2>
-                <p className="text-xs text-[var(--text-muted)] mt-1">
-                  {cliQ.description}
-                </p>
               </div>
-              {cliCompleted && (
-                <span className="rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-bold text-emerald-400">
-                  ✅ クリア！
-                </span>
-              )}
-            </div>
 
-            {/* ターミナルウィンドウ */}
-            <div className="mt-6 rounded-xl overflow-hidden border border-[var(--border)] bg-[#0d1117] font-mono text-xs text-gray-200 shadow-xl">
-              <div className="flex items-center justify-between bg-[#161b22] px-4 py-2 border-b border-gray-800">
-                <div className="flex items-center gap-1.5">
-                  <span className="h-3 w-3 rounded-full bg-red-500/80" />
-                  <span className="h-3 w-3 rounded-full bg-yellow-500/80" />
-                  <span className="h-3 w-3 rounded-full bg-green-500/80" />
+              <h2 className="mb-2 text-base font-extrabold leading-relaxed text-[var(--foreground)] sm:text-lg">
+                {cliQ.title}
+              </h2>
+              <p className="mb-6 text-sm text-[var(--text-muted)] leading-relaxed">
+                {cliQ.description}
+                {cliQ.steps.length > 1 && (
+                  <span className="inline-block ml-2 rounded-md bg-blue-500/10 px-2 py-0.5 text-xs font-bold text-blue-400">
+                    ステップ {cliStepIdx + 1} / {cliQ.steps.length}
+                  </span>
+                )}
+              </p>
+
+              {/* ターミナル入力エリア（LPIC-1の1行入力＋メッセージスタイルに統一） */}
+              <div
+                className="mb-6 overflow-hidden rounded-xl border border-[var(--border)] shadow-lg"
+                style={{ background: "#0e131f" }}
+              >
+                <div
+                  className="flex items-center gap-1.5 border-b border-[var(--border)] px-4 py-2"
+                  style={{ background: "#161b26" }}
+                >
+                  <span className="h-3 w-3 rounded-full bg-[#f85149]" />
+                  <span className="h-3 w-3 rounded-full bg-[#e3b341]" />
+                  <span className="h-3 w-3 rounded-full bg-[#3fb950]" />
+                  <span className="ml-2 text-xs font-mono font-bold" style={{ color: "#8b949e" }}>
+                    Cisco IOS — CLI Interactive
+                  </span>
                 </div>
-                <span className="text-[11px] text-gray-400">Cisco IOS Virtual Console</span>
-              </div>
 
-              <div className="p-4 space-y-2 min-h-[220px]">
-                {cliHistory.map((h, i) => (
-                  <div key={i} className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className="text-blue-400 font-bold">{h.prompt}</span>
-                      <span className="text-white">{h.command}</span>
-                    </div>
-                    {h.response && (
-                      <div className="text-gray-400 whitespace-pre-wrap">{h.response}</div>
-                    )}
-                  </div>
-                ))}
-
-                {!cliCompleted && (
-                  <div className="flex items-center gap-2">
-                    <span className="text-blue-400 font-bold">{currentPrompt}</span>
-                    <input
-                      type="text"
-                      value={cliInput}
-                      onChange={(e) => setCliInput(e.target.value)}
-                      onKeyDown={(e) => e.key === "Enter" && handleCliSubmit()}
-                      placeholder="コマンドを入力... (Enterで実行)"
-                      className="flex-1 bg-transparent text-white outline-none placeholder-gray-600 font-mono"
-                      autoFocus
-                    />
+                {/* 複数ステップがある場合の完了済みステップ履歴 */}
+                {cliHistory.length > 0 && (
+                  <div className="border-b border-gray-800 bg-[#0a0d14] px-4 py-2 font-mono text-xs text-gray-400 space-y-1">
+                    {cliHistory.map((h, i) => (
+                      <div key={i} className="flex items-center gap-2 opacity-80">
+                        <span style={{ color: "#3fb950" }}>{h.prompt}</span>
+                        <span className="text-gray-200">{h.command}</span>
+                        {h.response && <span className="text-gray-500 ml-1">→ {h.response}</span>}
+                      </div>
+                    ))}
                   </div>
                 )}
-              </div>
-            </div>
 
-            {/* コントロールバー */}
-            <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-              <div className="flex flex-wrap items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => setShowCliHint(!showCliHint)}
-                  className="rounded-lg border border-[var(--border)] bg-[var(--surface-2)] px-3 py-1.5 text-xs font-semibold text-[var(--text-muted)] hover:text-[var(--foreground)]"
-                >
-                  💡 ヒント
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setCliInput(currentStep.input)}
-                  className="rounded-lg border border-[var(--accent-primary)] bg-[rgba(88,166,255,0.1)] px-3 py-1.5 text-xs font-bold text-[var(--accent-primary)] hover:bg-[rgba(88,166,255,0.2)]"
-                  title="正解コマンドを入力欄に自動セット"
-                >
-                  🔑 正解を見る ({currentStep.input})
-                </button>
-                {showCliHint && (
-                  <span className="text-xs text-amber-400 font-bold">
-                    💡 {currentStep.hint}
+                <div className="flex items-center gap-2 px-4 py-3.5 font-mono text-base">
+                  <span className="shrink-0 font-bold" style={{ color: "#3fb950" }}>
+                    {currentPrompt}
                   </span>
-                )}
-                {cliError && (
-                  <span className="text-xs text-red-400 font-bold">
-                    ⚠️ 異なります。ヒントや「正解を見る」を活用してください。
-                  </span>
-                )}
-              </div>
+                  <input
+                    type="text"
+                    value={cliInput}
+                    onChange={(e) => {
+                      setCliInput(e.target.value);
+                      setCliError(false);
+                    }}
+                    onKeyDown={(e) => e.key === "Enter" && handleCliSubmit()}
+                    disabled={cliCompleted}
+                    placeholder="コマンドを入力してください... (Enterで実行)"
+                    style={{
+                      color: "#4ade80",
+                      backgroundColor: "transparent",
+                      fontWeight: 700,
+                      fontSize: "1rem",
+                    }}
+                    className="flex-1 outline-none placeholder:text-gray-500 disabled:opacity-80"
+                    autoComplete="off"
+                    spellCheck={false}
+                    autoFocus
+                  />
+                </div>
 
-              <div className="flex flex-wrap gap-2">
-                <button
-                  type="button"
-                  onClick={handleCliSubmit}
-                  disabled={cliCompleted}
-                  className="rounded-lg bg-[var(--accent-primary)] px-4 py-2 text-xs font-bold text-white hover:opacity-90 disabled:opacity-40"
-                >
-                  実行する
-                </button>
-                {!cliCompleted && (
-                  <button
-                    type="button"
-                    onClick={handleCliSkipStep}
-                    className="rounded-lg bg-[var(--surface-2)] border border-[var(--border)] px-3 py-2 text-xs font-bold text-[var(--accent-purple)] hover:border-[var(--accent-purple)]"
-                    title="このステップをスキップして進む"
+                {/* 結果メッセージ表示欄 (LPIC-1仕様) */}
+                {(cliCompleted || cliError || cliRevealedStep) && (
+                  <div
+                    className="border-t border-[var(--border)] px-4 py-3 font-mono text-xs font-bold"
+                    style={{
+                      background:
+                        cliCompleted
+                          ? "rgba(63, 185, 80, 0.12)"
+                          : cliRevealedStep
+                          ? "rgba(188, 140, 255, 0.12)"
+                          : "rgba(248, 81, 73, 0.12)",
+                      color:
+                        cliCompleted
+                          ? "#3fb950"
+                          : cliRevealedStep
+                          ? "#bc8cff"
+                          : "#f85149",
+                    }}
                   >
-                    ⏭️ スキップして進む
-                  </button>
+                    {cliCompleted && "✓ [正解] 完璧です！設定コマンドが正常に適用され問題クリアとなりました。"}
+                    {!cliCompleted && cliError && "✗ [不正解] コマンドまたは引数が異なります。「ヒント」も確認できます。"}
+                    {!cliCompleted && cliRevealedStep && `💡 [正解を表示] ${currentStep.input}`}
+                  </div>
                 )}
-                {cliCompleted && cliQuestionIdx + 1 < CLI_QUESTIONS.length && (
+              </div>
+
+              {/* 解説欄（クリア時・正解閲覧時） (LPIC-1仕様) */}
+              {(cliCompleted || cliRevealedStep) && (
+                <div className="mb-6 rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-4 text-sm">
+                  <p className="font-extrabold text-[var(--accent-primary)] mb-1">💡 解説</p>
+                  <p className="text-[var(--foreground)] leading-relaxed font-medium">
+                    {cliQ.explanation}
+                  </p>
+                </div>
+              )}
+
+              {/* ヒント表示部 (LPIC-1仕様) */}
+              {showCliHint && !cliCompleted && (
+                <div className="mb-6 rounded-xl border border-amber-500/40 bg-amber-500/10 p-4 text-sm text-amber-300 font-bold">
+                  <p className="mb-1 text-xs uppercase tracking-wide opacity-80">ヒント</p>
+                  <p>{currentStep.hint}</p>
+                </div>
+              )}
+
+              {/* アクションボタン群 (LPIC-1仕様の大きなグラデーションボタンと統一配置) */}
+              <div className="flex flex-wrap items-center gap-3">
+                {!cliCompleted ? (
+                  <>
+                    <button
+                      type="button"
+                      onClick={handleCliSubmit}
+                      disabled={!cliInput.trim()}
+                      className="flex-1 rounded-xl py-3 px-4 font-extrabold text-white transition-all hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40 shadow-md"
+                      style={{ background: "linear-gradient(135deg, #196c2e, #3fb950)" }}
+                    >
+                      実行 (Enter)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowCliHint(!showCliHint)}
+                      className="rounded-xl border border-amber-500/40 bg-amber-500/10 px-4 py-3 font-extrabold text-amber-400 hover:bg-amber-500/20"
+                    >
+                      {showCliHint ? "ヒントを閉じる" : "💡 ヒント"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleCliReveal}
+                      className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-4 py-3 font-extrabold text-[var(--foreground)] hover:border-[var(--accent-primary)]"
+                    >
+                      🔑 正解を見る
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleCliSkipStep}
+                      className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-4 py-3 font-extrabold text-[var(--text-muted)] hover:text-[var(--foreground)]"
+                      title="このステップをスキップ"
+                    >
+                      ⏭️ スキップ
+                    </button>
+                  </>
+                ) : (
                   <button
                     type="button"
                     onClick={handleNextCliQ}
-                    className="rounded-lg bg-emerald-600 px-4 py-2 text-xs font-bold text-white hover:bg-emerald-500"
+                    disabled={cliQuestionIdx + 1 >= CLI_QUESTIONS.length}
+                    className="w-full rounded-xl py-3 px-6 font-extrabold text-white transition-all hover:opacity-90 shadow-lg disabled:opacity-40"
+                    style={{ background: "linear-gradient(135deg, #1d6fca, #58a6ff)" }}
                   >
-                    次の問題へ ➔
+                    {cliQuestionIdx + 1 < CLI_QUESTIONS.length ? "次の問題へ ➔" : "全問題クリア！"}
                   </button>
                 )}
               </div>
             </div>
           </div>
-        </div>
         )
       )}
 
