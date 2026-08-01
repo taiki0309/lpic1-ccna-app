@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import AmplifyProvider from "@/components/AmplifyProvider";
@@ -21,6 +21,13 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "ITインフラ技術者認定学習アプリ - LPIC & CCNA",
   description: "LPIC-1 および CCNA 資格取得をサポートする実践学習アプリ",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({

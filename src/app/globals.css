@@ -300,3 +300,14 @@ body {
   }
 }
 
+/* ── iOS Safari の自動拡大（ズーム）を防止するため、モバイルでの input のフォントサイズを 16px 以上に固定 ── */
+@media (max-width: 640px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  [data-amplify-authenticator] input {
+    font-size: 16px !important;
+  }
+}
+

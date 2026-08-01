@@ -20,6 +20,8 @@ const NAV_ITEMS: NavItem[] = [
 export default function BottomNav() {
   const pathname = usePathname();
 
+  if (pathname === "/login") return null;
+
   const isActive = (href: string, exact?: boolean) => {
     if (exact) {
       return pathname === href;
