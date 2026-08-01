@@ -6,7 +6,7 @@ Description: |
 Parameters:
   SenderEmail:
     Type: String
-    Description: 送信元および検証対象のメールアドレス（例: taiki03090327@gmail.com）
+    Description: "送信元および検証対象のメールアドレス (例: taiki03090327@gmail.com)"
     Default: taiki03090327@gmail.com
 
 Resources:
@@ -21,7 +21,7 @@ Resources:
     Type: AWS::IAM::ManagedPolicy
     Properties:
       ManagedPolicyName: !Sub "lpic-ccna-ses-sender-policy-${AWS::Region}"
-      Description: Next.js/LambdaからSES経由でメール送信を許可するポリシー
+      Description: "Next.js/LambdaからSES経由でメール送信を許可するポリシー"
       PolicyDocument:
         Version: "2012-10-17"
         Statement:
