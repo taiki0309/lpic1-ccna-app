@@ -1,0 +1,41 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: |
+  LPIC×CCNA 学習室 - Amazon SES メール通知システム
+  用途: 合格応援メール・学習バッジ獲得メール・進捗レポートの自動配信
+
+Parameters:
+  SenderEmail:
+    Type: String
+    Description: 送信元および検証対象のメールアドレス（例: taiki03090327@gmail.com）
+    Default: taiki03090327@gmail.com
+
+Resources:
+  # ── 1. SES メールアドレス認証 ──────────────────────────────────
+  SesEmailIdentity:
+    Type: AWS::SES::EmailIdentity
+    Properties:
+      EmailIdentity: !Ref SenderEmail
+
+  # ── 2. アプリサーバー・Lambda用 SES 送信許可 IAM ポリシー ────────
+  SesSenderPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: !Sub "lpic-ccna-ses-sender-policy-${AWS::Region}"
+      Description: Next.js/LambdaからSES経由でメール送信を許可するポリシー
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - ses:SendEmail
+              - ses:SendRawEmail
+              - ses:SendTemplatedEmail
+            Resource: !Sub "arn:aws:ses:${AWS::Region}:${AWS::AccountId}:identity/*"
+
+Outputs:
+  SesEmailIdentityArn:
+    Description: 検証済みSESメールアドレスARN
+    Value: !Ref SesEmailIdentity
+  SesSenderPolicyArn:
+    Description: メール送信IAMポリシーARN
+    Value: !Ref SesSenderPolicy
