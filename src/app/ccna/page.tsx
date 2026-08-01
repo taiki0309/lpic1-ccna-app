@@ -38,7 +38,7 @@ const quickLinks = [
 
 export default function CcnaTopPage() {
   return (
-    <main className="relative min-h-screen px-4 py-12">
+    <main className="relative min-h-screen px-4 py-6 sm:py-10">
       {/* 背景 */}
       <div
         aria-hidden="true"
@@ -58,27 +58,19 @@ export default function CcnaTopPage() {
         </nav>
 
         {/* ヘッダー */}
-        <header className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-4">
-            <div
-              className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl text-2xl font-black text-white shadow-lg"
-              style={{ background: "linear-gradient(135deg, #6e40c9, #bc8cff)" }}
-            >
-              CC
-            </div>
-            <div>
-              <h1 className="text-3xl font-extrabold text-[var(--foreground)]">CCNA</h1>
-              <p className="text-sm text-[var(--text-muted)]">
-                Cisco Certified Network Associate — 200-301
-              </p>
-            </div>
-          </div>
-          <Link
-            href="/dashboard"
-            className="inline-flex items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-sm font-semibold text-[var(--text-muted)] transition-all hover:border-[var(--accent-purple)] hover:text-[var(--foreground)]"
+        <header className="mb-6 flex items-center gap-4">
+          <div
+            className="flex h-14 w-14 sm:h-16 sm:w-16 shrink-0 items-center justify-center rounded-2xl text-xl sm:text-2xl font-black text-white shadow-lg"
+            style={{ background: "linear-gradient(135deg, #6e40c9, #bc8cff)" }}
           >
-            📊 進捗を確認
-          </Link>
+            CC
+          </div>
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-[var(--foreground)]">CCNA</h1>
+            <p className="text-xs sm:text-sm text-[var(--text-muted)]">
+              Cisco Certified Network Associate — 200-301
+            </p>
+          </div>
         </header>
 
         {/* 重要バナー：シミュレーション問題対応 */}

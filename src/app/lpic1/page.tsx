@@ -38,7 +38,7 @@ const quickLinks = [
 
 export default function Lpic1TopPage() {
   return (
-    <main className="relative min-h-screen px-4 py-12">
+    <main className="relative min-h-screen px-4 py-6 sm:py-10">
       {/* 背景 */}
       <div
         aria-hidden="true"
@@ -60,27 +60,19 @@ export default function Lpic1TopPage() {
         </nav>
 
         {/* ヘッダー */}
-        <header className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-4">
-            <div
-              className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl text-2xl font-black text-white shadow-lg"
-              style={{ background: "linear-gradient(135deg, #1d6fca, #58a6ff)" }}
-            >
-              L1
-            </div>
-            <div>
-              <h1 className="text-3xl font-extrabold text-[var(--foreground)]">LPIC-1</h1>
-              <p className="text-sm text-[var(--text-muted)]">
-                Linux Professional Institute Certification Level 1
-              </p>
-            </div>
-          </div>
-          <Link
-            href="/dashboard"
-            className="inline-flex items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-sm font-semibold text-[var(--text-muted)] transition-all hover:border-[var(--accent-primary)] hover:text-[var(--foreground)]"
+        <header className="mb-6 flex items-center gap-4">
+          <div
+            className="flex h-14 w-14 sm:h-16 sm:w-16 shrink-0 items-center justify-center rounded-2xl text-xl sm:text-2xl font-black text-white shadow-lg"
+            style={{ background: "linear-gradient(135deg, #1d6fca, #58a6ff)" }}
           >
-            📊 進捗を確認
-          </Link>
+            L1
+          </div>
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-[var(--foreground)]">LPIC-1</h1>
+            <p className="text-xs sm:text-sm text-[var(--text-muted)]">
+              Linux Professional Institute Certification Level 1
+            </p>
+          </div>
         </header>
 
         {/* クイックアクション */}

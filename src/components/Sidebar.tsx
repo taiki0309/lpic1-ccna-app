@@ -4,7 +4,6 @@ import React, { Suspense } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuthenticator } from "@aws-amplify/ui-react";
-import ThemeToggle from "./ThemeToggle";
 
 const menuGroups = [
   {
@@ -117,12 +116,8 @@ export default function Sidebar() {
         ))}
       </nav>
 
-      {/* 下部：ログイン/ログアウト & テーマ切替 */}
+      {/* 下部：ログイン/ログアウト */}
       <div className="sidebar-bottom">
-        <div className="flex items-center justify-between w-full px-2 py-1">
-          <span className="text-xs font-bold text-[var(--text-muted)]">テーマ設定</span>
-          <ThemeToggle compact />
-        </div>
         <Suspense
           fallback={
             <div className="sidebar-item">

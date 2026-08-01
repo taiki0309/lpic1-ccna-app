@@ -16,49 +16,7 @@ export default function Home() {
         }}
       />
 
-      <div className="mx-auto max-w-5xl px-5 py-10 sm:px-8">
-        {/* ── ページヘッダー ── */}
-        <header className="mb-8 flex items-center justify-between animate-fade-in-up">
-          <div>
-            <div className="mb-1 flex items-center gap-2">
-              <span
-                className="inline-block h-2.5 w-2.5 rounded-full"
-                style={{
-                  background: "var(--accent-secondary)",
-                  boxShadow: "0 0 8px var(--accent-secondary)",
-                }}
-                aria-hidden="true"
-              />
-              <span className="text-xs font-semibold uppercase tracking-widest text-[var(--text-muted)]">
-                ITインフラ資格対策
-              </span>
-            </div>
-            <h1 className="text-3xl font-extrabold tracking-tight text-[var(--foreground)] sm:text-4xl">
-              さあ、
-              <span
-                style={{
-                  background:
-                    "linear-gradient(135deg, #58a6ff 0%, #bc8cff 100%)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  backgroundClip: "text",
-                }}
-              >
-                今日の学習
-              </span>
-              を始めよう！
-            </h1>
-            <p className="mt-1 text-sm text-[var(--text-muted)]">
-              LPIC-1・CCNA の合格に向けて、今日も一歩頑張りましょう。
-            </p>
-          </div>
-          <div className="hidden sm:flex flex-col items-end gap-2">
-            <Suspense fallback={<div className="h-9 w-32 skeleton" />}>
-              <AuthButton />
-            </Suspense>
-          </div>
-        </header>
-
+      <div className="mx-auto max-w-5xl px-5 py-6 sm:px-8">
         {/* ── 今日のミッションカード ── */}
         <section aria-label="今日のミッション" className="mb-10">
           <h2 className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[var(--text-muted)]">
