@@ -283,12 +283,12 @@ body {
   box-shadow: var(--card-shadow);
 }
 
-/* ── Responsive: hide sidebar on very small screens ─ */
-@media (max-width: 480px) {
+/* ── Responsive: hide sidebar on mobile & landscape screens (up to 1024px) ─ */
+@media (max-width: 1024px) {
   .sidebar {
-    display: none;
+    display: none !important;
   }
   .main-content {
-    margin-left: 0;
+    margin-left: 0 !important;
   }
 }
