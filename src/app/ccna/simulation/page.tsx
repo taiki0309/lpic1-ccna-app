@@ -169,9 +169,7 @@ export default function CcnaSimulationPage() {
           questionId: cliQ.id,
           category: cliQ.category || "ルーティング",
           selectedIndex: 0,
-          correctIndex: 0,
           isCorrect: true,
-          explanation: cliQ.explanation,
         });
       } else {
         setCliStepIdx(cliStepIdx + 1);
@@ -215,9 +213,7 @@ export default function CcnaSimulationPage() {
       questionId: DND_QUESTION.id,
       category: DND_QUESTION.category,
       selectedIndex: correctCount,
-      correctIndex: DND_QUESTION.items.length,
       isCorrect: correctCount === DND_QUESTION.items.length,
-      explanation: "OSI参照モデル: L1(物理), L2(データリンク), L3(ネットワーク: IP/ICMP), L4(トランスポート: TCP/UDP), L7(アプリケーション: HTTP等)",
     });
   };
 
@@ -236,9 +232,7 @@ export default function CcnaSimulationPage() {
       questionId: topoQ.id,
       category: "トポロジー演習",
       selectedIndex: selectedOption,
-      correctIndex: topoQ.correctIdx,
       isCorrect: selectedOption === topoQ.correctIdx,
-      explanation: topoQ.explanation,
     });
   };
 
