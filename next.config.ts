@@ -41,6 +41,33 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+
+  // ─── CloudFront / 配信 CDN での最大パフォーマンス最適化 ───────────
+  compress: true, // gzip / brotli 圧縮を有効化してレスポンスサイズを削減
+  async headers() {
+    return [
+      {
+        // 静的ファイル・画像・フォントのCDNエッジキャッシュを1年間有効化
+        source: "/(.*)\\.(ico|png|jpg|jpeg|svg|woff|woff2|css|js)",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+      {
+        // 解説・学習ガイドはCDNエッジで最大1時間キャッシュして瞬時レスポンス（stale-while-revalidate適用）
+        source: "/(lpic1|ccna)/guide/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=60, s-maxage=3600, stale-while-revalidate=86400",
+          },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;
