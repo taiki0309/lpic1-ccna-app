@@ -161,24 +161,6 @@ export default function DashboardPage() {
           </button>
         </header>
 
-        {/* ログイン促進バナー */}
-        <div className="mb-8 flex items-center gap-3 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-sm">
-          <span className="text-2xl">🔐</span>
-          <div className="flex-1">
-            <p className="font-semibold text-[var(--foreground)]">ログインで進捗をクラウド保存</p>
-            <p className="text-sm text-[var(--text-muted)]">
-              ログインすると学習履歴・正答率・弱点分析がAWSアカウントと紐づいて自動保存されます。
-            </p>
-          </div>
-          <Link
-            href="/login"
-            className="shrink-0 rounded-xl px-4 py-2 text-sm font-semibold text-white transition-all hover:scale-105 hover:opacity-90 shadow-sm"
-            style={{ background: "linear-gradient(135deg, #1d6fca, #58a6ff)" }}
-          >
-            ログイン
-          </Link>
-        </div>
-
         {/* 資格別進捗カード */}
         <div className="mb-8 grid grid-cols-1 gap-6 sm:grid-cols-2">
           {certStats.map((cert) => (

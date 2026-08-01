@@ -13,7 +13,7 @@ interface DynamoAnswer {
   answeredAt?: string;
 }
 
-// カテゴリ名の正規化（英語表記を日本語にマップ）
+// カテゴリ名の正規化（英語表記やフォールバックカテゴリ名を公式日本語表記にマップ）
 function normalizeCategory(cat?: string): string {
   if (!cat) return "未分類";
   const map: Record<string, string> = {
@@ -29,6 +29,15 @@ function normalizeCategory(cat?: string): string {
     "Devices & Filesystems": "デバイス&ファイルシステム",
     "Shells & Scripting": "シェル&スクリプト",
     "User & Group Management": "ユーザー&グループ管理",
+    // フォールバック演習問題のカテゴリマッピング
+    "基本コマンド": "GNUとUnixコマンド",
+    "ファイル操作": "GNUとUnixコマンド",
+    "ファイルシステム": "デバイス&ファイルシステム",
+    "テキスト処理": "GNUとUnixコマンド",
+    "パーミッション": "デバイス&ファイルシステム",
+    "プロセス管理": "システムアーキテクチャ",
+    "シェル": "シェル&スクリプト",
+    "パッケージ管理": "Linuxインストール&パッケージ",
   };
   return map[cat] || cat;
 }
@@ -88,16 +97,18 @@ export async function GET(request: Request) {
       if (cert === "LPIC1" || cert === "LPIC-1" || cert.includes("LPIC")) {
         lpic1Answered++;
         if (isCorrect) lpic1Correct++;
-        if (lpic1Map[normCat]) {
-          lpic1Map[normCat].answered++;
-          if (isCorrect) lpic1Map[normCat].correct++;
+        const targetCat = lpic1Map[normCat] ? normCat : "GNUとUnixコマンド";
+        if (lpic1Map[targetCat]) {
+          lpic1Map[targetCat].answered++;
+          if (isCorrect) lpic1Map[targetCat].correct++;
         }
       } else if (cert === "CCNA" || cert.includes("CCNA")) {
         ccnaAnswered++;
         if (isCorrect) ccnaCorrect++;
-        if (ccnaMap[normCat]) {
-          ccnaMap[normCat].answered++;
-          if (isCorrect) ccnaMap[normCat].correct++;
+        const targetCat = ccnaMap[normCat] ? normCat : "ネットワーク基礎";
+        if (ccnaMap[targetCat]) {
+          ccnaMap[targetCat].answered++;
+          if (isCorrect) ccnaMap[targetCat].correct++;
         }
       }
     });

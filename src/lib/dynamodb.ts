@@ -5,12 +5,25 @@ import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 // 環境変数から認証情報を読み込む（.env.local に設定）
 const rawClient = new DynamoDBClient({
   region:
-    process.env.APP_AWS_REGION ?? process.env.AWS_REGION ?? "ap-northeast-1",
+    process.env.APP_AWS_REGION ??
+    process.env.MY_AWS_REGION ??
+    process.env.CUSTOM_AWS_REGION ??
+    process.env.AMPLIFY_AWS_REGION ??
+    process.env.AWS_REGION ??
+    "ap-northeast-1",
   credentials: {
     accessKeyId:
-      process.env.APP_AWS_ACCESS_KEY_ID ?? process.env.AWS_ACCESS_KEY_ID ?? "",
+      process.env.APP_AWS_ACCESS_KEY_ID ??
+      process.env.MY_AWS_ACCESS_KEY_ID ??
+      process.env.CUSTOM_AWS_ACCESS_KEY_ID ??
+      process.env.AMPLIFY_AWS_ACCESS_KEY_ID ??
+      process.env.AWS_ACCESS_KEY_ID ??
+      "",
     secretAccessKey:
       process.env.APP_AWS_SECRET_ACCESS_KEY ??
+      process.env.MY_AWS_SECRET_ACCESS_KEY ??
+      process.env.CUSTOM_AWS_SECRET_ACCESS_KEY ??
+      process.env.AMPLIFY_AWS_SECRET_ACCESS_KEY ??
       process.env.AWS_SECRET_ACCESS_KEY ??
       "",
   },
