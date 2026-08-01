@@ -12,7 +12,6 @@ const menuGroups = [
       { href: "/", label: "ホーム", icon: "🏠", exact: true },
       { href: "/lpic1", label: "LPIC-1 コース", icon: "🐧" },
       { href: "/ccna", label: "CCNA コース", icon: "🌐" },
-      { href: "/ccna/simulation", label: "CCNA 実機シミュレーション", icon: "💻" },
     ],
   },
   {
