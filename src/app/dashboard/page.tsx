@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useAuthenticator } from "@aws-amplify/ui-react";
 import { getUserId } from "@/lib/submitAnswer";
 
 interface CategoryStat {
@@ -88,12 +89,24 @@ const defaultStatsSummary = [
 ];
 
 export default function DashboardPage() {
+  const { authStatus, user } = useAuthenticator((ctx) => [ctx.authStatus, ctx.user]);
   const [certStats, setCertStats] = useState<CertStat[]>(defaultCertStats);
   const [statsSummary, setStatsSummary] = useState(defaultStatsSummary);
   const [badges, setBadges] = useState<Badge[]>([]);
   const [recentHistory, setRecentHistory] = useState<HistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+
+  const getDisplayName = (usr: any): string => {
+    if (!usr) return 'ユーザー';
+    const id = usr.username || usr.signInDetails?.loginId || usr.attributes?.email || 'ユーザー';
+    if (typeof id === 'string' && id.includes('@')) {
+      return id.split('@')[0];
+    }
+    return typeof id === 'string' ? id : 'ユーザー';
+  };
+
+  const displayName = getDisplayName(user);
 
   const fetchProgressData = async (isRefresh = false) => {
     if (isRefresh) setRefreshing(true);
@@ -143,11 +156,17 @@ export default function DashboardPage() {
         {/* ヘッダー */}
         <header className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="mb-2 text-3xl font-extrabold text-[var(--foreground)]">
-              📊 学習ダッシュボード
+            <h1 className="mb-2 text-3xl font-extrabold text-[var(--foreground)] flex items-center gap-2">
+              <span>📊</span>
+              <span>学習ダッシュボード</span>
             </h1>
-            <p className="text-sm text-[var(--text-muted)]">
-              各資格の学習進捗・弱点カテゴリを一目で把握できます。
+            <p className="text-sm text-[var(--text-muted)] flex flex-wrap items-center gap-1.5">
+              {authStatus === 'authenticated' && (
+                <span className="font-bold text-[var(--accent-primary)] bg-[var(--surface-2)] px-2.5 py-0.5 rounded-md border border-[var(--border)]">
+                  👋 こんにちは、{displayName} さん！
+                </span>
+              )}
+              <span>各資格の学習進捗・弱点カテゴリを一目で把握できます。</span>
             </p>
           </div>
 

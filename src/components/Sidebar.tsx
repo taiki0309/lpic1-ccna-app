@@ -16,24 +16,39 @@ const navItems = [
 ];
 
 function SidebarAccountButton() {
-  const { authStatus, signOut } = useAuthenticator((ctx) => [ctx.authStatus]);
+  const { authStatus, user, signOut } = useAuthenticator((ctx) => [ctx.authStatus, ctx.user]);
   const router = useRouter();
   const pathname = usePathname();
 
+  const getDisplayName = (usr: any): string => {
+    if (!usr) return 'ユーザー';
+    const id = usr.username || usr.signInDetails?.loginId || usr.attributes?.email || 'ユーザー';
+    if (typeof id === 'string' && id.includes('@')) {
+      return id.split('@')[0];
+    }
+    return typeof id === 'string' ? id : 'ユーザー';
+  };
+
   if (authStatus === "authenticated") {
+    const name = getDisplayName(user);
     return (
-      <button
-        type="button"
-        onClick={() => {
-          signOut();
-          router.push("/login");
-        }}
-        className="sidebar-item"
-        title="ログアウト"
-      >
-        <span className="sidebar-icon">🔓</span>
-        <span>ログアウト</span>
-      </button>
+      <div className="flex flex-col gap-1.5 w-full">
+        <div className="px-3 py-1.5 rounded-lg bg-[var(--surface-2)] border border-[var(--border)] text-xs font-bold text-[var(--accent-primary)] truncate text-center" title={`ログイン中: ${name}さん`}>
+          👋 こんにちは、{name}さん
+        </div>
+        <button
+          type="button"
+          onClick={() => {
+            signOut();
+            router.push("/login");
+          }}
+          className="sidebar-item"
+          title="ログアウト"
+        >
+          <span className="sidebar-icon">🔓</span>
+          <span>ログアウト</span>
+        </button>
+      </div>
     );
   }
 
