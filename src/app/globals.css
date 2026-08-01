@@ -292,3 +292,11 @@ body {
     margin-left: 0 !important;
   }
 }
+
+/* ── PC（デスクトップ環境）専用クラス：スマホ・タブレット（iPad等）・タッチデバイスでは非表示 ── */
+@media (hover: none), (pointer: coarse), (max-width: 1024px) {
+  .pc-only {
+    display: none !important;
+  }
+}
+

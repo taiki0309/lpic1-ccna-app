@@ -75,15 +75,6 @@ export default function LoginPage() {
         >
           <LoginRedirector />
         </Authenticator>
-
-        <div className="mt-8 text-center">
-          <a
-            href="/"
-            className="text-xs font-semibold text-[var(--text-muted)] hover:text-[var(--foreground)] underline transition-colors"
-          >
-            ← ホームへ戻る（未ログインで体験する）
-          </a>
-        </div>
       </div>
     </main>
   );

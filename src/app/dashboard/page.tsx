@@ -375,14 +375,16 @@ export default function DashboardPage() {
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             {[
               { href: "/lpic1/quiz", label: "LPIC-1 問題演習", color: "#58a6ff" },
-              { href: "/lpic1/practice", label: "コマンド練習", color: "#3fb950" },
+              { href: "/lpic1/practice", label: "コマンド練習", color: "#3fb950", desktopOnly: true },
               { href: "/ccna/quiz", label: "CCNA 問題演習", color: "#bc8cff" },
-              { href: "/ccna/simulation", label: "CCNA シミュレーション", color: "#e3b341" },
+              { href: "/ccna/simulation", label: "CCNA シミュレーション", color: "#e3b341", desktopOnly: true },
             ].map((action) => (
               <Link
                 key={action.href}
                 href={action.href}
-                className="flex flex-col gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface)] p-4 text-center text-sm font-semibold transition-all hover:scale-105 hover:border-[var(--accent-primary)] shadow-sm"
+                className={`flex-col gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface)] p-4 text-center text-sm font-semibold transition-all hover:scale-105 hover:border-[var(--accent-primary)] shadow-sm ${
+                  action.desktopOnly ? "hidden lg:flex pc-only" : "flex"
+                }`}
                 style={{ color: action.color }}
               >
                 {action.label}

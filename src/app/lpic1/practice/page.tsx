@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { submitAnswer } from "@/lib/submitAnswer";
 
@@ -316,6 +316,106 @@ const COMMAND_QUESTIONS: CommandQuestion[] = [
     hint: "コマンドの配置先パスを探すのは `which` コマンドです。",
     explanation: "`which <コマンド名>` を実行することで、環境変数 PATH 内でどこにバイナリがあるかを特定できます。",
   },
+  {
+    id: "cmd-31",
+    category: "アーカイブ・バックアップ",
+    description: "ディレクトリ「/etc」全体をまとめて、アーカイブファイル「backup.tar」を新規作成してください。",
+    prompt: "user@linux:~$ ",
+    expectedCommand: "tar -cvf backup.tar /etc",
+    aliases: ["tar cvf backup.tar /etc", "tar -cf backup.tar /etc"],
+    hint: "アーカイブの作成は `tar` コマンドで作成(-c)、ファイル名指定(-f) を組み合わせます。",
+    explanation: "`tar -cvf backup.tar /etc` により、/etc 配下のファイルをまとめた tar アーカイブを作成します。",
+  },
+  {
+    id: "cmd-32",
+    category: "アーカイブ・バックアップ",
+    description: "カレントディレクトリにあるアーカイブファイル「archive.tar」を展開（解凍）してください。",
+    prompt: "user@linux:~$ ",
+    expectedCommand: "tar -xvf archive.tar",
+    aliases: ["tar xvf archive.tar", "tar -xf archive.tar"],
+    hint: "展開オプションは `-x` (extract)、ファイル指定は `-f` です。",
+    explanation: "`tar -xvf archive.tar` で、アーカイブ内のファイルを現在のディレクトリに展開できます。",
+  },
+  {
+    id: "cmd-33",
+    category: "アーカイブ・バックアップ",
+    description: "圧縮ファイル「data.txt.gz」を gzip コマンドまたは専用コマンドを用いて展開（解凍）してください。",
+    prompt: "user@linux:~$ ",
+    expectedCommand: "gunzip data.txt.gz",
+    aliases: ["gzip -d data.txt.gz"],
+    hint: "gzip で圧縮されたファイルを解凍するコマンドは `gunzip` (または `gzip -d`) です。",
+    explanation: "`gunzip data.txt.gz` を実行すると解凍され、元の `data.txt` が復元されます。",
+  },
+  {
+    id: "cmd-34",
+    category: "ネットワーク操作",
+    description: "ユーザー「admin」、リモートホスト「192.168.1.10」へ SSH でセキュアにログイン接続してください。",
+    prompt: "user@linux:~$ ",
+    expectedCommand: "ssh admin@192.168.1.10",
+    aliases: ["ssh -l admin 192.168.1.10"],
+    hint: "`ssh <ユーザー名>@<ホスト名・IP>` の形式が一般的です。",
+    explanation: "`ssh admin@192.168.1.10` コマンドで、リモートサーバーの admin アカウントへログインできます。",
+  },
+  {
+    id: "cmd-35",
+    category: "ネットワーク操作",
+    description: "ローカルのファイル「app.conf」を、ホスト「server1」の「/tmp」ディレクトリ内へユーザー「user」の権限で scp 転送してください。",
+    prompt: "user@linux:~$ ",
+    expectedCommand: "scp app.conf user@server1:/tmp",
+    aliases: ["scp -p app.conf user@server1:/tmp", "scp app.conf user@server1:/tmp/"],
+    hint: "`scp <送信元ファイル> <ユーザー>@<ホスト>:<パス>` で転送します。",
+    explanation: "`scp app.conf user@server1:/tmp` により、SSH 経路を使用して安全にファイルをリモートサーバーへ複製します。",
+  },
+  {
+    id: "cmd-36",
+    category: "ネットワーク操作",
+    description: "URL「http://example.com」に対し curl コマンドを使って HTTP レスポンスヘッダ情報「のみ」を取得して表示してください。",
+    prompt: "user@linux:~$ ",
+    expectedCommand: "curl -I http://example.com",
+    aliases: ["curl --head http://example.com"],
+    hint: "HTTPヘッダ(HEADリクエスト)のみを取得する curl オプションは `-I` (大文字アイ) です。",
+    explanation: "`curl -I http://example.com` により、サーバーのステータスコードやレスポンスヘッダだけを素早く検証できます。",
+  },
+  {
+    id: "cmd-37",
+    category: "ネットワーク操作",
+    description: "wget コマンドを使用して「http://example.com/package.zip」からファイルをカレントディレクトリへダウンロードしてください。",
+    prompt: "user@linux:~$ ",
+    expectedCommand: "wget http://example.com/package.zip",
+    aliases: ["wget -c http://example.com/package.zip"],
+    hint: "ファイルをダウンロードする定番コマンド `wget <URL>` を使用します。",
+    explanation: "`wget` コマンドは指定した URL からファイルを直接ディスクに保存するため、サーバー構築時のリソース取得に重宝します。",
+  },
+  {
+    id: "cmd-38",
+    category: "ユーザーとグループ管理",
+    description: "ユーザー「sysadmin」が所属している全てのグループを表示してください。",
+    prompt: "user@linux:~$ ",
+    expectedCommand: "groups sysadmin",
+    aliases: ["id -Gn sysadmin", "id sysadmin"],
+    hint: "所属グループを確認するシンプルなコマンドは `groups <ユーザー名>` です。",
+    explanation: "`groups sysadmin` を実行すると、対象ユーザーがメインおよびサブで所属しているグループ一覧が出力されます。",
+  },
+  {
+    id: "cmd-39",
+    category: "ユーザーとグループ管理",
+    description: "ユーザー「testuser」のパスワード有効期限や最終変更日などのアカウント期限情報を確認して表示してください。",
+    prompt: "user@linux:~$ ",
+    expectedCommand: "chage -l testuser",
+    aliases: ["sudo chage -l testuser", "chage --list testuser"],
+    hint: "アカウント有効期限を確認するコマンドは `chage` で、一覧表示オプションは `-l` です。",
+    explanation: "`chage -l testuser` でパスワードの満了日やアカウントの無効化スケジュールを把握できます。",
+  },
+  {
+    id: "cmd-40",
+    category: "システム監視とログ",
+    description: "journalctl を使って、現在起動している「今回のシステムブート以降（直近の起動）」のログのみを絞り込んで表示してください。",
+    prompt: "user@linux:~$ ",
+    expectedCommand: "journalctl -b",
+    aliases: ["journalctl --boot", "sudo journalctl -b"],
+    hint: "現在のブートログだけを指定するオプションは `-b` です。",
+    explanation: "`journalctl -b` (または `--boot`) により、今回の起動時以降に出力されたシステムやサービスのログメッセージにフォーカスして調査できます。",
+  },
 ];
 
 type QuestionState = {
@@ -325,11 +425,46 @@ type QuestionState = {
 };
 
 export default function Lpic1PracticePage() {
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
   const [currentIdx, setCurrentIdx] = useState(0);
   const [states, setStates] = useState<Record<string, QuestionState>>({});
   // 正解した問題のIDのみ保持（正解を見たりスキップした場合はスコア/ポイントに含めない）
   const [completed, setCompleted] = useState<Set<string>>(new Set());
   const [showHint, setShowHint] = useState(false);
+
+  useEffect(() => {
+    const checkTouch = () => {
+      const isTouch =
+        "ontouchstart" in window ||
+        navigator.maxTouchPoints > 0 ||
+        window.matchMedia("(hover: none), (pointer: coarse)").matches;
+      setIsTouchDevice(isTouch);
+    };
+    checkTouch();
+    window.addEventListener("resize", checkTouch);
+    return () => window.removeEventListener("resize", checkTouch);
+  }, []);
+
+  if (isTouchDevice) {
+    return (
+      <main className="flex min-h-screen items-center justify-center px-4 py-12">
+        <div className="max-w-md rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-8 text-center shadow-xl">
+          <div className="mb-4 text-4xl">🖥️</div>
+          <h1 className="mb-2 text-xl font-bold text-[var(--foreground)]">PC（デスクトップ）専用機能です</h1>
+          <p className="mb-6 text-sm text-[var(--text-muted)] leading-relaxed">
+            コマンド練習機能は、キーボードを備えたPC環境で最適な学習を行えるよう設計されています。
+            スマートフォンやタブレット（iPad等）からはご利用いただけません。
+          </p>
+          <Link
+            href="/lpic1"
+            className="inline-block rounded-xl bg-[var(--accent-primary)] px-6 py-2.5 text-xs font-bold text-white transition-opacity hover:opacity-90"
+          >
+            ← LPIC-1 コースへ戻る
+          </Link>
+        </div>
+      </main>
+    );
+  }
 
   const question = COMMAND_QUESTIONS[currentIdx] || COMMAND_QUESTIONS[0];
   const state = states[question.id] || { input: "", status: "idle", attempts: 0 };

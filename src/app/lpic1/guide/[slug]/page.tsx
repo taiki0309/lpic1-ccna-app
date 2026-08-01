@@ -425,10 +425,10 @@ export default async function Lpic1GuideDetail({
         <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
           <Link
             href="/lpic1/practice"
-            className="inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-xs font-extrabold text-white transition-all hover:scale-105"
+            className="pc-only inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-xs font-extrabold text-white transition-all hover:scale-105"
             style={{ background: "linear-gradient(135deg, #196c2e, #3fb950)" }}
           >
-            <span>💻 コマンド実践練習へ進む</span>
+            <span>💻 コマンド実践練習へ進む (PC専用)</span>
             <span>➔</span>
           </Link>
           <Link

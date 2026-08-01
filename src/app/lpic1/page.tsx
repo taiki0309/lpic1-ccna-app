@@ -68,7 +68,7 @@ export default function Lpic1TopPage() {
               id={`lpic1-${link.href.split("/").pop()}-btn`}
               href={link.href}
               className={`group relative flex-col gap-3 overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg ${
-                (link as any).desktopOnly ? "hidden md:flex" : "flex"
+                (link as any).desktopOnly ? "hidden lg:flex pc-only" : "flex"
               }`}
               style={
                 {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { submitAnswer } from "@/lib/submitAnswer";
 
@@ -128,31 +128,514 @@ const CLI_QUESTIONS = [
     ],
     explanation: "物理コンソール接続にセキュリティをかけるため、`password` を設定した上で必ず `login` コマンドを実行して有効化します。",
   },
+  {
+    id: "cli-11",
+    category: "CLI シミュレーション",
+    title: "VTY回線 (Telnet/SSH) のパスワード設定",
+    description: "VTY回線 (line vty 0 4) にパスワード「cisco」を設定し、ログイン認証を有効化してください。",
+    initialPrompt: "Router(config)#",
+    steps: [
+      { input: "line vty 0 4", response: "Router(config-line)#", hint: "`line vty 0 4` で仮想端末回線モードに入ります" },
+      { input: "password cisco", response: "Router(config-line)#", hint: "`password <パスワード>` を設定します" },
+      { input: "login", response: "Router(config-line)#", hint: "`login` でリモート接続時の認証を有効化します" },
+    ],
+    explanation: "Telnet や SSH などのリモートアクセスを行うために、line vty 0 4 に対してパスワードとログイン認証を設定します。",
+  },
+  {
+    id: "cli-12",
+    category: "CLI シミュレーション",
+    title: "特権EXECモードの暗号化パスワード設定",
+    description: "特権EXECモードへの移行に用いる暗号化パスワードとして「cisco123」を設定してください。",
+    initialPrompt: "Router(config)#",
+    steps: [
+      { input: "enable secret cisco123", response: "Router(config)#", hint: "`enable secret <パスワード>` でMD5暗号化パスワードを設定します" },
+    ],
+    explanation: "`enable secret` はパスワードを暗号化して保存するため、プレーンテキストの `enable password` より推奨されます。",
+  },
+  {
+    id: "cli-13",
+    category: "CLI シミュレーション",
+    title: "全プレーンテキストパスワードの暗号化",
+    description: "設定ファイル内の平文パスワードを一括して暗号化するサービスを有効化してください。",
+    initialPrompt: "Router(config)#",
+    steps: [
+      { input: "service password-encryption", response: "Router(config)#", hint: "`service password-encryption` を実行します" },
+    ],
+    explanation: "`service password-encryption` を有効にすると、コンソールパスワードなどが設定ファイル（running-config）上で弱い暗号化（Type 7）によって保護されます。",
+  },
+  {
+    id: "cli-14",
+    category: "CLI シミュレーション",
+    title: "RIP ルーティングの設定 (v2)",
+    description: "RIPルーティングプロトコルを起動し、バージョン2への変更およびネットワーク 10.0.0.0 を宣言してください。",
+    initialPrompt: "Router(config)#",
+    steps: [
+      { input: "router rip", response: "Router(config-router)#", hint: "`router rip` でルーティング設定モードに入ります" },
+      { input: "version 2", response: "Router(config-router)#", hint: "`version 2` でクラスレスルーティングに変更します" },
+      { input: "no auto-summary", response: "Router(config-router)#", hint: "`no auto-summary` で自動集約を無効化します" },
+      { input: "network 10.0.0.0", response: "Router(config-router)#", hint: "`network 10.0.0.0` で対象ネットワークを宣言します" },
+    ],
+    explanation: "RIPv2 ではサブネット情報をアドバタイズするため、`version 2` とともに `no auto-summary` で自動集約を無効にする設定が標準的です。",
+  },
+  {
+    id: "cli-15",
+    category: "CLI シミュレーション",
+    title: "標準アクセス制御リスト (ACL) の作成と適用",
+    description: "ホスト 192.168.1.100 の通信のみを拒否し、他を許可する標準ACL番号 10 を作成して、g0/0 の受信方向に適用してください。",
+    initialPrompt: "Router(config)#",
+    steps: [
+      { input: "access-list 10 deny 192.168.1.100", response: "Router(config)#", hint: "`access-list 10 deny <IP>` で特定ホストを拒否します" },
+      { input: "access-list 10 permit any", response: "Router(config)#", hint: "`access-list 10 permit any` で残りを許可します" },
+      { input: "interface g0/0", response: "Router(config-if)#", hint: "`interface g0/0` でインターフェースモードへ" },
+      { input: "ip access-group 10 in", response: "Router(config-if)#", hint: "`ip access-group 10 in` で受信方向に適用します" },
+    ],
+    explanation: "ACL は末尾に暗黙の Deny Any があるため、特定の通信を拒否する場合は必ずあとに permit any を記述する必要があります。",
+  },
+  {
+    id: "cli-16",
+    category: "CLI シミュレーション",
+    title: "PAT (IPマスカレード / overload) の設定",
+    description: "アクセスリスト 1 で許可された内部ホストの通信を、インターフェース g0/1 の IP を使って PAT (overload) 変換してください。",
+    initialPrompt: "Router(config)#",
+    steps: [
+      { input: "ip nat inside source list 1 interface g0/1 overload", response: "Router(config)#", hint: "`ip nat inside source list 1 interface g0/1 overload`" },
+    ],
+    explanation: "`overload` キーワードを指定することで、複数の内部 IP アドレスを 1 つのグローバル IP アドレス（ポート番号で識別）に変換する PAT が機能します。",
+  },
+  {
+    id: "cli-17",
+    category: "CLI シミュレーション",
+    title: "DHCP サーバープールの作成",
+    description: "DHCPプール「LAN-POOL」を作成し、ネットワーク 192.168.1.0/24 とデフォルトゲートウェイ 192.168.1.1 を指定してください。",
+    initialPrompt: "Router(config)#",
+    steps: [
+      { input: "ip dhcp pool LAN-POOL", response: "Router(dhcp-config)#", hint: "`ip dhcp pool <名前>` でプール作成モードに入ります" },
+      { input: "network 192.168.1.0 255.255.255.0", response: "Router(dhcp-config)#", hint: "`network <アドレス> <マスク>` で配布帯域を設定します" },
+      { input: "default-router 192.168.1.1", response: "Router(dhcp-config)#", hint: "`default-router <IP>` でゲートウェイを設定します" },
+    ],
+    explanation: "Cisco ルーターを DHCP サーバーとして動作させるには、プールを作成してネットワーク帯域とデフォルトルーターなどを設定します。",
+  },
+  {
+    id: "cli-18",
+    category: "CLI シミュレーション",
+    title: "PortFast と BPDU Guard の設定",
+    description: "インターフェース FastEthernet0/1 に Spanning-Tree PortFast と BPDU Guard を有効化してください。",
+    initialPrompt: "Switch(config)#",
+    steps: [
+      { input: "interface f0/1", response: "Switch(config-if)#", hint: "`interface f0/1` でインターフェースモードへ" },
+      { input: "spanning-tree portfast", response: "%Portfast has been configured on FastEthernet0/1\nSwitch(config-if)#", hint: "`spanning-tree portfast` で PortFast を有効化します" },
+      { input: "spanning-tree bpduguard enable", response: "Switch(config-if)#", hint: "`spanning-tree bpduguard enable` を実行します" },
+    ],
+    explanation: "PCやサーバーを接続するアクセスポートで PortFast を有効にすると転送状態への遷移が高速化し、BPDU Guard により不正なスイッチ接続を防止できます。",
+  },
+  {
+    id: "cli-19",
+    category: "CLI シミュレーション",
+    title: "EtherChannel (LACP) の設定",
+    description: "インターフェース範囲 g0/1-2 を選択し、LACP モードでチャネルグループ 1 に参加 (active) させてください。",
+    initialPrompt: "Switch(config)#",
+    steps: [
+      { input: "interface range g0/1 - 2", response: "Switch(config-if-range)#", hint: "`interface range g0/1 - 2` で複数ポートを選択します" },
+      { input: "channel-group 1 mode active", response: "Creating a port-channel interface Port-channel 1\nSwitch(config-if-range)#", hint: "`channel-group 1 mode active` で LACP モードを開始します" },
+    ],
+    explanation: "LACP (IEEE 802.3ad) で EtherChannel を構成する場合、少なくもと片側のモードを `active` に設定してネゴシエーションを行います。",
+  },
+  {
+    id: "cli-20",
+    category: "CLI シミュレーション",
+    title: "NTP サーバーの同期設定",
+    description: "IP アドレス 203.0.113.123 をタイムサーバー (NTPサーバー) として参照するよう設定してください。",
+    initialPrompt: "Router(config)#",
+    steps: [
+      { input: "ntp server 203.0.113.123", response: "Router(config)#", hint: "`ntp server <IPアドレス>` を設定します" },
+    ],
+    explanation: "ネットワーク内の各デバイスのログ時刻を正確に一致させるため、`ntp server` コマンドで共通のタイムサーバーと同期します。",
+  },
 ];
 
-// ─── ドラッグ&ドロップ問題 ────────────────────────────────
-const DND_QUESTION = {
-  id: "dnd-1",
-  category: "ドラッグ&ドロップ",
-  title: "OSI レイヤーとプロトコルのマッチング",
-  description: "各プロトコル/技術を対応する OSI レイヤーにドラッグしてください。",
-  items: [
-    { id: "ip", label: "IP (Internet Protocol)", correctLayer: 3 },
-    { id: "tcp", label: "TCP / UDP", correctLayer: 4 },
-    { id: "ethernet", label: "Ethernet / MAC", correctLayer: 2 },
-    { id: "http", label: "HTTP / HTTPS", correctLayer: 7 },
-    { id: "physical", label: "光ファイバー / UTP", correctLayer: 1 },
-    { id: "icmp", label: "ICMP / OSPF", correctLayer: 3 },
-  ],
-  layers: [1, 2, 3, 4, 7],
-  layerNames: {
-    1: "物理層 (L1)",
-    2: "データリンク層 (L2)",
-    3: "ネットワーク層 (L3)",
-    4: "トランスポート層 (L4)",
-    7: "アプリケーション層 (L7)",
+// ─── ドラッグ&ドロップ問題（全20問） ────────────────────────────────
+const DND_QUESTIONS = [
+  {
+    id: "dnd-1",
+    category: "ドラッグ&ドロップ",
+    title: "OSI レイヤーとプロトコルのマッチング",
+    description: "各プロトコル/技術を対応する OSI レイヤーにドラッグしてください。",
+    items: [
+      { id: "ip", label: "IP (Internet Protocol)", correctLayer: 3 },
+      { id: "tcp", label: "TCP / UDP", correctLayer: 4 },
+      { id: "ethernet", label: "Ethernet / MAC", correctLayer: 2 },
+      { id: "http", label: "HTTP / HTTPS", correctLayer: 7 },
+      { id: "physical", label: "光ファイバー / UTP", correctLayer: 1 },
+      { id: "icmp", label: "ICMP / OSPF", correctLayer: 3 },
+    ],
+    layers: [1, 2, 3, 4, 7],
+    layerNames: {
+      1: "物理層 (L1)",
+      2: "データリンク層 (L2)",
+      3: "ネットワーク層 (L3)",
+      4: "トランスポート層 (L4)",
+      7: "アプリケーション層 (L7)",
+    },
   },
-};
+  {
+    id: "dnd-2",
+    category: "ドラッグ&ドロップ",
+    title: "著名ポート番号とサービス名のマッチング",
+    description: "各プロトコル・サービスを正しい TCP/UDP ポート番号に分類してください。",
+    items: [
+      { id: "port-80", label: "HTTP (非暗号化 Web)", correctLayer: 80 },
+      { id: "port-443", label: "HTTPS (セキュア Web)", correctLayer: 443 },
+      { id: "port-22", label: "SSH / SFTP (暗号化ログイン)", correctLayer: 22 },
+      { id: "port-53", label: "DNS (名前解決)", correctLayer: 53 },
+      { id: "port-23", label: "Telnet (非暗号化ログイン)", correctLayer: 23 },
+      { id: "port-67", label: "DHCP サーバー", correctLayer: 67 },
+    ],
+    layers: [22, 23, 53, 67, 80, 443],
+    layerNames: {
+      22: "ポート 22",
+      23: "ポート 23",
+      53: "ポート 53",
+      67: "ポート 67",
+      80: "ポート 80",
+      443: "ポート 443",
+    },
+  },
+  {
+    id: "dnd-3",
+    category: "ドラッグ&ドロップ",
+    title: "OSPF ネイバー関係の確立ステート",
+    description: "OSPF ルーターが隣接関係を結ぶ各状態を、進行する順序段階に正しく当てはめてください。",
+    items: [
+      { id: "ospf-1", label: "Down (helloパケット未受信)", correctLayer: 1 },
+      { id: "ospf-2", label: "Init (hello受信 / 自IP未記載)", correctLayer: 2 },
+      { id: "ospf-3", label: "2-Way (双方向通信 / DR選出)", correctLayer: 3 },
+      { id: "ospf-4", label: "ExStart (マスター/スレーブ決定)", correctLayer: 4 },
+      { id: "ospf-5", label: "Exchange (DBD要約情報の交換)", correctLayer: 5 },
+      { id: "ospf-6", label: "Full (ルーティング情報同期完了)", correctLayer: 6 },
+    ],
+    layers: [1, 2, 3, 4, 5, 6],
+    layerNames: {
+      1: "1. Down ステート",
+      2: "2. Init ステート",
+      3: "3. 2-Way ステート",
+      4: "4. ExStart ステート",
+      5: "5. Exchange ステート",
+      6: "6. Full (完全同期)",
+    },
+  },
+  {
+    id: "dnd-4",
+    category: "ドラッグ&ドロップ",
+    title: "Syslog ログレベルの数値と重要度分類",
+    description: "Syslog のメッセージレベル（0〜7）と対応する意味・重要度を一致させてください。",
+    items: [
+      { id: "sys-0", label: "Emergency (システム起動不能)", correctLayer: 0 },
+      { id: "sys-1", label: "Alert (即時対応が必要)", correctLayer: 1 },
+      { id: "sys-2", label: "Critical (重大なエラー)", correctLayer: 2 },
+      { id: "sys-3", label: "Error (通常のエラー条件)", correctLayer: 3 },
+      { id: "sys-4", label: "Warning (警告条件)", correctLayer: 4 },
+      { id: "sys-6", label: "Informational (通常情報)", correctLayer: 6 },
+    ],
+    layers: [0, 1, 2, 3, 4, 6],
+    layerNames: {
+      0: "レベル 0 (Emerg)",
+      1: "レベル 1 (Alert)",
+      2: "レベル 2 (Crit)",
+      3: "レベル 3 (Err)",
+      4: "レベル 4 (Warn)",
+      6: "レベル 6 (Info)",
+    },
+  },
+  {
+    id: "dnd-5",
+    category: "ドラッグ&ドロップ",
+    title: "IPv6 アドレスプレフィックス分類",
+    description: "各種 IPv6 アドレスの特徴と対応するプレフィックスにドラッグして分類してください。",
+    items: [
+      { id: "ip6-1", label: "グローバルユニキャストアドレス", correctLayer: 1 },
+      { id: "ip6-2", label: "リンクローカルアドレス", correctLayer: 2 },
+      { id: "ip6-3", label: "マルチキャストアドレス", correctLayer: 3 },
+      { id: "ip6-4", label: "ループバック（自分自身）", correctLayer: 4 },
+    ],
+    layers: [1, 2, 3, 4],
+    layerNames: {
+      1: "2000:: / 3 (Global)",
+      2: "fe80:: / 10 (Link-Local)",
+      3: "ff00:: / 8 (Multicast)",
+      4: "::1 / 128 (Loopback)",
+    },
+  },
+  {
+    id: "dnd-6",
+    category: "ドラッグ&ドロップ",
+    title: "STP (Spanning Tree Protocol) ポート状態",
+    description: "STP ポートの各ステートとそれぞれの動作特徴・フレーム転送有無を一致させてください。",
+    items: [
+      { id: "stp-1", label: "Blocking (フレーム転送・学習なし / BPDU受信のみ)", correctLayer: 1 },
+      { id: "stp-2", label: "Listening (BPDU送受信によるポート役割決定)", correctLayer: 2 },
+      { id: "stp-3", label: "Learning (MACアドレス学習を開始 / 転送なし)", correctLayer: 3 },
+      { id: "stp-4", label: "Forwarding (データ転送とMAC学習を両方実施)", correctLayer: 4 },
+    ],
+    layers: [1, 2, 3, 4],
+    layerNames: {
+      1: "Blocking ステート",
+      2: "Listening ステート",
+      3: "Learning ステート",
+      4: "Forwarding ステート",
+    },
+  },
+  {
+    id: "dnd-7",
+    category: "ドラッグ&ドロップ",
+    title: "LANスイッチのフレーム転送（スイッチング）方式",
+    description: "スイッチがフレームを中継する方式を特徴に合わせて分類してください。",
+    items: [
+      { id: "sw-1", label: "全フレームを受信・FCSエラーチェック後に転送", correctLayer: 1 },
+      { id: "sw-2", label: "先頭6バイト(宛先MAC)を読んだ瞬間に転送開始 (最速)", correctLayer: 2 },
+      { id: "sw-3", label: "先頭64バイトを読んで衝突エラー発生を回避して転送", correctLayer: 3 },
+    ],
+    layers: [1, 2, 3],
+    layerNames: {
+      1: "ストア＆フォワード",
+      2: "カットスルー (Fast)",
+      3: "フラグメントフリー",
+    },
+  },
+  {
+    id: "dnd-8",
+    category: "ドラッグ&ドロップ",
+    title: "ワイヤレスアクセスポイント (AP) アーキテクチャ",
+    description: "無線 LAN アクセスポイントの各種タイプと制御形態を一致させてください。",
+    items: [
+      { id: "ap-1", label: "単体で認証・管理・設定を行う独立型 AP", correctLayer: 1 },
+      { id: "ap-2", label: "WLC (コントローラー) からの一元制御を受ける AP", correctLayer: 2 },
+      { id: "ap-3", label: "無線LAN全体の電波調整や設定を一元管理する頭脳", correctLayer: 3 },
+    ],
+    layers: [1, 2, 3],
+    layerNames: {
+      1: "自律型 (Autonomous AP)",
+      2: "軽量型 (Lightweight AP)",
+      3: "WLC (コントローラー)",
+    },
+  },
+  {
+    id: "dnd-9",
+    category: "ドラッグ&ドロップ",
+    title: "ネットワークセキュリティ脅威の分類",
+    description: "各攻撃手法・脅威の名称を正しい説明文と対応させてください。",
+    items: [
+      { id: "sec-1", label: "偽サイトやメールで認証情報・個人情報を詐取する攻撃", correctLayer: 1 },
+      { id: "sec-2", label: "大量トラフィックを送りつけサービスを停止させる攻撃", correctLayer: 2 },
+      { id: "sec-3", label: "通信の途中に割り込んでデータを盗聴・改ざんする攻撃", correctLayer: 3 },
+      { id: "sec-4", label: "単語リストを自動入力してパスワードを破る攻撃", correctLayer: 4 },
+    ],
+    layers: [1, 2, 3, 4],
+    layerNames: {
+      1: "フィッシング (Phishing)",
+      2: "DoS / DDoS 攻撃",
+      3: "中間者攻撃 (MITM)",
+      4: "辞書攻撃",
+    },
+  },
+  {
+    id: "dnd-10",
+    category: "ドラッグ&ドロップ",
+    title: "NAT / PAT (ネットワークアドレス変換) の種類",
+    description: "各種アドレス変換技術とそれぞれの変換対応表モデルを一致させてください。",
+    items: [
+      { id: "nat-1", label: "プライベートIPとグローバルIPを 1:1 で固定変換", correctLayer: 1 },
+      { id: "nat-2", label: "用意されたグローバルIPプールから動的に 1:1 変換", correctLayer: 2 },
+      { id: "nat-3", label: "ポート番号を用いて複数のプライベートIPを 1つに多重化 (1:N)", correctLayer: 3 },
+    ],
+    layers: [1, 2, 3],
+    layerNames: {
+      1: "スタティック NAT",
+      2: "ダイナミック NAT",
+      3: "PAT / NAPT (IPマスカレード)",
+    },
+  },
+  {
+    id: "dnd-11",
+    category: "ドラッグ&ドロップ",
+    title: "ルーティングプロトコルの AD値 (信頼度)",
+    description: "各ルーティング情報源と Cisco 機器のデフォルト AD (Administrative Distance) 値をマッチングしてください。",
+    items: [
+      { id: "ad-0", label: "直接接続インターフェース (Connected)", correctLayer: 0 },
+      { id: "ad-1", label: "スタティックルート (Static)", correctLayer: 1 },
+      { id: "ad-110", label: "OSPF", correctLayer: 110 },
+      { id: "ad-120", label: "RIP (Routing Information Protocol)", correctLayer: 120 },
+    ],
+    layers: [0, 1, 110, 120],
+    layerNames: {
+      0: "AD = 0 (最高信頼)",
+      1: "AD = 1",
+      110: "AD = 110",
+      120: "AD = 120",
+    },
+  },
+  {
+    id: "dnd-12",
+    category: "ドラッグ&ドロップ",
+    title: "QoS (Quality of Service) サービスモデル",
+    description: "通信品質制御を行う各モデルの特徴を分類してください。",
+    items: [
+      { id: "qos-1", label: "特別な制御を行わず、届いた順にパケットを処理", correctLayer: 1 },
+      { id: "qos-2", label: "通信開始前にアプリ間でエンドツーエンドの帯域予約を行う", correctLayer: 2 },
+      { id: "qos-3", label: "パケットに優先度マーク (DSCP) を付け、クラス毎に制御", correctLayer: 3 },
+    ],
+    layers: [1, 2, 3],
+    layerNames: {
+      1: "Best Effort (ベストエフォート)",
+      2: "IntServ (統合サービス)",
+      3: "DiffServ (差別化サービス)",
+    },
+  },
+  {
+    id: "dnd-13",
+    category: "ドラッグ&ドロップ",
+    title: "クラウドコンピューティング サービスモデル",
+    description: "クラウドで提供される各サービス形態と利用者が管理する範囲を分類してください。",
+    items: [
+      { id: "cld-1", label: "仮想サーバーやネットワーク等のインフラ基盤を提供", correctLayer: 1 },
+      { id: "cld-2", label: "アプリ開発用の実行環境やミドルウェアまでを提供", correctLayer: 2 },
+      { id: "cld-3", label: "WebメールやCRMなど完成されたアプリケーションを提供", correctLayer: 3 },
+    ],
+    layers: [1, 2, 3],
+    layerNames: {
+      1: "IaaS (Infrastructure)",
+      2: "PaaS (Platform)",
+      3: "SaaS (Software)",
+    },
+  },
+  {
+    id: "dnd-14",
+    category: "ドラッグ&ドロップ",
+    title: "SDN (Software-Defined Networking) レイヤー構造",
+    description: "コントローラーベース SDN の各プレーンと役割を一致させてください。",
+    items: [
+      { id: "sdn-1", label: "ネットワークの要件やポリシーを指示するアプリ群", correctLayer: 1 },
+      { id: "sdn-2", label: "全体の経路計算やデバイス状態を一元制御する頭脳", correctLayer: 2 },
+      { id: "sdn-3", label: "物理・仮想スイッチがパケットを転送するデータ処理部", correctLayer: 3 },
+    ],
+    layers: [1, 2, 3],
+    layerNames: {
+      1: "アプリケーションプレーン",
+      2: "コントロールプレーン",
+      3: "データプレーン",
+    },
+  },
+  {
+    id: "dnd-15",
+    category: "ドラッグ&ドロップ",
+    title: "無線LAN (WLAN) セキュリティプロトコル",
+    description: "各無線セキュリティ技術の仕様や暗号化アルゴリズムを一致させてください。",
+    items: [
+      { id: "wl-1", label: "RC4暗号を使用する古い脆弱なセキュリティ規格 (使用禁止)", correctLayer: 1 },
+      { id: "wl-2", label: "AES-CCMPを使用し事前共有鍵 (PSK) で認証を行う標準規格", correctLayer: 2 },
+      { id: "wl-3", label: "SAE認証と192bit暗号サポートを導入した最新セキュリティ", correctLayer: 3 },
+      { id: "wl-4", label: "RADIUSサーバー連携で個人の証明書やID/PW認証を実施", correctLayer: 4 },
+    ],
+    layers: [1, 2, 3, 4],
+    layerNames: {
+      1: "WEP",
+      2: "WPA2-Personal (WPA2-PSK)",
+      3: "WPA3",
+      4: "802.1X / Enterprise",
+    },
+  },
+  {
+    id: "dnd-16",
+    category: "ドラッグ&ドロップ",
+    title: "AAA ネットワークアクセス制御フレームワーク",
+    description: "AAA (Authentication, Authorization, Accounting) の各機能の意味を分類してください。",
+    items: [
+      { id: "aaa-1", label: "「誰であるか」を証明・検証するプロセス (ID/PW等)", correctLayer: 1 },
+      { id: "aaa-2", label: "ユーザーの権限や許可されるコマンド・アクセスを決定", correctLayer: 2 },
+      { id: "aaa-3", label: "利用した時間や実行コマンドの操作履歴を記録・追跡", correctLayer: 3 },
+    ],
+    layers: [1, 2, 3],
+    layerNames: {
+      1: "Authentication (認証)",
+      2: "Authorization (認可)",
+      3: "Accounting (アカウンティング)",
+    },
+  },
+  {
+    id: "dnd-17",
+    category: "ドラッグ&ドロップ",
+    title: "Cisco ACL (アクセス制御リスト) の種類",
+    description: "標準ACL と 拡張ACL の特徴・指定可能条件・番号範囲を分類してください。",
+    items: [
+      { id: "acl-1", label: "送信元 IP アドレスのみを検査条件とする (番号 1〜99)", correctLayer: 1 },
+      { id: "acl-2", label: "送信元・宛先 IP、プロトコル、ポート番号まで指定可能 (番号 100〜199)", correctLayer: 2 },
+      { id: "acl-3", label: "宛先デバイスにできる限り「近い」ルーターインターフェースに適用すべき", correctLayer: 1 },
+      { id: "acl-4", label: "送信元デバイスにできる限り「近い」ルーターインターフェースに適用すべき", correctLayer: 2 },
+    ],
+    layers: [1, 2],
+    layerNames: {
+      1: "標準 ACL (Standard)",
+      2: "拡張 ACL (Extended)",
+    },
+  },
+  {
+    id: "dnd-18",
+    category: "ドラッグ&ドロップ",
+    title: "DHCP アドレス自動割り当て DORA プロセス",
+    description: "クライアントが DHCP サーバーから IP アドレスを取得する 4 ステップ順序に当てはめてください。",
+    items: [
+      { id: "dh-1", label: "Discover: クライアントがDHCPサーバーを探すブロードキャスト", correctLayer: 1 },
+      { id: "dh-2", label: "Offer: サーバーが割り当て可能なIPアドレス候補を提案", correctLayer: 2 },
+      { id: "dh-3", label: "Request: クライアントが提案されたIPの使用を要求", correctLayer: 3 },
+      { id: "dh-4", label: "Acknowledge: サーバーが正式予約を完了し承認通知を返信", correctLayer: 4 },
+    ],
+    layers: [1, 2, 3, 4],
+    layerNames: {
+      1: "Step 1: Discover",
+      2: "Step 2: Offer",
+      3: "Step 3: Request",
+      4: "Step 4: Acknowledge",
+    },
+  },
+  {
+    id: "dnd-19",
+    category: "ドラッグ&ドロップ",
+    title: "光ファイバーコネクタ＆ケーブル種別",
+    description: "光ファイバー通信のコネクタタイプやモードの種類を説明とマッチングしてください。",
+    items: [
+      { id: "fbr-1", label: "角型プッシュプル接続で広く普及する標準コネクタ", correctLayer: 1 },
+      { id: "fbr-2", label: "高密度配線に適した小型クリップ付きコネクタ (Little Connector)", correctLayer: 2 },
+      { id: "fbr-3", label: "コア径が細くレーザー光で長距離通信するケーブル (黄色の外被が一般的)", correctLayer: 3 },
+      { id: "fbr-4", label: "コア径が太くLED光で短〜中距離通信するケーブル (オレンジ/アクア外被)", correctLayer: 4 },
+    ],
+    layers: [1, 2, 3, 4],
+    layerNames: {
+      1: "SC コネクタ",
+      2: "LC コネクタ",
+      3: "シングルモード (SMF)",
+      4: "マルチモード (MMF)",
+    },
+  },
+  {
+    id: "dnd-20",
+    category: "ドラッグ&ドロップ",
+    title: "REST API HTTP メソッドと CRUD 処理",
+    description: "RESTful API で用いられる各 HTTP メソッドを対応するデータ処理アクションに分類してください。",
+    items: [
+      { id: "rst-1", label: "サーバーからリソースやデータを「取得 (Read)」する", correctLayer: 1 },
+      { id: "rst-2", label: "サーバーに新規リソースを「作成 (Create)」する", correctLayer: 2 },
+      { id: "rst-3", label: "既存のリソース全体を「更新・置換 (Update)」する", correctLayer: 3 },
+      { id: "rst-4", label: "指定したリソースをサーバーから「削除 (Delete)」する", correctLayer: 4 },
+    ],
+    layers: [1, 2, 3, 4],
+    layerNames: {
+      1: "GET メソッド",
+      2: "POST メソッド",
+      3: "PUT メソッド",
+      4: "DELETE メソッド",
+    },
+  },
+];
+
 
 // ─── トポロジー問題（構成図 ＆ S3画像対応シミュレーション） ────────
 const TOPOLOGY_QUESTIONS = [
@@ -191,6 +674,7 @@ const TOPOLOGY_QUESTIONS = [
 type SimTab = "cli" | "dnd" | "topology" | "s3view";
 
 export default function CcnaSimulationPage() {
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
   const [activeTab, setActiveTab] = useState<SimTab>("cli");
 
   // CLI State
@@ -198,16 +682,74 @@ export default function CcnaSimulationPage() {
   const [cliInput, setCliInput] = useState("");
   const [cliHistory, setCliHistory] = useState<{ prompt: string; command: string; response: string }[]>([]);
   const [cliStepIdx, setCliStepIdx] = useState(0);
+
+  useEffect(() => {
+    const checkTouch = () => {
+      const isTouch =
+        "ontouchstart" in window ||
+        navigator.maxTouchPoints > 0 ||
+        window.matchMedia("(hover: none), (pointer: coarse)").matches;
+      setIsTouchDevice(isTouch);
+    };
+    checkTouch();
+    window.addEventListener("resize", checkTouch);
+    return () => window.removeEventListener("resize", checkTouch);
+  }, []);
+
+  if (isTouchDevice) {
+    return (
+      <main className="flex min-h-screen items-center justify-center px-4 py-12">
+        <div className="max-w-md rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-8 text-center shadow-xl">
+          <div className="mb-4 text-4xl">🖥️</div>
+          <h1 className="mb-2 text-xl font-bold text-[var(--foreground)]">PC（デスクトップ）専用機能です</h1>
+          <p className="mb-6 text-sm text-[var(--text-muted)] leading-relaxed">
+            シミュレーション機能（CLI入力およびドラッグ＆ドロップ演習）は、PC（デスクトップ環境）での利用に最適化されています。
+            スマートフォンやタブレット（iPad等）からはご利用いただけません。
+          </p>
+          <Link
+            href="/ccna"
+            className="inline-block rounded-xl bg-[var(--accent-primary)] px-6 py-2.5 text-xs font-bold text-white transition-opacity hover:opacity-90"
+          >
+            ← CCNA コースへ戻る
+          </Link>
+        </div>
+      </main>
+    );
+  }
   const [cliCompleted, setCliCompleted] = useState(false);
   const [cliError, setCliError] = useState(false);
   const [showCliHint, setShowCliHint] = useState(false);
 
   // DnD State
-  const [assignments, setAssignments] = useState<Record<string, number | null>>(
-    Object.fromEntries(DND_QUESTION.items.map((i) => [i.id, null]))
+  const [dndQuestionIdx, setDndQuestionIdx] = useState(0);
+  const currentDndQ = DND_QUESTIONS[dndQuestionIdx] || DND_QUESTIONS[0];
+  const [assignments, setAssignments] = useState<Record<string, number | null>>(() =>
+    Object.fromEntries(DND_QUESTIONS[0].items.map((i) => [i.id, null]))
   );
   const [dragItem, setDragItem] = useState<string | null>(null);
   const [dndChecked, setDndChecked] = useState(false);
+
+  const handleNextDndQ = () => {
+    if (dndQuestionIdx + 1 < DND_QUESTIONS.length) {
+      const nextIdx = dndQuestionIdx + 1;
+      setDndQuestionIdx(nextIdx);
+      setAssignments(
+        Object.fromEntries(DND_QUESTIONS[nextIdx].items.map((i) => [i.id, null]))
+      );
+      setDndChecked(false);
+    }
+  };
+
+  const handlePrevDndQ = () => {
+    if (dndQuestionIdx > 0) {
+      const prevIdx = dndQuestionIdx - 1;
+      setDndQuestionIdx(prevIdx);
+      setAssignments(
+        Object.fromEntries(DND_QUESTIONS[prevIdx].items.map((i) => [i.id, null]))
+      );
+      setDndChecked(false);
+    }
+  };
 
   // Topology State
   const [topoQuestionIdx, setTopoQuestionIdx] = useState(0);
@@ -311,20 +853,20 @@ export default function CcnaSimulationPage() {
 
   const handleDndCheck = () => {
     setDndChecked(true);
-    const correctCount = DND_QUESTION.items.filter(
+    const correctCount = currentDndQ.items.filter(
       (i) => assignments[i.id] === i.correctLayer
     ).length;
     submitAnswer({
       cert: "ccna",
-      questionId: DND_QUESTION.id,
-      category: DND_QUESTION.category,
+      questionId: currentDndQ.id,
+      category: currentDndQ.category,
       selectedIndex: correctCount,
-      isCorrect: correctCount === DND_QUESTION.items.length,
+      isCorrect: correctCount === currentDndQ.items.length,
     });
   };
 
-  const unassigned = DND_QUESTION.items.filter((i) => assignments[i.id] === null);
-  const dndScore = DND_QUESTION.items.filter(
+  const unassigned = currentDndQ.items.filter((i) => assignments[i.id] === null);
+  const dndScore = currentDndQ.items.filter(
     (i) => assignments[i.id] === i.correctLayer
   ).length;
 
@@ -528,10 +1070,10 @@ export default function CcnaSimulationPage() {
         <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 space-y-6 animate-fade-in">
           <div>
             <h2 className="text-lg font-bold text-[var(--foreground)]">
-              {DND_QUESTION.title}
+              {currentDndQ.title}
             </h2>
             <p className="text-xs text-[var(--text-muted)] mt-1">
-              {DND_QUESTION.description}
+              {currentDndQ.description}
             </p>
           </div>
 
@@ -561,9 +1103,9 @@ export default function CcnaSimulationPage() {
 
           {/* レイヤーゾーン */}
           <div className="flex flex-col gap-3">
-            {DND_QUESTION.layers.map((layer) => {
-              const layerName = (DND_QUESTION.layerNames as Record<number, string>)[layer];
-              const assignedItems = DND_QUESTION.items.filter((i) => assignments[i.id] === layer);
+            {currentDndQ.layers.map((layer) => {
+              const layerName = (currentDndQ.layerNames as unknown as Record<number, string>)[layer];
+              const assignedItems = currentDndQ.items.filter((i) => assignments[i.id] === layer);
               const isCorrect = dndChecked && assignedItems.every((i) => i.correctLayer === layer);
               const hasWrong = dndChecked && assignedItems.some((i) => i.correctLayer !== layer);
 
@@ -618,7 +1160,7 @@ export default function CcnaSimulationPage() {
             <button
               type="button"
               onClick={() => {
-                setAssignments(Object.fromEntries(DND_QUESTION.items.map((i) => [i.id, null])));
+                setAssignments(Object.fromEntries(currentDndQ.items.map((i) => [i.id, null])));
                 setDndChecked(false);
               }}
               className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-4 py-3 text-xs font-bold text-[var(--text-muted)] hover:text-[var(--foreground)]"
@@ -630,9 +1172,9 @@ export default function CcnaSimulationPage() {
           {dndChecked && (
             <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-4 text-center">
               <p className="text-base font-extrabold text-emerald-400">
-                {dndScore === DND_QUESTION.items.length
+                {dndScore === currentDndQ.items.length
                   ? "🎉 全問正解！素晴らしい！"
-                  : `${dndScore} / ${DND_QUESTION.items.length} 項目正解！`}
+                  : `${dndScore} / ${currentDndQ.items.length} 項目正解！`}
               </p>
             </div>
           )}

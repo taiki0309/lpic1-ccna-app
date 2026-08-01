@@ -339,9 +339,9 @@ export default async function CcnaGuideDetailPage({ params }: { params: Params }
             </Link>
             <Link
               href="/ccna/simulation"
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-6 py-3 font-semibold text-[var(--foreground)] transition-all hover:scale-105"
+              className="pc-only inline-flex items-center justify-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-6 py-3 font-semibold text-[var(--foreground)] transition-all hover:scale-105"
             >
-              シミュレーションへ →
+              シミュレーションへ (PC専用) →
             </Link>
           </div>
         </div>

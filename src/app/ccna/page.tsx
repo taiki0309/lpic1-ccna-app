@@ -59,7 +59,7 @@ export default function CcnaTopPage() {
         </nav>
 
         {/* 重要バナー：シミュレーション問題対応 (PCのみ表示) */}
-        <div className="mb-8 hidden md:flex items-start gap-3 rounded-2xl border border-[#bc8cff] bg-[rgba(188,140,255,0.08)] p-5">
+        <div className="mb-8 hidden lg:flex pc-only items-start gap-3 rounded-2xl border border-[#bc8cff] bg-[rgba(188,140,255,0.08)] p-5">
           <span className="text-2xl">🎮</span>
           <div>
             <p className="font-bold text-[#bc8cff]">シミュレーション問題に対応</p>
@@ -77,7 +77,7 @@ export default function CcnaTopPage() {
               id={`ccna-${link.href.split("/").pop()}-btn`}
               href={link.href}
               className={`group flex-col gap-3 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg ${
-                (link as any).desktopOnly ? "hidden md:flex" : "flex"
+                (link as any).desktopOnly ? "hidden lg:flex pc-only" : "flex"
               }`}
             >
               <div

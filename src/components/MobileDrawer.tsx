@@ -74,7 +74,6 @@ export default function MobileDrawer({
         { href: "/", label: "ホーム", icon: "🏠", exact: true },
         { href: "/lpic1", label: "LPIC-1 対策コース", icon: "🐧" },
         { href: "/ccna", label: "CCNA 対策コース", icon: "🌐" },
-        { href: "/ccna/simulation", label: "CCNA シミュレーション演習", icon: "🗺️" },
       ],
     },
     {
@@ -85,11 +84,6 @@ export default function MobileDrawer({
           href: "/lpic1/guide/linux-install",
           label: "Linux環境構築 (Ubuntu+VirtualBox)",
           icon: "💿",
-        },
-        {
-          href: "/lpic1/practice",
-          label: "Linuxコマンド練習",
-          icon: "💻",
         },
       ],
     },
