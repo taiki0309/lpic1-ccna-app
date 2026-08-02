@@ -22,10 +22,17 @@ export const metadata: Metadata = {
   title: "ITインフラ技術者認定学習アプリ - LPIC & CCNA",
   description: "LPIC-1 および CCNA 資格取得をサポートする実践学習アプリ",
   icons: {
-    icon: "/characters/boy.png",
+    icon: [
+      { url: "/characters/boy.png" },
+      { url: "/favicon.ico" },
+    ],
     shortcut: "/characters/boy.png",
-    apple: "/characters/boy.png",
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+      { url: "/characters/boy.png" },
+    ],
   },
+  manifest: "/manifest.json",
 };
 
 export const viewport: Viewport = {

@@ -32,13 +32,14 @@ export default function Header() {
           </div>
           <span className="font-extrabold text-sm sm:text-base text-[var(--foreground)] tracking-tight whitespace-nowrap">
             <span className="sm:hidden">ITインフラ学習アプリ</span>
-            <span className="hidden sm:inline">ITインフラ技術者認定学習アプリ</span>
+            <span className="hidden sm:inline lg:hidden">ITインフラ学習アプリ</span>
+            <span className="hidden lg:inline">ITインフラ技術者認定学習アプリ</span>
           </span>
         </Link>
       </div>
 
       {/* 右側：テーマ切替(モバイルはコンパクト/PCは文字付き) ＆ ユーザー認証 */}
-      <div className="flex shrink-0 items-center gap-1.5 sm:gap-3">
+      <div className="flex shrink-0 items-center gap-1 sm:gap-2 min-w-0">
         <div className="hidden sm:block">
           <ThemeToggle iconOnly={false} />
         </div>

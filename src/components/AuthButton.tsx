@@ -40,9 +40,14 @@ export default function AuthButton() {
   if (authStatus === 'authenticated') {
     const name = getDisplayName(user);
     return (
-      <div className="flex items-center gap-2">
-        <span className="hidden sm:inline-block rounded-xl bg-[var(--surface-2)] border border-[var(--border)] px-3 py-1.5 text-xs font-bold text-[var(--accent-primary)] whitespace-nowrap" title={`ログイン中: ${name}さん`}>
-          👋 こんにちは、{name}さん
+      <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+        <span
+          className="hidden sm:inline-flex items-center rounded-xl bg-[var(--surface-2)] border border-[var(--border)] px-2.5 py-1.5 text-xs font-bold text-[var(--accent-primary)] min-w-0 max-w-[130px] md:max-w-[170px] lg:max-w-[240px]"
+          title={`ログイン中: ${name}さん`}
+        >
+          <span className="shrink-0">👋 こんにちは、</span>
+          <span className="truncate">{name}</span>
+          <span className="shrink-0">さん</span>
         </span>
         <button
           id="logout-btn"
@@ -50,7 +55,7 @@ export default function AuthButton() {
             signOut();
             router.push('/login');
           }}
-          className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-1.5 text-xs font-semibold text-[var(--text-muted)] transition-all duration-300 hover:scale-105 hover:border-[#f85149] hover:text-[#f85149] sm:px-4 sm:py-2 sm:text-sm"
+          className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl border border-[var(--border)] bg-[var(--surface)] px-2.5 py-1.5 text-xs font-semibold text-[var(--text-muted)] transition-all duration-300 hover:scale-105 hover:border-[#f85149] hover:text-[#f85149] sm:px-4 sm:py-2 sm:text-sm"
         >
           <span>🔓</span>
           <span>ログアウト</span>
