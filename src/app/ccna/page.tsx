@@ -135,9 +135,9 @@ export default function CcnaTopPage() {
           <h2 className="mb-4 text-base font-bold text-[var(--foreground)]">📋 試験情報</h2>
           <div className="grid grid-cols-2 gap-4 text-sm sm:grid-cols-4">
             {[
-              { label: "試験コード", value: "200-301" },
-              { label: "合格ライン", value: "825点 / 1000点満点" },
-              { label: "問題数", value: "約100〜120問" },
+              { label: "試験コード", value: "200-301 v1.1" },
+              { label: "合格ライン", value: "約 825点 / 1000点満点" },
+              { label: "問題数", value: "約100問 (95〜105問)" },
               { label: "試験時間", value: "120分" },
             ].map((item) => (
               <div key={item.label}>

@@ -142,7 +142,7 @@ export default function Lpic1TopPage() {
           <h2 className="mb-4 text-base font-bold text-[var(--foreground)]">📋 試験情報</h2>
           <div className="grid grid-cols-2 gap-4 text-sm sm:grid-cols-4">
             {[
-              { label: "試験", value: "Exam 101 + 102" },
+              { label: "試験", value: "Exam 101 + 102 (Ver 5.0)" },
               { label: "合格ライン", value: "500点 / 800点満点" },
               { label: "問題数", value: "60問 / 各試験" },
               { label: "試験時間", value: "90分 / 各試験" },

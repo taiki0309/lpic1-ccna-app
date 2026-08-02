@@ -55,7 +55,8 @@ export function isCategoryMatch(itemCategory: string, targetCategory: string | n
     return (
       item.includes("ユーザー") ||
       item.includes("グループ") ||
-      item.includes("アカウント")
+      item.includes("アカウント") ||
+      item.includes("セキュリティ")
     );
   }
 
@@ -106,12 +107,20 @@ export function isCategoryMatch(itemCategory: string, targetCategory: string | n
       item.includes("認証")
     );
   }
-  if (target === "wan-cloud" || target === "wan & クラウド" || target === "クラウド") {
+  if (
+    target === "wan-cloud" ||
+    target === "wan & クラウド" ||
+    target === "クラウド" ||
+    target === "automation" ||
+    target === "自動化とプログラマビリティ"
+  ) {
     return (
       item.includes("wan") ||
       item.includes("クラウド") ||
       item.includes("vpn") ||
-      item.includes("qos")
+      item.includes("qos") ||
+      item.includes("自動化") ||
+      item.includes("プログラマビリティ")
     );
   }
 
