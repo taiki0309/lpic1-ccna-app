@@ -77,13 +77,18 @@ export default function MobileDrawer({
       ],
     },
     {
-      title: "環境構築・実機ガイド",
-      icon: "🖥️",
+      title: "学習ガイド・解説",
+      icon: "📖",
       items: [
         {
-          href: "/lpic1/guide/linux-install",
-          label: "Linux環境構築 (Ubuntu+VirtualBox)",
-          icon: "💿",
+          href: "/lpic1/guide",
+          label: "LPIC-1 学習ガイド",
+          icon: "🐧",
+        },
+        {
+          href: "/ccna/guide",
+          label: "CCNA 学習ガイド",
+          icon: "🌐",
         },
       ],
     },

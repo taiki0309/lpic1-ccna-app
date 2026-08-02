@@ -301,7 +301,7 @@ export default async function CcnaGuideDetailPage({ params }: { params: Params }
                     <span className="h-2.5 w-2.5 rounded-full bg-[#3fb950]" />
                     <span className="ml-2 font-mono text-xs text-[var(--text-muted)]">Cisco IOS / bash</span>
                   </div>
-                  <pre className="overflow-x-auto px-4 py-4 font-mono text-sm leading-relaxed text-[var(--foreground)]">
+                  <pre className="overflow-x-auto px-4 py-4 font-mono text-sm leading-relaxed text-gray-200">
                     <code>{step.code}</code>
                   </pre>
                 </div>

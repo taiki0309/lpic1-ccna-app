@@ -1,12 +1,12 @@
 import Link from "next/link";
 
 const categories = [
-  { name: "ネットワーク基礎", slug: "fundamentals", icon: "🌐", color: "#bc8cff", count: 30 },
-  { name: "IPアドレッシング", slug: "ip-addressing", icon: "🔢", color: "#58a6ff", count: 25 },
-  { name: "ルーティング", slug: "routing", icon: "🗺️", color: "#3fb950", count: 35 },
-  { name: "スイッチング・VLAN", slug: "switching", icon: "🔀", color: "#e3b341", count: 28 },
-  { name: "セキュリティ", slug: "security", icon: "🔐", color: "#f85149", count: 20 },
-  { name: "WAN & クラウド", slug: "wan-cloud", icon: "☁️", color: "#bc8cff", count: 22 },
+  { name: "ネットワーク基礎", slug: "fundamentals", icon: "🌐", color: "#bc8cff", count: 32 },
+  { name: "IPアドレス・サービス", slug: "ip-addressing", icon: "🔢", color: "#58a6ff", count: 28 },
+  { name: "ルーティング", slug: "routing", icon: "🗺️", color: "#3fb950", count: 38 },
+  { name: "スイッチング・VLAN", slug: "switching", icon: "🔀", color: "#e3b341", count: 30 },
+  { name: "セキュリティ", slug: "security", icon: "🔐", color: "#f85149", count: 24 },
+  { name: "WAN・クラウド・自動化", slug: "wan-cloud", icon: "☁️", color: "#bc8cff", count: 25 },
 ];
 
 const quickLinks = [

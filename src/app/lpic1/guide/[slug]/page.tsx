@@ -257,7 +257,7 @@ export default async function Lpic1GuideDetail({
         </Link>
         <span>/</span>
         <Link href="/lpic1/guide" className="hover:text-[var(--foreground)] transition-colors">
-          環境構築ガイド
+          学習ガイド
         </Link>
         <span>/</span>
         <span className="text-[var(--foreground)] truncate max-w-[200px]">{guide.title}</span>

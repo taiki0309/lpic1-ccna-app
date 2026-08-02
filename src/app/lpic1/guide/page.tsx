@@ -88,18 +88,41 @@ export default function Lpic1GuidePage() {
           <span>/</span>
           <Link href="/lpic1" className="hover:text-[var(--foreground)] transition-colors">LPIC-1</Link>
           <span>/</span>
-          <span className="text-[var(--foreground)]">環境構築ガイド</span>
+          <span className="text-[var(--foreground)]">学習ガイド</span>
         </nav>
 
         {/* ヘッダー */}
         <header className="mb-10">
           <h1 className="mb-2 text-3xl font-extrabold text-[var(--foreground)]">
-            📖 環境構築ガイド
+            📖 LPIC-1 学習ガイド
           </h1>
           <p className="text-[var(--text-muted)]">
-            初心者でも一から Linux 環境を構築し、試験に必要なスキルを身につけられるガイド集です。
+            Linux初心者でも一から理解できるガイド集。OS基礎概念からコマンド・パーミッション・スクリプトまで網羅。
           </p>
         </header>
+
+        {/* レベルフィルター */}
+        <div className="mb-6 flex flex-wrap gap-2">
+          {[
+            { label: "すべて", color: "#bc8cff", active: true },
+            { label: "初心者入門", color: "#3fb950", active: false },
+            { label: "初心者", color: "#3fb950", active: false },
+            { label: "初級", color: "#58a6ff", active: false },
+            { label: "中級", color: "#e3b341", active: false },
+          ].map((f) => (
+            <button
+              key={f.label}
+              className="rounded-full border px-4 py-1.5 text-sm font-semibold transition-all hover:scale-105"
+              style={{
+                borderColor: f.active ? f.color : "var(--border)",
+                background: f.active ? `${f.color}20` : "var(--surface)",
+                color: f.active ? f.color : "var(--text-muted)",
+              }}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
 
         {/* ガイドカード一覧 */}
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

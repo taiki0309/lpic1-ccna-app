@@ -1199,20 +1199,6 @@ export default function CcnaSimulationPage() {
             </p>
           </div>
 
-          {/* スマホ・PC両対応 操作ヒント */}
-          <div className="rounded-xl border border-[rgba(88,166,255,0.3)] bg-[rgba(88,166,255,0.08)] p-3.5 flex items-start gap-3">
-            <span className="text-xl shrink-0">💡</span>
-            <div className="text-xs leading-relaxed">
-              <p className="font-bold text-[var(--accent-primary)] mb-0.5">
-                スマートフォン・PC両対応！快適な2つの操作モード
-              </p>
-              <p className="text-[var(--text-muted)]">
-                【タップ操作（スマホ・PC推奨）】アイテムをタップして選択 ➔ 配置先のカテゴリーをタップして配置<br />
-                【ドラッグ操作（PC向け）】アイテムをマウスで直接ドラッグ＆ドロップして配置
-              </p>
-            </div>
-          </div>
-
           {/* ドラッグプール */}
           <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-4">
             <div className="flex items-center justify-between mb-3">

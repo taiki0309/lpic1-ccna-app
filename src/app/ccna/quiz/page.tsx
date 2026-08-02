@@ -20,11 +20,11 @@ interface Question {
 const CATEGORY_TABS = [
   { slug: "all", label: "全問（総合演習）", icon: "🌐" },
   { slug: "fundamentals", label: "ネットワーク基礎", icon: "🔗" },
-  { slug: "ip-addressing", label: "IPアドレッシング", icon: "🔢" },
+  { slug: "ip-addressing", label: "IPアドレス・サービス", icon: "🔢" },
   { slug: "routing", label: "ルーティング", icon: "🗺️" },
   { slug: "switching", label: "スイッチング・VLAN", icon: "🔀" },
   { slug: "security", label: "セキュリティ", icon: "🔐" },
-  { slug: "wan-cloud", label: "WAN & クラウド", icon: "☁️" },
+  { slug: "wan-cloud", label: "WAN・クラウド・自動化", icon: "☁️" },
 ];
 
 // ─── CCNA カテゴリ別 充実フォールバック問題（全カテゴリ完全対応版） ───
