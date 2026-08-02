@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Suspense } from "react";
 import AuthButton from "@/components/AuthButton";
 
@@ -19,13 +20,25 @@ export default function Home() {
       <div className="mx-auto max-w-5xl px-5 py-6 sm:px-8">
         {/* ── 今日のミッションカード ── */}
         <section aria-label="今日のミッション" className="mb-10">
-          <h2 className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[var(--text-muted)]">
-            <span>🎯</span> 今日のミッション
-          </h2>
+          <div className="mb-3 flex items-center gap-2">
+            <div className="relative w-6 h-6 rounded-full overflow-hidden border border-[var(--border)] bg-white shadow-sm">
+              <Image
+                src="/characters/boy.png"
+                alt=""
+                fill
+                className="object-cover"
+                sizes="24px"
+              />
+            </div>
+            <h2 className="text-xs font-bold uppercase tracking-widest text-[var(--text-muted)]">
+              今日のミッション
+            </h2>
+          </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <MissionCard
               href="/lpic1/quiz"
               icon="⚔️"
+              imgSrc="/characters/boy.png"
               iconBg="rgba(88,166,255,0.15)"
               iconColor="#58a6ff"
               title="弱点克服クエスト"
@@ -38,6 +51,7 @@ export default function Home() {
             <MissionCard
               href="/ccna/quiz"
               icon="🔥"
+              imgSrc="/characters/teacher.png"
               iconBg="rgba(188,140,255,0.15)"
               iconColor="#bc8cff"
               title="今日のチャレンジ"
@@ -52,14 +66,26 @@ export default function Home() {
 
         {/* ── 資格コース選択 ── */}
         <section aria-label="資格コースを選択" className="mb-10">
-          <h2 className="mb-4 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[var(--text-muted)]">
-            <span>📚</span> 資格学習コース
-          </h2>
+          <div className="mb-4 flex items-center gap-2">
+            <div className="relative w-6 h-6 rounded-full overflow-hidden border border-[var(--border)] bg-white shadow-sm">
+              <Image
+                src="/characters/teacher.png"
+                alt=""
+                fill
+                className="object-cover"
+                sizes="24px"
+              />
+            </div>
+            <h2 className="text-xs font-bold uppercase tracking-widest text-[var(--text-muted)]">
+              資格学習コース
+            </h2>
+          </div>
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <CertCard
               id="lpic1-card"
               href="/lpic1"
               emoji="🐧"
+              imgSrc="/characters/lpic.png"
               title="LPIC-1 対策コース"
               subtitle="Linux 技術者認定 Level 1"
               desc="Linux の基礎知識から実践まで。カテゴリ別問題演習・CLIコマンド入力練習で合格力を徹底強化。"
@@ -73,6 +99,7 @@ export default function Home() {
               id="ccna-card"
               href="/ccna"
               emoji="🌐"
+              imgSrc="/characters/ccna.png"
               title="CCNA 対策コース"
               subtitle="Cisco ネットワーク技術者認定"
               desc="IPアドレッシング・ルーティング・VLAN を、選択問題とCisco CLI演習・ドラッグ&ドロップで実践学習。"
@@ -88,19 +115,30 @@ export default function Home() {
         {/* ── 学習管理・サポート ── */}
         <section aria-label="学習サポート" className="mb-8">
           <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="space-y-1 text-center sm:text-left">
-              <h3 className="text-base font-extrabold text-[var(--foreground)]">
-                📈 学習の進捗状況をチェック
-              </h3>
-              <p className="text-xs text-[var(--text-muted)]">
-                どのカテゴリが得意でどこが苦手か、グラフと正答率でひと目で確認できます。
-              </p>
+            <div className="flex items-center gap-4 text-center sm:text-left">
+              <div className="relative w-12 h-12 rounded-full overflow-hidden shrink-0 border-2 border-[var(--accent-primary)] bg-white shadow-md">
+                <Image
+                  src="/characters/teacher.png"
+                  alt="アドバイザー"
+                  fill
+                  className="object-cover"
+                  sizes="48px"
+                />
+              </div>
+              <div className="space-y-1">
+                <h3 className="text-base font-extrabold text-[var(--foreground)]">
+                  学習の進捗状況をチェック
+                </h3>
+                <p className="text-xs text-[var(--text-muted)]">
+                  どのカテゴリが得意でどこが苦手か、グラフと正答率でひと目で確認できます。
+                </p>
+              </div>
             </div>
             <Link
               href="/dashboard"
               className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-[var(--accent-primary)] px-5 py-2.5 text-xs font-bold text-white hover:opacity-90 transition-opacity"
             >
-              <span>📊 進捗ボードを見る</span>
+              <span>進捗ボードを見る</span>
               <span>→</span>
             </Link>
           </div>
@@ -120,6 +158,7 @@ export default function Home() {
 function MissionCard({
   href,
   icon,
+  imgSrc,
   iconBg,
   iconColor,
   title,
@@ -131,6 +170,7 @@ function MissionCard({
 }: {
   href: string;
   icon: string;
+  imgSrc?: string;
   iconBg: string;
   iconColor: string;
   title: string;
@@ -151,11 +191,21 @@ function MissionCard({
         aria-hidden="true"
       />
       <div
-        className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-2xl"
+        className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl overflow-hidden border border-[var(--border)] bg-white shadow-sm"
         style={{ background: iconBg }}
         aria-hidden="true"
       >
-        {icon}
+        {imgSrc ? (
+          <Image
+            src={imgSrc}
+            alt={title}
+            fill
+            className="object-cover"
+            sizes="48px"
+          />
+        ) : (
+          <span className="text-2xl">{icon}</span>
+        )}
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-0.5">
@@ -185,6 +235,7 @@ function CertCard({
   id,
   href,
   emoji,
+  imgSrc,
   title,
   subtitle,
   desc,
@@ -197,6 +248,7 @@ function CertCard({
   id: string;
   href: string;
   emoji: string;
+  imgSrc?: string;
   title: string;
   subtitle: string;
   desc: string;
@@ -221,11 +273,21 @@ function CertCard({
       />
       <div className="flex items-center justify-between">
         <div
-          className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-3xl shadow-lg animate-float"
+          className="relative flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl overflow-hidden border border-[var(--border)] bg-white shadow-lg animate-float"
           style={{ background: gradient }}
           aria-hidden="true"
         >
-          {emoji}
+          {imgSrc ? (
+            <Image
+              src={imgSrc}
+              alt={title}
+              fill
+              className="object-cover"
+              sizes="56px"
+            />
+          ) : (
+            <span className="text-3xl">{emoji}</span>
+          )}
         </div>
         <span
           className="rounded-full border px-3 py-1 text-xs font-semibold"

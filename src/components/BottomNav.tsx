@@ -1,21 +1,23 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 interface NavItem {
   href: string;
   label: string;
   icon: string;
+  imgSrc?: string;
   exact?: boolean;
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { href: "/", label: "ホーム", icon: "🏠", exact: true },
-  { href: "/lpic1", label: "LPIC-1", icon: "🐧" },
-  { href: "/ccna", label: "CCNA", icon: "🌐" },
-  { href: "/quiz", label: "総合演習", icon: "📝" },
-  { href: "/dashboard", label: "学習管理", icon: "📊" },
+  { href: "/", label: "ホーム", icon: "🏠", imgSrc: "/characters/boy.png", exact: true },
+  { href: "/lpic1", label: "LPIC-1", icon: "🐧", imgSrc: "/characters/lpic.png" },
+  { href: "/ccna", label: "CCNA", icon: "🌐", imgSrc: "/characters/ccna.png" },
+  { href: "/quiz", label: "総合演習", icon: "📝", imgSrc: "/characters/teacher.png" },
+  { href: "/dashboard", label: "学習管理", icon: "📊", imgSrc: "/characters/teacher.png" },
 ];
 
 export default function BottomNav() {
@@ -49,7 +51,19 @@ export default function BottomNav() {
                 : "text-[var(--text-muted)] hover:text-[var(--foreground)]"
             }`}
           >
-            <span className="text-xl leading-none mb-1">{item.icon}</span>
+            {item.imgSrc ? (
+              <div className={`relative w-6 h-6 rounded-full overflow-hidden mb-0.5 border ${active ? "border-[var(--accent-primary)] shadow-sm" : "border-transparent"} bg-white`}>
+                <Image
+                  src={item.imgSrc}
+                  alt={item.label}
+                  fill
+                  className="object-cover"
+                  sizes="24px"
+                />
+              </div>
+            ) : (
+              <span className="text-xl leading-none mb-1">{item.icon}</span>
+            )}
             <span className="text-[10px] leading-tight">{item.label}</span>
           </Link>
         );

@@ -4,6 +4,7 @@ import { Authenticator, useAuthenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import Image from 'next/image';
 
 function LoginRedirector() {
   const { authStatus } = useAuthenticator((context) => [context.authStatus]);
@@ -20,7 +21,7 @@ function LoginRedirector() {
 
 export default function LoginPage() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[var(--background)] px-4 py-12">
+    <main className="flex min-h-screen w-full max-w-full overflow-x-hidden items-center justify-center bg-[var(--background)] px-4 py-12">
       {/* 背景グラデーション */}
       <div
         aria-hidden="true"
@@ -34,6 +35,29 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         {/* ヘッダー */}
         <div className="mb-8 text-center">
+          <div className="flex justify-center items-center gap-3 mb-4">
+            <div className="relative w-14 h-14 rounded-full overflow-hidden border-2 border-[var(--accent-primary)] bg-white shadow-md">
+              <Image
+                src="/characters/boy.png"
+                alt="学習アシスタント"
+                fill
+                className="object-cover"
+                sizes="56px"
+                priority
+              />
+            </div>
+            <div className="relative w-14 h-14 rounded-full overflow-hidden border-2 border-[var(--accent-purple)] bg-white shadow-md">
+              <Image
+                src="/characters/teacher.png"
+                alt="アドバイザー先生"
+                fill
+                className="object-cover"
+                sizes="56px"
+                priority
+              />
+            </div>
+          </div>
+
           <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--surface)] px-4 py-1.5 text-xs font-extrabold text-[var(--accent-primary)]">
             <span
               className="inline-block h-2 w-2 rounded-full bg-[var(--accent-secondary)] shadow-[0_0_8px_var(--accent-secondary)]"

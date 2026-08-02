@@ -7,6 +7,7 @@ import AuthGuard from "@/components/AuthGuard";
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
 import BottomNav from "@/components/BottomNav";
+import ViewportFix from "@/components/ViewportFix";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,6 +29,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
@@ -44,6 +46,7 @@ export default function RootLayout({
       <body>
         <AmplifyProvider>
           <ThemeProvider>
+            <ViewportFix />
             <AuthGuard>
               <div className="app-shell">
                 <Sidebar />
