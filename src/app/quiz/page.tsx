@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export const metadata = {
   title: "総合演習・実戦テスト - ITインフラ技術者認定学習アプリ",
@@ -44,10 +45,16 @@ export default function QuizHubPage() {
             <div>
               <div className="mb-4 flex items-center justify-between">
                 <div
-                  className="flex h-14 w-14 items-center justify-center rounded-2xl text-2xl text-white font-bold shadow-md"
+                  className="relative flex h-14 w-14 overflow-hidden items-center justify-center rounded-2xl bg-white shadow-md border border-[var(--border)]"
                   style={{ background: "linear-gradient(135deg, #1d6fca, #58a6ff)" }}
                 >
-                  🐧
+                  <Image
+                    src="/characters/lpic.png"
+                    alt="LPIC-1 ペンギン"
+                    fill
+                    className="object-cover"
+                    sizes="56px"
+                  />
                 </div>
                 <span className="rounded-full bg-blue-500/10 px-3 py-1 text-xs font-bold text-blue-400">
                   全6カテゴリ対応
@@ -93,10 +100,16 @@ export default function QuizHubPage() {
             <div>
               <div className="mb-4 flex items-center justify-between">
                 <div
-                  className="flex h-14 w-14 items-center justify-center rounded-2xl text-2xl text-white font-bold shadow-md"
+                  className="relative flex h-14 w-14 overflow-hidden items-center justify-center rounded-2xl bg-white shadow-md border border-[var(--border)]"
                   style={{ background: "linear-gradient(135deg, #6e40c9, #bc8cff)" }}
                 >
-                  🌐
+                  <Image
+                    src="/characters/ccna.png"
+                    alt="CCNA 猫"
+                    fill
+                    className="object-cover"
+                    sizes="56px"
+                  />
                 </div>
                 <span className="rounded-full bg-purple-500/10 px-3 py-1 text-xs font-bold text-purple-400">
                   200-301 対応

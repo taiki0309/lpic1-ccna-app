@@ -61,9 +61,12 @@ export default function Sidebar() {
 
   return (
     <aside className="sidebar">
-      {/* ナビゲーションヘッダー（ちびキャラ女の子アイコン付き） */}
+      {/* ナビゲーションヘッダー（ちびキャラ男の子アイコン付き・トップページへ戻るリンク） */}
       <div className="w-full px-3 mb-2">
-        <div className="flex items-center gap-2.5 rounded-2xl bg-[var(--surface-2)] p-2 border border-[var(--border)] shadow-sm">
+        <Link
+          href="/"
+          className="flex items-center gap-2.5 rounded-2xl bg-[var(--surface-2)] p-2 border border-[var(--border)] shadow-sm hover:opacity-85 transition-opacity"
+        >
           <div className="relative w-9 h-9 rounded-full overflow-hidden border-2 border-[var(--accent-primary)] shrink-0 bg-white">
             <Image
               src="/characters/boy.png"
@@ -82,7 +85,7 @@ export default function Sidebar() {
               今日も一緒に頑張ろう！
             </p>
           </div>
-        </div>
+        </Link>
       </div>
 
       {/* メインナビ */}

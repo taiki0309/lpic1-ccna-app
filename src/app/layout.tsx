@@ -21,6 +21,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "ITインフラ技術者認定学習アプリ - LPIC & CCNA",
   description: "LPIC-1 および CCNA 資格取得をサポートする実践学習アプリ",
+  icons: {
+    icon: "/characters/boy.png",
+    shortcut: "/characters/boy.png",
+    apple: "/characters/boy.png",
+  },
 };
 
 export const viewport: Viewport = {
