@@ -251,9 +251,55 @@ const CLI_QUESTIONS = [
     ],
     explanation: "ネットワーク内の各デバイスのログ時刻を正確に一致させるため、`ntp server` コマンドで共通のタイムサーバーと同期します。",
   },
+  {
+    id: "cli-21",
+    category: "CLI シミュレーション",
+    title: "ログインバナー (MOTD) の設定",
+    description: "ルーターログイン時に表示する今日のメッセージ (MOTDバナー) に「Authorized Access Only」と設定してください。",
+    initialPrompt: "Router(config)#",
+    steps: [
+      { input: "banner motd #Authorized Access Only#", response: "Router(config)#", hint: "`banner motd #メッセージ#` を指定します" },
+    ],
+    explanation: "ログイン前の注意喚起メッセージを設定するには、`banner motd` コマンドを使用し、区切り文字 (#など) でメッセージを囲みます。",
+  },
+  {
+    id: "cli-22",
+    category: "CLI シミュレーション",
+    title: "特権EXECパスワードの暗号化設定",
+    description: "特権EXECモードに移行するための強力な暗号化パスワード「cisco123」を設定してください。",
+    initialPrompt: "Router(config)#",
+    steps: [
+      { input: "enable secret cisco123", response: "Router(config)#", hint: "`enable secret <パスワード>` を入力します" },
+    ],
+    explanation: "`enable secret` コマンドはMD5またはSHA-256等の不可逆ハッシュで暗号化されるため、平文で保存される `enable password` より安全です。",
+  },
+  {
+    id: "cli-23",
+    category: "CLI シミュレーション",
+    title: "実行中コンフィグの永続保存",
+    description: "現在の実行コンフィグ (running-config) を起動時コンフィグ (startup-config) に保存してください。",
+    initialPrompt: "Router#",
+    steps: [
+      { input: "copy running-config startup-config", response: "Destination filename [startup-config]? \nBuilding configuration...\n[OK]\nRouter#", hint: "`copy running-config startup-config` (略: `copy run start`)" },
+    ],
+    explanation: "設定はRAM上の running-config に反映されますが、再起動しても消えないようにNVRAMの startup-config に保存する必要があります。",
+  },
+  {
+    id: "cli-24",
+    category: "CLI シミュレーション",
+    title: "コンソールラインへのログイン必須化",
+    description: "コンソールライン (line console 0) にパスワード「cisco」を設定し、ログインを必須にしてください。",
+    initialPrompt: "Router(config)#",
+    steps: [
+      { input: "line console 0", response: "Router(config-line)#", hint: "`line console 0` でコンソール設定モードに入ります" },
+      { input: "password cisco", response: "Router(config-line)#", hint: "`password cisco` を設定します" },
+      { input: "login", response: "Router(config-line)#", hint: "`login` で認証を有効化します" },
+    ],
+    explanation: "シリアル接続コンソールからの不正操作を防ぐため、`line console 0` でパスワードおよび `login` を設定して認証を求めます。",
+  },
 ];
 
-// ─── ドラッグ&ドロップ問題（全20問） ────────────────────────────────
+// ─── ドラッグ&ドロップ問題（全24問） ────────────────────────────────
 const DND_QUESTIONS = [
   {
     id: "dnd-1",
@@ -632,6 +678,78 @@ const DND_QUESTIONS = [
       2: "POST メソッド",
       3: "PUT メソッド",
       4: "DELETE メソッド",
+    },
+  },
+  {
+    id: "dnd-21",
+    category: "ポート番号・プロトコル分類",
+    title: "主要ネットワークプロトコルの標準ポート番号分類",
+    description: "各ウェルノウンポート番号に対応するプロトコルを正しくドラッグ＆ドロップで配置してください。",
+    items: [
+      { id: "i21-1", label: "HTTP", correctLayer: 1 },
+      { id: "i21-2", label: "HTTPS", correctLayer: 2 },
+      { id: "i21-3", label: "SSH", correctLayer: 3 },
+      { id: "i21-4", label: "DNS", correctLayer: 4 },
+    ],
+    layers: [1, 2, 3, 4],
+    layerNames: {
+      1: "ポート 80 (TCP)",
+      2: "ポート 443 (TCP)",
+      3: "ポート 22 (TCP)",
+      4: "ポート 53 (UDP/TCP)",
+    },
+  },
+  {
+    id: "dnd-22",
+    category: "スイッチポート役割分類",
+    title: "アクセスポートとトランクポートの特徴分類",
+    description: "説明文に対応するスイッチインターフェースのモード分類を正しく割り当ててください。",
+    items: [
+      { id: "i22-1", label: "単一のVLANにのみ所属し端末(PC/プリンタ)を接続", correctLayer: 1 },
+      { id: "i22-2", label: "受信したフレームのVLANタグを削除して端末へ送信", correctLayer: 1 },
+      { id: "i22-3", label: "複数のVLANフレームをIEEE 802.1Qタグを付与して伝送", correctLayer: 2 },
+      { id: "i22-4", label: "スイッチ間やスイッチ・ルーター間の接続に使用", correctLayer: 2 },
+    ],
+    layers: [1, 2],
+    layerNames: {
+      1: "アクセスポート (Access)",
+      2: "トランクポート (Trunk)",
+    },
+  },
+  {
+    id: "dnd-23",
+    category: "IPアドレス種別分類",
+    title: "IPv4アドレスと標準プレフィックス長分類",
+    description: "プレフィックス表記に対応するサブネットマスクの10進数表記を正しく配置してください。",
+    items: [
+      { id: "i23-1", label: "255.255.255.0", correctLayer: 1 },
+      { id: "i23-2", label: "255.255.0.0", correctLayer: 2 },
+      { id: "i23-3", label: "255.0.0.0", correctLayer: 3 },
+      { id: "i23-4", label: "255.255.255.128", correctLayer: 4 },
+    ],
+    layers: [1, 2, 3, 4],
+    layerNames: {
+      1: "/24 (254ホスト)",
+      2: "/16 (65534ホスト)",
+      3: "/8 (クラスA標準)",
+      4: "/25 (126ホスト)",
+    },
+  },
+  {
+    id: "dnd-24",
+    category: "ルーティングプロトコル分類",
+    title: "IGP (内部ゲートウェイプロトコル) のタイプ分類",
+    description: "各ルーティングプロトコルをその動作方式（ディスタンスベクタ/リンクステート）ごとに分類してください。",
+    items: [
+      { id: "i24-1", label: "RIPv2", correctLayer: 1 },
+      { id: "i24-2", label: "EIGRP (拡張ディスタンスベクタ)", correctLayer: 1 },
+      { id: "i24-3", label: "OSPF", correctLayer: 2 },
+      { id: "i24-4", label: "IS-IS", correctLayer: 2 },
+    ],
+    layers: [1, 2],
+    layerNames: {
+      1: "ディスタンスベクタ型",
+      2: "リンクステート型",
     },
   },
 ];

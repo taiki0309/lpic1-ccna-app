@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import { getUserId } from "@/lib/submitAnswer";
 
@@ -18,6 +19,7 @@ interface CertStat {
   color: string;
   gradient: string;
   icon: string;
+  imageSrc?: string;
   progress: number;
   totalQuestions: number;
   answered: number;
@@ -46,18 +48,19 @@ const defaultCertStats: CertStat[] = [
     href: "/lpic1",
     color: "#58a6ff",
     gradient: "linear-gradient(135deg, #1d6fca, #58a6ff)",
-    icon: "L1",
+    icon: "🐧",
+    imageSrc: "/characters/lpic.png",
     progress: 0,
-    totalQuestions: 153,
+    totalQuestions: 100,
     answered: 0,
     correct: 0,
     categories: [
-      { name: "システムアーキテクチャ", progress: 0, total: 20, answered: 0 },
-      { name: "Linuxインストール&パッケージ", progress: 0, total: 25, answered: 0 },
-      { name: "GNUとUnixコマンド", progress: 0, total: 40, answered: 0 },
-      { name: "デバイス&ファイルシステム", progress: 0, total: 30, answered: 0 },
-      { name: "シェル&スクリプト", progress: 0, total: 20, answered: 0 },
-      { name: "ユーザー&グループ管理", progress: 0, total: 18, answered: 0 },
+      { name: "システムアーキテクチャ", progress: 0, total: 15, answered: 0 },
+      { name: "Linuxインストール&パッケージ", progress: 0, total: 15, answered: 0 },
+      { name: "GNUとUnixコマンド", progress: 0, total: 25, answered: 0 },
+      { name: "デバイス&ファイルシステム", progress: 0, total: 15, answered: 0 },
+      { name: "シェル&スクリプト", progress: 0, total: 15, answered: 0 },
+      { name: "ユーザー&グループ管理", progress: 0, total: 15, answered: 0 },
     ],
   },
   {
@@ -65,18 +68,19 @@ const defaultCertStats: CertStat[] = [
     href: "/ccna",
     color: "#bc8cff",
     gradient: "linear-gradient(135deg, #6e40c9, #bc8cff)",
-    icon: "CC",
+    icon: "🐱",
+    imageSrc: "/characters/ccna.png",
     progress: 0,
-    totalQuestions: 160,
+    totalQuestions: 100,
     answered: 0,
     correct: 0,
     categories: [
-      { name: "ネットワーク基礎", progress: 0, total: 30, answered: 0 },
-      { name: "IPアドレッシング", progress: 0, total: 25, answered: 0 },
-      { name: "ルーティング", progress: 0, total: 35, answered: 0 },
-      { name: "スイッチング・VLAN", progress: 0, total: 28, answered: 0 },
-      { name: "セキュリティ", progress: 0, total: 20, answered: 0 },
-      { name: "WAN & クラウド", progress: 0, total: 22, answered: 0 },
+      { name: "ネットワーク基礎", progress: 0, total: 20, answered: 0 },
+      { name: "IPアドレッシング", progress: 0, total: 15, answered: 0 },
+      { name: "ルーティング", progress: 0, total: 20, answered: 0 },
+      { name: "スイッチング・VLAN", progress: 0, total: 15, answered: 0 },
+      { name: "セキュリティ", progress: 0, total: 15, answered: 0 },
+      { name: "WAN & クラウド", progress: 0, total: 15, answered: 0 },
     ],
   },
 ];
@@ -202,10 +206,20 @@ export default function DashboardPage() {
               <div className="mb-5 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div
-                    className="flex h-10 w-10 items-center justify-center rounded-xl text-sm font-black text-white"
+                    className="relative flex h-14 w-14 overflow-hidden items-center justify-center rounded-2xl bg-white shadow-md border border-[var(--border)] shrink-0"
                     style={{ background: cert.gradient }}
                   >
-                    {cert.icon}
+                    {cert.imageSrc ? (
+                      <Image
+                        src={cert.imageSrc}
+                        alt={`${cert.cert} アイコン`}
+                        fill
+                        className="object-cover"
+                        sizes="56px"
+                      />
+                    ) : (
+                      <span className="text-2xl font-black text-white">{cert.icon}</span>
+                    )}
                   </div>
                   <div>
                     <p className="font-bold text-[var(--foreground)]">{cert.cert}</p>

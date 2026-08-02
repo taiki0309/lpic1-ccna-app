@@ -27,9 +27,9 @@ export default function ThemeToggle({
       <button
         type="button"
         onClick={() => setTheme(nextTheme)}
-        title={`外観切替: 現在[${currentOpt.label}] → 点击で[${nextOpt.label}]に変更`}
+        title={`外観切替: 現在[${currentOpt.label}] → クリックで[${nextOpt.label}]モードに変更`}
         aria-label={`テーマ切り替え（現在: ${currentOpt.label}）`}
-        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-[var(--border)] bg-[var(--surface)] text-sm text-[var(--text-muted)] transition-all hover:bg-[var(--surface-2)] hover:text-[var(--foreground)]"
+        className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-xl border border-[var(--border)] bg-[var(--surface)] text-base sm:text-lg text-[var(--text-muted)] transition-all hover:bg-[var(--surface-2)] hover:text-[var(--foreground)] hover:scale-105 active:scale-95 shadow-sm"
       >
         {currentOpt.icon}
       </button>

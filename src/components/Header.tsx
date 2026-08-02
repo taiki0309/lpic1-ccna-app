@@ -38,14 +38,9 @@ export default function Header() {
         </Link>
       </div>
 
-      {/* 右側：テーマ切替(モバイルはコンパクト/PCは文字付き) ＆ ユーザー認証 */}
+      {/* 右側：テーマ切替(ワンクリック切替) ＆ ユーザー認証 */}
       <div className="flex shrink-0 items-center gap-1 sm:gap-2 min-w-0">
-        <div className="hidden sm:block">
-          <ThemeToggle iconOnly={false} />
-        </div>
-        <div className="sm:hidden">
-          <ThemeToggle iconOnly={true} />
-        </div>
+        <ThemeToggle iconOnly={true} />
         <Suspense fallback={<div className="h-8 w-16 skeleton" />}>
           <AuthButton />
         </Suspense>

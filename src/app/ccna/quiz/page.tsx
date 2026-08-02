@@ -29,284 +29,201 @@ const CATEGORY_TABS = [
 
 // ─── CCNA カテゴリ別 充実フォールバック問題（全カテゴリ完全対応版） ───
 const FALLBACK_QUESTIONS: Question[] = [
-  // ── 1. ネットワーク基礎 (fundamentals) ──
+  // ── 1. ネットワーク基礎 (4問) ──
   {
     id: "ccna-fund-1",
     category: "ネットワーク基礎",
-    question: "OSI参照モデルのレイヤー3（ネットワーク層）で動作する主なデバイスはどれか？",
-    choices: ["スイッチ", "ルーター", "ハブ", "リピーター"],
-    correctIndex: 1,
-    explanation:
-      "ルーターはレイヤー3（ネットワーク層）で動作し、IPアドレスを使用して論理的な経路制御（ルーティング）を行います。",
+    question: "OSI参照モデルにおいて、ルーターがIPアドレスを用いて経路選択を行うのはどのレイヤ（層）か？",
+    choices: ["ネットワーク層 (レイヤ3)", "データリンク層 (レイヤ2)", "トランスポート層 (レイヤ4)", "物理層 (レイヤ1)"],
+    correctIndex: 0,
+    explanation: "IPアドレスに基づくルーティング（経路選択）は、OSI参照モデルのネットワーク層（第3層）で行われます。",
   },
   {
     id: "ccna-fund-2",
     category: "ネットワーク基礎",
-    question: "TCPとUDPの説明として最も正しいものはどれか？",
+    question: "TCPとUDPの比較について、正しい記述はどれか？",
     choices: [
-      "TCPはコネクションレス型で高速、UDPはコネクション型で信頼性が高い",
-      "TCPはコネクション型で信頼性が高く、UDPはコネクションレス型で高速・低遅延",
-      "TCPとUDPはどちらもレイヤー2で動作する",
+      "TCPはコネクション指向で信頼性が高く、UDPはコネクションレスで高速・リアルタイム性が高い",
       "UDPはスリーウェイハンドシェイクを用いて接続を確立する",
+      "TCPは動画配信や音声通話でのみ使用される",
+      "UDPはパケット再送制御を標準で行う",
     ],
-    correctIndex: 1,
-    explanation:
-      "TCP（Transmission Control Protocol）は3WAYハンドシェイクで接続を確立して順序制御や再送制御を行うコネクション型です。UDPはオーバーヘッドの小さいコネクションレス型です。",
+    correctIndex: 0,
+    explanation: "TCPは正確性重視（WEB閲覧等）、UDPは速度やリアルタイム性重視（動画通話・DNS等）の特徴があります。",
   },
   {
     id: "ccna-fund-3",
     category: "ネットワーク基礎",
-    question: "イーサネットフレームのプリアンブルとSFD（Start Frame Delimiter）を合わせた総バイト数はどれか？",
-    choices: ["4バイト", "6バイト", "8バイト", "14バイト"],
-    correctIndex: 2,
-    explanation:
-      "プリアンブル（7バイト）と SFD（1バイト）を合わせて 8バイトとなり、受信側にフレーム開始を同期させます。",
+    question: "イーサネットで使用されるMACアドレス（物理アドレス）のビット長として正しいものはどれか？",
+    choices: ["48ビット (6バイト)", "32ビット (4バイト)", "128ビット (16バイト)", "64ビット (8バイト)"],
+    correctIndex: 0,
+    explanation: "MACアドレスは48ビット（前半24ビットがメーカー識別子OUI、後半24ビットが固有番号）で構成されます。",
   },
   {
     id: "ccna-fund-4",
     category: "ネットワーク基礎",
-    question: "ARP（Address Resolution Protocol）の役割として正しい記述はどれか？",
+    question: "ハブ（リピータハブ）とスイッチ（レイヤ2スイッチ）の動作の違いとして正しいものはどれか？",
     choices: [
-      "IPアドレスからMACアドレスを解決する",
-      "MACアドレスからIPアドレスを解決する",
-      "ホスト名をIPアドレスに変換する",
-      "ポート番号を自動的に割り当てる",
+      "スイッチはMACアドレステーブルを学習し、目的のポートにのみフレームを転送する",
+      "ハブは全ポートが独立したコリジョンドメインを持つ",
+      "スイッチはIPアドレスを見てルーティングを行う",
+      "ハブはVLANを構成することができる",
     ],
     correctIndex: 0,
-    explanation:
-      "ARPは、既知のIPアドレスに対応する宛先MACアドレスを調べるために使用されるプロトコルです。",
+    explanation: "レイヤ2スイッチは宛先MACアドレスを学習して該当ポートのみに転送するため、コリジョン（衝突）を防ぎ通信効率を高めます。",
   },
 
-  // ── 2. IPアドレッシング (ip-addressing) ──
+  // ── 2. IPアドレッシング (3問) ──
   {
     id: "ccna-ip-1",
     category: "IPアドレッシング",
-    question: "192.168.1.0/24 ネットワークにおいて、実際にホストに割り当て可能なIPアドレス数はいくつか？",
-    choices: ["256", "255", "254", "252"],
-    correctIndex: 2,
-    explanation:
-      "/24 ではホストビットが8ビット（2^8 = 256アドレス）あります。ネットワークアドレスとブロードキャストアドレスの2つを除いた 254 個が割り当て可能です。",
+    question: "IPv4アドレスのクラスCにおけるプライベートIPアドレスの範囲として正しいものはどれか？",
+    choices: [
+      "192.168.0.0 〜 192.168.255.255",
+      "10.0.0.0 〜 10.255.255.255",
+      "172.16.0.0 〜 172.31.255.255",
+      "169.254.0.0 〜 169.254.255.255",
+    ],
+    correctIndex: 0,
+    explanation: "192.168.0.0/16 はクラスCのプライベートアドレス範囲であり、社内LANや家庭用ルーター等で広く使用されます。",
   },
   {
     id: "ccna-ip-2",
     category: "IPアドレッシング",
-    question: "RFC 1918 で定義されているプライベートIPアドレスの範囲として正しいものはどれか？",
-    choices: [
-      "10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16",
-      "10.0.0.0/8, 172.0.0.0/8, 192.168.0.0/24",
-      "172.16.0.0/16, 192.168.1.0/24",
-      "192.168.0.0/16 のみ",
-    ],
+    question: "プレフィックス長「/24」を表すサブネットマスク表記として正しいものはどれか？",
+    choices: ["255.255.255.0", "255.255.0.0", "255.255.255.128", "255.255.255.255"],
     correctIndex: 0,
-    explanation:
-      "クラスA: 10.0.0.0/8、クラスB: 172.16.0.0/12（172.16〜172.31）、クラスC: 192.168.0.0/16 の3ブロックです。",
+    explanation: "/24 は先頭から24ビットが「1」（8ビット×3=24）であることを意味し、10進数では 255.255.255.0 となります。",
   },
   {
     id: "ccna-ip-3",
     category: "IPアドレッシング",
-    question: "IPv6アドレス 2001:0db8:0000:0000:0000:ff00:0042:8329 の最も短縮された正しい表記はどれか？",
-    choices: [
-      "2001:db8::ff00:42:8329",
-      "2001:db8::ff00:0042:8329",
-      "2001:db8:::ff00:42:8329",
-      "2001:db8::ff:42:8329",
-    ],
+    question: "ネットワーク上のPCやデバイスに対し、IPアドレスやサブネットマスクを自動的に割り当てるプロトコルはどれか？",
+    choices: ["DHCP", "DNS", "ARP", "NAT"],
     correctIndex: 0,
-    explanation:
-      "連続する0のブロックを「::」に省略し、各ブロック先頭の0を省略して 2001:db8::ff00:42:8329 となります。",
-  },
-  {
-    id: "ccna-ip-4",
-    category: "IPアドレッシング",
-    question: "サブネットマスク 255.255.255.224 を CIDR（プレフィックス）表記にしたものはどれか？",
-    choices: ["/26", "/27", "/28", "/29"],
-    correctIndex: 1,
-    explanation:
-      "第4オクテットの 224 は 11100000(2) であり、24 + 3 = 27ビットがネットワーク部となるため /27 です。",
+    explanation: "DHCP (Dynamic Host Configuration Protocol) はIPアドレス等のネットワーク設定を自動的に配布・管理する仕組みです。",
   },
 
-  // ── 3. ルーティング (routing) ──
+  // ── 3. ルーティング (3問) ──
   {
     id: "ccna-rt-1",
     category: "ルーティング",
-    question: "OSPF のデフォルトの管理距離（Administrative Distance）はいくつか？",
-    choices: ["90", "100", "110", "120"],
-    correctIndex: 2,
-    explanation:
-      "OSPF のデフォルト AD は 110 です。なお EIGRP は 90、RIP は 120、スタティックルートは 1 です。",
+    question: "ルーターのルーティングテーブルに宛先ネットワークが登録されていない場合、パケットの転送先として使われる標準の経路はどれか？",
+    choices: ["デフォルトルート (0.0.0.0/0)", "スタティックルート", "ダイナミックルート", "ループバックルート"],
+    correctIndex: 0,
+    explanation: "どの宛先にも一致しない通信はデフォルトルート (0.0.0.0/0) に送られます（インターネット境界ルーターなどで必須）。",
   },
   {
     id: "ccna-rt-2",
     category: "ルーティング",
-    question: "すべての宛先に一致するデフォルトルートをスタティックに設定するコマンドはどれか？",
-    choices: [
-      "ip route 0.0.0.0 0.0.0.0 10.0.0.1",
-      "ip route default 10.0.0.1",
-      "ip route 255.255.255.255 0.0.0.0 10.0.0.1",
-      "route add default gw 10.0.0.1",
-    ],
+    question: "リンクステート型ルーティングプロトコルに分類され、コスト（帯域幅）をもとに最短経路を計算するプロトコルはどれか？",
+    choices: ["OSPF", "RIP", "BGP", "EIGRP"],
     correctIndex: 0,
-    explanation:
-      "Cisco IOSにおいて、宛先ネットワークとサブネットマスクを 0.0.0.0 0.0.0.0 とすることでデフォルトルートを定義します。",
+    explanation: "OSPF (Open Shortest Path First) はリンクステート型プロトコルで、帯域幅に基づくコストを計算し最良経路を決定します。",
   },
   {
     id: "ccna-rt-3",
     category: "ルーティング",
-    question: "OSPF で隣接ルーター（ネイバー）関係のステータス一覧を確認するコマンドはどれか？",
-    choices: [
-      "show ip ospf neighbor",
-      "show ip ospf route",
-      "show ip protocol",
-      "show ospf status",
-    ],
+    question: "異なる宛先経路情報がある場合、ルーターがどの情報源を優先するかを決定する数値（直接接続は0、スタティックは1等）は何と呼ばれるか？",
+    choices: ["アドミニストレーティブディスタンス (AD値)", "メトリック", "ホップ数", "自律システム番号 (AS番号)"],
     correctIndex: 0,
-    explanation:
-      "show ip ospf neighbor コマンドで、ネイバーID・ステータス（FULL/DR 等）・インターフェースなどの隣接情報を確認できます。",
-  },
-  {
-    id: "ccna-rt-4",
-    category: "ルーティング",
-    question: "ルーティングテーブル内に異なる管理距離（AD）を持つ同じ宛先ルートが存在する場合、ルーターはどれを選択するか？",
-    choices: [
-      "管理距離（AD）が最も小さいルート",
-      "管理距離（AD）が最も大きいルート",
-      "メトリックが最も大きいルート",
-      "両方をロードバランシングする",
-    ],
-    correctIndex: 0,
-    explanation:
-      "管理距離（AD）は異なるプロトコル間の信頼度を表す値であり、数値が最も小さいルートが優先してルーティングテーブルにインストールされます。",
+    explanation: "AD値（信頼度）が小さい経路情報源ほど信頼できるとみなされ、ルーティングテーブルに優先採用されます。",
   },
 
-  // ── 4. スイッチング・VLAN (switching) ──
+  // ── 4. スイッチング・VLAN (4問) ──
   {
     id: "ccna-sw-1",
     category: "スイッチング・VLAN",
-    question: "IEEE 802.1Q でイーサネットフレームに追加されるVLANタグのサイズは何バイトか？",
-    choices: ["2バイト", "4バイト", "6バイト", "8バイト"],
-    correctIndex: 1,
-    explanation:
-      "802.1Q フレームタギングでは TPID（2バイト）+ TCI（2バイト：優先度やVLAN ID 12ビット等）の合計 4バイトが追加されます。",
+    question: "物理的な配線を変えずに、スイッチ内で論理的にグループを分割する技術（VLAN）の最大の利点はどれか？",
+    choices: [
+      "ブロードキャストドメインを分割し、セキュリティ向上とネットワーク負荷軽減を図れる",
+      "ルーターなしで異なるVLAN間の直接通信ができるようになる",
+      "MACアドレスが自動的に暗号化される",
+      "通信ケーブルが断線した際に自動修復される",
+    ],
+    correctIndex: 0,
+    explanation: "VLANによりブロードキャストの到達範囲を分割できるため、不要なパケット拡散を防ぎ安全で効率的なLANを構築できます。",
   },
   {
     id: "ccna-sw-2",
     category: "スイッチング・VLAN",
-    question: "STP（Spanning Tree Protocol）において、ルートブリッジを選出する際に最優先されるパラメータはどれか？",
-    choices: [
-      "最も小さいブリッジID（優先度 + MACアドレス）",
-      "最も大きいブリッジID",
-      "最も高速なポートスピード",
-      "最も多いポート数",
-    ],
+    question: "1本のスイッチ間リンクで複数のVLANフレームを同時に転送するために設定するポートモードはどれか？",
+    choices: ["トランクポート (Trunk)", "アクセスポート (Access)", "ダイナミックポート (Dynamic)", "モニターポート (Monitor)"],
     correctIndex: 0,
-    explanation:
-      "STPではブリッジ優先度（デフォルト32768）とMACアドレスで構成される「ブリッジID」が最も小さいスイッチがルートブリッジに選出されます。",
+    explanation: "トランクポート（IEEE 802.1Qタグを使用）を設定することで、複数のVLANデータを1本のケーブルで区別して伝送できます。",
   },
   {
     id: "ccna-sw-3",
     category: "スイッチング・VLAN",
-    question: "スイッチポートをトランクポート（802.1Q）に設定するコマンドの正しい組み合わせはどれか？",
-    choices: [
-      "switchport mode trunk",
-      "switchport trunk enable",
-      "switchport mode access-trunk",
-      "vlan trunk on",
-    ],
+    question: "ネットワーク上のループ（物理的な円環接続によるパケット永久循環）を防止・自動制御するプロトコルはどれか？",
+    choices: ["STP (Spanning Tree Protocol)", "ARP (Address Resolution Protocol)", "LACP", "VTP"],
     correctIndex: 0,
-    explanation:
-      "インターフェース設定モードで `switchport mode trunk` を入力することによりトランクモードを有効化します。",
+    explanation: "STP (スパニングツリープロトコル) は、ループ発生時に自動的に一部のポートをブロックし、障害時には自動で迂回させます。",
   },
   {
     id: "ccna-sw-4",
     category: "スイッチング・VLAN",
-    question: "レイヤー2スイッチがMACアドレステーブルの学習を行うきっかけはどれか？",
+    question: "スイッチのインターフェースに設定できる「アクセスポート (access)」について正しい記述はどれか？",
     choices: [
-      "受信したフレームの送信元MACアドレスを記録する",
-      "受信したフレームの宛先MACアドレスを記録する",
-      "送信したパケットのIPアドレスを記録する",
-      "ARPリクエストを定期的にブロードキャストして記録する",
+      "1つのVLANにのみ所属し、PCやサーバーなどの端末を接続するために使用される",
+      "すべてのVLANタグを保持して転送する",
+      "ルーター同士のバックボーン接続にのみ使用される",
+      "MACアドレスの学習が標準で無効化される",
     ],
     correctIndex: 0,
-    explanation:
-      "スイッチはフレームを受信した際、そのフレームの「送信元MACアドレス」と受信インターフェースを紐付けてMACアドレステーブルを学習します。",
+    explanation: "アクセスポートは単一のVLANに割り当てられ、主にPC・プリンタ等のエンドデバイスを接続する際に用いられます。",
   },
 
-  // ── 5. セキュリティ (security) ──
+  // ── 5. セキュリティ (3問) ──
   {
     id: "ccna-sec-1",
     category: "セキュリティ",
-    question: "Cisco IOS の標準ACL（番号 1〜99）がフィルタリング条件として検査する要素はどれか？",
-    choices: [
-      "送信元IPアドレスのみ",
-      "宛先IPアドレスのみ",
-      "送信元IPおよび宛先ポート番号",
-      "プロトコル番号とTCPフラグ",
-    ],
+    question: "ルーターやスイッチを通過するトラフィックを、送信元IPや宛先ポート番号などの条件で許可または拒否するフィルタリング機能はどれか？",
+    choices: ["ACL (アクセス制御リスト)", "NAT (アドレス変換)", "DHCPスヌーピング", "STPガード"],
     correctIndex: 0,
-    explanation:
-      "標準ACL（1〜99, 1300〜1999）は「送信元IPアドレス」のみを条件としてトラフィックをフィルタリングします。宛先やポートも見る場合は拡張ACL（100〜199等）を使用します。",
+    explanation: "ACL (Access Control List) を用いることで、不適切な通信や外部からの不正アクセスのフィルタリングが可能です。",
   },
   {
     id: "ccna-sec-2",
     category: "セキュリティ",
-    question: "アクセスポートへの不正なデバイス接続を防ぐ「ポートセキュリティ」機能を有効化するコマンドはどれか？",
-    choices: [
-      "switchport port-security",
-      "security port enable",
-      "switchport access secure",
-      "port-security on",
-    ],
+    question: "スイッチのポートにおいて、接続を許可する端末のMACアドレスを制限し、不正なPCの接続を防止するセキュリティ機能はどれか？",
+    choices: ["ポートセキュリティ (Port Security)", "ダイナミックARPインスペクション", "BPDUガード", "ストームコントロール"],
     correctIndex: 0,
-    explanation:
-      "インターフェース設定モードにおいて `switchport port-security` を実行することでポートセキュリティを有効にします。",
+    explanation: "ポートセキュリティを使うと、許可されたMACアドレス以外の機器を接続した際にポートをシャットダウンするなどの制限が可能です。",
   },
   {
     id: "ccna-sec-3",
     category: "セキュリティ",
-    question: "ルーターへのリモート管理接続において、Telnetと比較した際の SSH の最大のセキュリティ上の利点はどれか？",
-    choices: [
-      "通信内容や認証パスワードが暗号化される",
-      "通信速度が圧倒的に高速である",
-      "ルーターのCPU負荷をゼロにできる",
-      "パスワード入力なしで自動接続できる",
-    ],
+    question: "現在のWi-Fi（無線LAN）環境で、個々の端末ごとに暗号化鍵を生成する高度なセキュリティ対策を導入した最新規格はどれか？",
+    choices: ["WPA3", "WEP", "WPA-PSK", "WPA-TKIP"],
     correctIndex: 0,
-    explanation:
-      "Telnetは平文で通信が行われますが、SSH（Secure Shell）は認証やデータ通信全体が暗号化されるため盗聴や改ざんを防止できます。",
+    explanation: "WPA3 はSAEという認証方式を取り入れ、辞書攻撃への耐性や端末個別の暗号化を実現した現在の推奨セキュリティ規格です。",
   },
 
-  // ── 6. WAN & クラウド (wan-cloud) ──
+  // ── 6. WAN・クラウド・自動化 (3問) ──
   {
     id: "ccna-wan-1",
-    category: "WAN & クラウド",
-    question: "VPN技術における IPsec が提供する主なセキュリティ機能の組み合わせとして正しいものはどれか？",
-    choices: [
-      "機密性（暗号化）、完全性（改ざん検知）、認証",
-      "圧縮、高速化、自動IP割り当て",
-      "ロードバランシング、NATトラバーサルのみ",
-      "MACアドレス認証、VLANタギング",
-    ],
+    category: "WAN・クラウド・自動化",
+    question: "ソフトウェアでネットワーク全体を一元管理・制御する技術（SDN）において、制御機能（コントロールプレーン）を担う中核サーバーを何と呼ぶか？",
+    choices: ["SDNコントローラー", "エッジルーター", "フォワードハブ", "BGPスピーカ"],
     correctIndex: 0,
-    explanation:
-      "IPsec は ESP および AH プロトコル等により、暗号化（機密性）、改ざん検知（完全性）、およびピア認証を提供します。",
+    explanation: "SDNではネットワークインフラを構成する各デバイスに代わり、SDNコントローラーが中央で一括して経路設定やポリシーを制御します。",
   },
   {
     id: "ccna-wan-2",
-    category: "WAN & クラウド",
-    question: "IaaS, PaaS, SaaS の説明として、ユーザーが OS 以上のインストール・設定管理を担当するクラウドサービスモデルはどれか？",
-    choices: ["IaaS (Infrastructure as a Service)", "PaaS (Platform as a Service)", "SaaS (Software as a Service)", "FaaS (Function as a Service)"],
+    category: "WAN・クラウド・自動化",
+    question: "Webサービスやネットワーク機器の自動設定で広く用いられる、人間が読み書きしやすいデータ形式（構造化言語）はどれか？",
+    choices: ["JSON", "バイナリダンプ", "アセンブリコード", "マシン語"],
     correctIndex: 0,
-    explanation:
-      "IaaS は仮想サーバー（インフラ）が提供され、OSやミドルウェア、アプリケーション等の管理は利用者が行います。",
+    explanation: "JSON (JavaScript Object Notation) は、REST APIなどでデータの受け渡しとして標準的に用いられる人間にも読みやすい形式です。",
   },
   {
     id: "ccna-wan-3",
-    category: "WAN & クラウド",
-    question: "QoS（Quality of Service）において、パケットを分類・マーキングするためにIPヘッダーで使用されるフィールドはどれか？",
-    choices: ["DSCP (Differentiated Services Code Point)", "TTL (Time to Live)", "FCS (Frame Check Sequence)", "Window Size"],
+    category: "WAN・クラウド・自動化",
+    question: "エージェント不要で、SSHを経由してネットワーク機器やサーバーの設定自動化を行う代表的な構成管理ツールはどれか？",
+    choices: ["Ansible", "Wireshark", "PingPlotter", "Cisco Packet Tracer"],
     correctIndex: 0,
-    explanation:
-      "QoS では IPv4/IPv6 ヘッダーの ToS/トラフィッククラスフィールド内にある DSCP（6ビット）を使用してパケットの優先度をマーキングします。",
+    explanation: "Ansible はPlaybook (YAML形式) に記述した設定を、SSHを通じて多数の機器に一斉適用できる代表的な自動化ツールです。",
   },
 ];
 

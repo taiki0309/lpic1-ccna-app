@@ -30,224 +30,176 @@ const CATEGORY_TABS = [
 
 // ─── カテゴリ別 充実フォールバック問題（全カテゴリ完全対応版） ───
 const FALLBACK_QUESTIONS: Question[] = [
-  // ── 1. システムアーキテクチャ (architecture) ──
+  // ── 1. システムアーキテクチャ (3問) ──
   {
     id: "lpic-arch-1",
     category: "システムアーキテクチャ",
-    question: "BIOSとUEFIの違いについて正しい記述はどれか？",
-    choices: [
-      "UEFIは2TB以上のディスクからの起動ができない",
-      "UEFIはGPT（GUID Partition Table）をサポートしている",
-      "BIOSはセキュアブートを標準サポートしている",
-      "UEFIは16ビットモードでのみ動作する",
-    ],
-    correctIndex: 1,
-    explanation:
-      "UEFIはGPT（GUID Partition Table）をサポートし、2TBを超える大容量ディスクからの起動やセキュアブートが可能です。",
+    question: "PC起動時にハードウェアの初期化を行い、ストレージからOSのブートローダーを呼び出すファームウェアとして現在の標準的なものはどれか？",
+    choices: ["UEFI", "LILO", "SysVinit", "GRUB"],
+    correctIndex: 0,
+    explanation: "従来のBIOSに代わり、現在の大容量ストレージや高速起動、セキュアブートに対応した標準ファームウェアは UEFI です。",
   },
   {
     id: "lpic-arch-2",
     category: "システムアーキテクチャ",
-    question: "Linux起動時に接続されているPCIデバイスの一覧を表示するコマンドはどれか？",
-    choices: ["lsusb", "lspci", "lsdev", "pci-info"],
-    correctIndex: 1,
-    explanation:
-      "lspci コマンドはPCIバスおよび接続されているデバイスの一覧を表示します。オプション -k で使用中のカーネルモジュールも確認可能です。",
+    question: "Linuxシステムに接続されているPCIデバイス（グラフィックカードやイーサネットアダプタなど）の一覧を表示するコマンドはどれか？",
+    choices: ["lspci", "lsusb", "lsdev", "ifconfig"],
+    correctIndex: 0,
+    explanation: "lspci コマンドでPCIバスおよび接続されているデバイスの一覧を表示できます。USBデバイス確認は lsusb です。",
   },
   {
     id: "lpic-arch-3",
     category: "システムアーキテクチャ",
-    question: "systemd採用システムで現在のデフォルトターゲット（ランレベルに相当）を確認するコマンドはどれか？",
-    choices: [
-      "systemctl get-default",
-      "systemctl show-target",
-      "systemctl list-default",
-      "systemctl status target",
-    ],
+    question: "システム起動時にカーネルが出力したハードウェア検出メッセージを確認できるコマンドはどれか？",
+    choices: ["dmesg", "uname", "fdisk", "journalctl --kernel-only"],
     correctIndex: 0,
-    explanation:
-      "systemctl get-default コマンドにより、現在のデフォルトのターゲットユニットを表示します。",
-  },
-  {
-    id: "lpic-arch-4",
-    category: "システムアーキテクチャ",
-    question: "カーネル起動時のメッセージ履歴をブートバッファから確認するコマンドはどれか？",
-    choices: ["syslog", "dmesg", "journalctl --boot-only", "klogd"],
-    correctIndex: 1,
-    explanation:
-      "dmesg（display message / driver message）コマンドは、カーネルのリングバッファに保存された起動メッセージやハードウェア認識ログを表示します。",
+    explanation: "dmesg コマンドは、OS起動時にカーネルが出力したハードウェア検出などのメッセージログ（カーネルリングバッファ）を表示します。",
   },
 
-  // ── 2. Linuxインストールとパッケージ管理 (packages) ──
+  // ── 2. パッケージ管理 (3問) ──
   {
     id: "lpic-pkg-1",
-    category: "Linuxインストールとパッケージ管理",
-    question: "Debian系Linux（Ubuntu等）でパッケージをインストールするaptコマンドの使い方として正しいものはどれか？",
-    choices: ["apt install -y nginx", "apt setup nginx", "apt get nginx", "dpkg --install nginx"],
+    category: "パッケージ管理",
+    question: "Debian/Ubuntu系Linuxにおいて、インターネット上のリポジトリから最新のパッケージ情報（一覧）を取得・更新するコマンドはどれか？",
+    choices: ["apt update", "apt upgrade", "apt install", "apt clean"],
     correctIndex: 0,
-    explanation:
-      "apt install -y <パッケージ名> でインストールを行います。-y を指定することで確認プロンプトを省略できます。",
+    explanation: "apt update でまずリポジトリのインデックス（最新パッケージ情報）を更新し、その後の apt upgrade でインストール済みパッケージを更新します。",
   },
   {
     id: "lpic-pkg-2",
-    category: "Linuxインストールとパッケージ管理",
-    question: "Red Hat系Linux（RHEL, AlmaLinux等）で使用される主要なパッケージファイル拡張子はどれか？",
-    choices: [".deb", ".rpm", ".tar.gz", ".pkg"],
-    correctIndex: 1,
-    explanation:
-      ".rpm（Red Hat Package Manager）はRHELやFedora系で標準使用されます。.deb はDebian/Ubuntu系です。",
+    category: "パッケージ管理",
+    question: "Debian/Ubuntu系システムで、パッケージファイル(.deb)を個別に直接インストールするdpkgコマンドのオプションはどれか？",
+    choices: ["dpkg -i", "dpkg -l", "dpkg -r", "dpkg -s"],
+    correctIndex: 0,
+    explanation: "-i (install) オプションで .deb パッケージを直接インストールします。-l は一覧表示、-r は削除です。",
   },
   {
     id: "lpic-pkg-3",
-    category: "Linuxインストールとパッケージ管理",
-    question: "実行ファイルが依存している共有ライブラリを確認するコマンドはどれか？",
-    choices: ["ldconfig", "ldd", "libcheck", "depmod"],
-    correctIndex: 1,
-    explanation:
-      "ldd（List Dynamic Dependencies）コマンドは、プログラムが必要とする共有ライブラリの一覧を表示します。",
-  },
-  {
-    id: "lpic-pkg-4",
-    category: "Linuxインストールとパッケージ管理",
-    question: "dpkg コマンドでインストール済みパッケージの一覧を表示するオプションはどれか？",
-    choices: ["dpkg -l", "dpkg -i", "dpkg -s", "dpkg -r"],
+    category: "パッケージ管理",
+    question: "RHEL/CentOS系システムにおいて、依存関係を自動解決してパッケージをインストール・更新する標準のパッケージ管理ツールはどれか？",
+    choices: ["dnf (yum)", "apt", "pacman", "zypper"],
     correctIndex: 0,
-    explanation:
-      "dpkg -l（--list）でインストール済みパッケージの一覧を表示します。-i はインストール、-r は削除です。",
+    explanation: "Red Hat系Linuxでは、従来の yum や後継の dnf コマンドがRPMパッケージの依存関係を自動解決して管理する標準ツールです。",
   },
 
-  // ── 3. GNUとUnixコマンド (commands) ──
+  // ── 3. 基本コマンド (4問) ──
   {
     id: "lpic-cmd-1",
-    category: "GNUとUnixコマンド",
-    question: "Linuxでカレントディレクトリのファイル一覧を隠しファイル含め詳細表示するコマンドはどれか？",
-    choices: ["ls -la", "cd -l", "pwd -a", "cp -la"],
+    category: "基本コマンド",
+    question: "カレントディレクトリ（現在自分がいるディレクトリ）の絶対パスを表示するコマンドはどれか？",
+    choices: ["pwd", "cd", "ls", "pwd --current"],
     correctIndex: 0,
-    explanation:
-      "ls -la コマンドはディレクトリの内容を詳細フォーマット（-l）かつ隠しファイルを含む全ファイル（-a）で表示します。",
+    explanation: "pwd (print working directory) コマンドを実行すると、現在の作業ディレクトリの絶対パスが画面に表示されます。",
   },
   {
     id: "lpic-cmd-2",
-    category: "GNUとUnixコマンド",
-    question: "ファイルをコピーするコマンドとして正しいものはどれか？",
-    choices: ["mv", "rm", "cp", "ln"],
-    correctIndex: 2,
-    explanation:
-      "cp（copy）コマンドはファイルやディレクトリをコピーします。ディレクトリをコピーする場合は -r オプションをつけます。",
+    category: "基本コマンド",
+    question: "ディレクトリごとファイルを再帰的にコピーするために必要な cp コマンドのオプションはどれか？",
+    choices: ["-r", "-f", "-v", "-p"],
+    correctIndex: 0,
+    explanation: "-r（または -R、recursive=再帰的）オプションを指定することで、ディレクトリ内の全ファイルとサブディレクトリを丸ごとコピーできます。",
   },
   {
     id: "lpic-cmd-3",
-    category: "GNUとUnixコマンド",
-    question: "ファイル内の文字列を大文字・小文字を無視して検索するコマンドはどれか？",
-    choices: ["find -i", "locate -a", "grep -i", "awk -i"],
-    correctIndex: 2,
-    explanation:
-      "grep -i（--ignore-case）は大文字と小文字を区別せずに一致パターンを検索します。",
+    category: "基本コマンド",
+    question: "テキストファイルの内容を表示・連結する基本的なコマンドはどれか？",
+    choices: ["cat", "less", "head", "grep"],
+    correctIndex: 0,
+    explanation: "cat (concatenate) コマンドは、ファイル全体をそのまま標準出力に表示するため、短い設定ファイルの確認などで最もよく使われます。",
   },
   {
     id: "lpic-cmd-4",
-    category: "GNUとUnixコマンド",
-    question: "所有者に実行権限を追加する chmod コマンドはどれか？",
-    choices: ["chmod u+x filename", "chmod a-x filename", "chmod o+w filename", "chmod g+r filename"],
+    category: "基本コマンド",
+    question: "ファイル内から特定の文字列（キーワード）を含む行を検索して抽出するコマンドはどれか？",
+    choices: ["grep", "find", "locate", "whereis"],
     correctIndex: 0,
-    explanation:
-      "u=user(所有者)、+x=実行権限追加。したがって chmod u+x となります。",
-  },
-  {
-    id: "lpic-cmd-5",
-    category: "GNUとUnixコマンド",
-    question: "現在実行中のプロセス一覧を表示する標準的なコマンドはどれか？",
-    choices: ["top -l", "ps aux", "kill -a", "nice -p"],
-    correctIndex: 1,
-    explanation:
-      "ps aux は全ユーザーのプロセス状況を詳細に表示します。トッププロセスをリアルタイムで監視するには top コマンドを用います。",
+    explanation: "grep コマンドはテキストファイルから正規表現やキーワードに一致する行を検索して出力する必須コマンドです。",
   },
 
-  // ── 4. デバイスとファイルシステム (filesystem) ──
+  // ── 4. ファイルシステムとデバイス (3問) ──
   {
     id: "lpic-fs-1",
-    category: "デバイスとファイルシステム",
-    question: "ディスクの空き容量や使用率を人間が読みやすい形式（GB/MB等）で表示するコマンドはどれか？",
-    choices: ["df -h", "du -s", "fdisk -l", "mount -a"],
+    category: "ファイルシステムとデバイス",
+    question: "システム起動時に自動マウントするファイルシステムやデバイスの設定が記述されている設定ファイルはどれか？",
+    choices: ["/etc/fstab", "/etc/mtab", "/etc/mount.conf", "/etc/disks"],
     correctIndex: 0,
-    explanation:
-      "df -h（disk free, human-readable）コマンドは、各ファイルシステムの空き容量や使用率を分かりやすい単位で出力します。",
+    explanation: "/etc/fstab (file systems table) に、起動時に自動マウントするデバイスやマウントポイント、ファイルシステム形式などを記述します。",
   },
   {
     id: "lpic-fs-2",
-    category: "デバイスとファイルシステム",
-    question: "システムの起動時に自動マウントされるファイルシステム情報が記載されている設定ファイルはどれか？",
-    choices: ["/etc/fstab", "/etc/mtab", "/etc/mounts", "/etc/filesystems"],
+    category: "ファイルシステムとデバイス",
+    question: "ディスクの空き容量と使用量を、人間が読みやすい単位（MBやGBなど）で確認するコマンドはどれか？",
+    choices: ["df -h", "du -sh", "lsblk", "fdisk -l"],
     correctIndex: 0,
-    explanation:
-      "/etc/fstab（file systems table）に、マウントデバイス・マウントポイント・ファイルシステムタイプ・オプションを記述します。",
+    explanation: "df コマンドに -h (human-readable) オプションを付けることで、システム中のファイルシステムのディスク使用状況を読みやすい単位で確認できます。",
   },
   {
     id: "lpic-fs-3",
-    category: "デバイスとファイルシステム",
-    question: "ext4 ファイルシステムを作成するためのコマンドはどれか？",
-    choices: ["mkfs.ext4 /dev/sdb1", "fsck.ext4 /dev/sdb1", "fdisk /dev/sdb1", "mount -t ext4 /dev/sdb1"],
+    category: "ファイルシステムとデバイス",
+    question: "ツリー状に接続されているブロックデバイス（ハードディスクやパーティション情報）の一覧を表示するコマンドはどれか？",
+    choices: ["lsblk", "lspci", "lsusb", "lscpu"],
     correctIndex: 0,
-    explanation:
-      "mkfs.ext4（または mkfs -t ext4）コマンドを用いて、指定したパーティションに ext4 ファイルシステムを作成します。",
+    explanation: "lsblk コマンドはシステム上のブロックデバイス一覧を階層構造でわかりやすく表示するため、ストレージ構成の確認に便利です。",
   },
 
-  // ── 5. シェルとスクリプト (shell) ──
+  // ── 5. シェルとスクリプト (3問) ──
   {
     id: "lpic-sh-1",
     category: "シェルとスクリプト",
-    question: "現在の環境変数一覧を表示するコマンドはどれか？",
-    choices: ["printenv", "echo-all", "showenv", "varlist"],
+    question: "シェルスクリプトファイルの1行目に記述する、そのスクリプトを実行するインタープリターを指定する記法（#!/bin/bash など）は何と呼ばれるか？",
+    choices: ["シバン (Shebang)", "コメントアウト", "マジックコメント", "インクルード宣言"],
     correctIndex: 0,
-    explanation:
-      "printenv（または env）コマンドによって現在のシステム環境変数を一覧表示します。",
+    explanation: "#! から始まる記述をシバン（シェバング）と呼び、どのシェルプログラム（/bin/bash や /bin/sh など）でスクリプトを実行すべきかをOSに指示します。",
   },
   {
     id: "lpic-sh-2",
     category: "シェルとスクリプト",
-    question: "前回実行した直前のコマンドを再実行する履歴ショートカットはどれか？",
-    choices: ["!!", "^r", "!!-1", "^!"],
+    question: "作成したシェルスクリプトに実行権限（誰でも実行可能）を付与するコマンドはどれか？",
+    choices: ["chmod +x script.sh", "chown +exec script.sh", "chmod 644 script.sh", "umask 022 script.sh"],
     correctIndex: 0,
-    explanation:
-      "!!（bang bang）はbash履歴における直前のコマンドを展開して実行します。",
+    explanation: "chmod +x (または 755 など) により、ファイルに実行権限 (execute) を設定できます。",
   },
   {
     id: "lpic-sh-3",
     category: "シェルとスクリプト",
-    question: "シェルスクリプトファイルの先頭行に記述するシバン（shebang）として標準的な記述はどれか？",
-    choices: ["#!/bin/bash", "#//bin/bash", "$!/bin/bash", "//bin/bash"],
+    question: "設定した変数（例: VAR='test'）を、子プロセスや外部コマンドからも環境変数として参照できるようにするコマンドはどれか？",
+    choices: ["export VAR", "source VAR", "import VAR", "set --env VAR"],
     correctIndex: 0,
-    explanation:
-      "#!/bin/bash のように書くことで、そのスクリプトを処理するインタープリターをカーネルに指示します。",
+    explanation: "export コマンドで変数を環境変数としてエクスポートすることで、起動するシェルスクリプトやプログラム内からも参照可能になります。",
   },
 
-  // ── 6. ユーザーとグループ管理 (users) ──
+  // ── 6. ユーザーとセキュリティ (4問) ──
   {
-    id: "lpic-user-1",
-    category: "ユーザーとグループ管理",
-    question: "ユーザーのパスワードの有効期限や変更履歴情報が暗号化されて保存されるファイルはどれか？",
-    choices: ["/etc/shadow", "/etc/passwd", "/etc/group", "/etc/login.defs"],
+    id: "lpic-sec-1",
+    category: "ユーザーとセキュリティ",
+    question: "Linuxシステム内のすべてのユーザーアカウント情報（ユーザー名やホームディレクトリなど）が保存されているファイルはどれか？",
+    choices: ["/etc/passwd", "/etc/shadow", "/etc/group", "/etc/users"],
     correctIndex: 0,
-    explanation:
-      "/etc/shadow ファイルには、ハッシュ化されたパスワードおよびパスワード有効期限等のセキュリティ情報が保存されます。",
+    explanation: "/etc/passwd は全アカウントの基本情報を保持しており、実際のハッシュ化されたパスワードはセキュリティ上 /etc/shadow に格納されます。",
   },
   {
-    id: "lpic-user-2",
-    category: "ユーザーとグループ管理",
-    question: "新規ユーザー 'user1' を作成すると同時にホームディレクトリを作成するコマンドはどれか？",
-    choices: ["useradd -m user1", "adduser -d user1", "usermod -c user1", "groupadd user1"],
+    id: "lpic-sec-2",
+    category: "ユーザーとセキュリティ",
+    question: "新規ユーザーアカウントを作成するために使用する標準コマンドはどれか？",
+    choices: ["useradd", "newuser", "createuser", "mkuser"],
     correctIndex: 0,
-    explanation:
-      "useradd -m オプションを指定することで、ユーザー作成と同時にホームディレクトリ（/home/user1）を自動作成します。",
+    explanation: "useradd コマンド（または対話型の adduser）を使用して、新しいユーザーアカウントやホームディレクトリを作成します。",
   },
   {
-    id: "lpic-user-3",
-    category: "ユーザーとグループ管理",
-    question: "現在ログインしているユーザーのUID、GID、および所属グループを表示するコマンドはどれか？",
-    choices: ["id", "whoami", "w", "users"],
+    id: "lpic-sec-3",
+    category: "ユーザーとセキュリティ",
+    question: "自身のパスワード（または管理者として他ユーザーのパスワード）を変更するコマンドはどれか？",
+    choices: ["passwd", "chpasswd", "pwd-update", "secpasswd"],
     correctIndex: 0,
-    explanation:
-      "id コマンドはユーザーのユーザーID（UID）、グループID（GID）、および所属グループ一覧を出力します。",
+    explanation: "passwd コマンドを実行することで、対話的にパスワードを変更できます。rootユーザーであれば他ユーザーのパスワード変更も可能です。",
+  },
+  {
+    id: "lpic-sec-4",
+    category: "ユーザーとセキュリティ",
+    question: "許可されたユーザーが自身のパスワードを入力することで、一時的に管理者(root)権限でコマンドを実行できるようにするコマンドはどれか？",
+    choices: ["sudo", "su --admin", "rootexec", "chmod --root"],
+    correctIndex: 0,
+    explanation: "sudo コマンドを使うことで、/etc/sudoers の設定に基づき root 権限が必要なコマンドを安全かつ履歴ログを残して実行できます。",
   },
 ];
 

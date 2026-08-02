@@ -62,20 +62,20 @@ export async function GET(request: Request) {
 
     // LPIC-1 と CCNA の初期構造
     const lpic1Categories = [
-      { name: "システムアーキテクチャ", total: 20 },
-      { name: "Linuxインストール&パッケージ", total: 25 },
-      { name: "GNUとUnixコマンド", total: 40 },
-      { name: "デバイス&ファイルシステム", total: 30 },
-      { name: "シェル&スクリプト", total: 20 },
-      { name: "ユーザー&グループ管理", total: 18 },
+      { name: "システムアーキテクチャ", total: 15 },
+      { name: "Linuxインストール&パッケージ", total: 15 },
+      { name: "GNUとUnixコマンド", total: 25 },
+      { name: "デバイス&ファイルシステム", total: 15 },
+      { name: "シェル&スクリプト", total: 15 },
+      { name: "ユーザー&グループ管理", total: 15 },
     ];
     const ccnaCategories = [
-      { name: "ネットワーク基礎", total: 30 },
-      { name: "IPアドレッシング", total: 25 },
-      { name: "ルーティング", total: 35 },
-      { name: "スイッチング・VLAN", total: 28 },
-      { name: "セキュリティ", total: 20 },
-      { name: "WAN & クラウド", total: 22 },
+      { name: "ネットワーク基礎", total: 20 },
+      { name: "IPアドレッシング", total: 15 },
+      { name: "ルーティング", total: 20 },
+      { name: "スイッチング・VLAN", total: 15 },
+      { name: "セキュリティ", total: 15 },
+      { name: "WAN & クラウド", total: 15 },
     ];
 
     const lpic1Map: Record<string, { answered: number; correct: number }> = {};
@@ -113,8 +113,8 @@ export async function GET(request: Request) {
       }
     });
 
-    const lpic1TotalQ = 153;
-    const ccnaTotalQ = 160;
+    const lpic1TotalQ = 100;
+    const ccnaTotalQ = 100;
 
     const lpic1Progress = Math.min(100, Math.round((lpic1Answered / lpic1TotalQ) * 100));
     const ccnaProgress = Math.min(100, Math.round((ccnaAnswered / ccnaTotalQ) * 100));
@@ -125,7 +125,8 @@ export async function GET(request: Request) {
         href: "/lpic1",
         color: "#58a6ff",
         gradient: "linear-gradient(135deg, #1d6fca, #58a6ff)",
-        icon: "L1",
+        icon: "🐧",
+        imageSrc: "/characters/lpic.png",
         progress: lpic1Progress,
         totalQuestions: lpic1TotalQ,
         answered: lpic1Answered,
@@ -141,7 +142,8 @@ export async function GET(request: Request) {
         href: "/ccna",
         color: "#bc8cff",
         gradient: "linear-gradient(135deg, #6e40c9, #bc8cff)",
-        icon: "CC",
+        icon: "🐱",
+        imageSrc: "/characters/ccna.png",
         progress: ccnaProgress,
         totalQuestions: ccnaTotalQ,
         answered: ccnaAnswered,
