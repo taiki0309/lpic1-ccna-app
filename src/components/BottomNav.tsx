@@ -17,7 +17,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/lpic1", label: "LPIC-1", icon: "🐧", imgSrc: "/characters/lpic.png" },
   { href: "/ccna", label: "CCNA", icon: "🌐", imgSrc: "/characters/ccna.png" },
   { href: "/quiz", label: "総合演習", icon: "📝", imgSrc: "/characters/teacher.png" },
-  { href: "/dashboard", label: "学習管理", icon: "📊", imgSrc: "/characters/teacher.png" },
+  { href: "/dashboard", label: "学習管理", icon: "📊", imgSrc: "/characters/advisor.png" },
 ];
 
 export default function BottomNav() {

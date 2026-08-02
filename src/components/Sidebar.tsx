@@ -37,7 +37,7 @@ const menuGroups = [
         href: "/dashboard",
         label: "学習進捗・成績",
         icon: "📊",
-        imgSrc: "/characters/teacher.png",
+        imgSrc: "/characters/advisor.png",
       },
       {
         href: "/quiz",

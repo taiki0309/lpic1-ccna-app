@@ -17,7 +17,7 @@ export default function Home() {
         }}
       />
 
-      <div className="mx-auto max-w-5xl px-5 py-6 sm:px-8">
+      <div className="mx-auto max-w-5xl px-3 sm:px-8 py-6">
         {/* ── 今日のミッションカード ── */}
         <section aria-label="今日のミッション" className="mb-10">
           <div className="mb-3 flex items-center gap-2">
@@ -118,7 +118,7 @@ export default function Home() {
             <div className="flex items-center gap-4 text-center sm:text-left">
               <div className="relative w-12 h-12 rounded-full overflow-hidden shrink-0 border-2 border-[var(--accent-primary)] bg-white shadow-md">
                 <Image
-                  src="/characters/teacher.png"
+                  src="/characters/advisor.png"
                   alt="アドバイザー"
                   fill
                   className="object-cover"
@@ -183,7 +183,7 @@ function MissionCard({
   return (
     <Link
       href={href}
-      className={`card-hover group relative flex items-center gap-4 overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 animate-fade-in-up ${animDelay}`}
+      className={`card-hover group relative flex items-center justify-between gap-2.5 sm:gap-4 overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-3.5 sm:p-5 animate-fade-in-up ${animDelay}`}
     >
       <div
         className="absolute left-0 top-0 h-full w-1.5 rounded-l-2xl"
@@ -191,7 +191,7 @@ function MissionCard({
         aria-hidden="true"
       />
       <div
-        className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl overflow-hidden border border-[var(--border)] bg-white shadow-sm"
+        className="relative flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-2xl overflow-hidden border border-[var(--border)] bg-white shadow-sm"
         style={{ background: iconBg }}
         aria-hidden="true"
       >
@@ -216,13 +216,13 @@ function MissionCard({
             {badge}
           </span>
         </div>
-        <p className="font-bold text-[var(--foreground)] truncate">{title}</p>
+        <p className="font-bold text-sm sm:text-base text-[var(--foreground)] truncate">{title}</p>
         <p className="text-xs text-[var(--text-muted)] mt-0.5 truncate">
           {desc}
         </p>
       </div>
       <div
-        className="shrink-0 rounded-xl px-4 py-2 text-sm font-bold text-white transition-all duration-200 group-hover:scale-105 group-hover:opacity-90"
+        className="shrink-0 rounded-xl px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-bold text-white transition-all duration-200 group-hover:scale-105 group-hover:opacity-90"
         style={{ background: iconColor }}
       >
         {ctaLabel}
@@ -262,7 +262,7 @@ function CertCard({
     <Link
       id={id}
       href={href}
-      className={`card-hover group relative flex flex-col gap-4 overflow-hidden rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-6 sm:p-7 animate-fade-in-up ${animDelay}`}
+      className={`card-hover group relative flex flex-col gap-4 overflow-hidden rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-5 sm:p-7 animate-fade-in-up ${animDelay}`}
     >
       <div
         aria-hidden="true"
