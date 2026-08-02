@@ -11,6 +11,14 @@ const categories = [
 
 const quickLinks = [
   {
+    href: "/ccna/guide",
+    icon: "📖",
+    label: "学習ガイド",
+    desc: "ネットワーク基礎から応用まで",
+    color: "#3fb950",
+    gradient: "linear-gradient(135deg, #196c2e, #3fb950)",
+  },
+  {
     href: "/ccna/quiz",
     icon: "📝",
     label: "問題演習",
@@ -25,14 +33,6 @@ const quickLinks = [
     desc: "ドラッグ&ドロップ(スマホ対応)・CLI(PC専用)",
     color: "#58a6ff",
     gradient: "linear-gradient(135deg, #1d6fca, #58a6ff)",
-  },
-  {
-    href: "/ccna/guide",
-    icon: "📖",
-    label: "学習ガイド",
-    desc: "ネットワーク基礎から応用まで",
-    color: "#3fb950",
-    gradient: "linear-gradient(135deg, #196c2e, #3fb950)",
   },
 ];
 
@@ -57,16 +57,6 @@ export default function CcnaTopPage() {
           <span className="text-[var(--foreground)]">CCNA</span>
         </nav>
 
-        {/* 重要バナー：シミュレーション問題対応 */}
-        <div className="mb-8 flex items-start gap-3 rounded-2xl border border-[#bc8cff] bg-[rgba(188,140,255,0.08)] p-5">
-          <span className="text-2xl">🎮</span>
-          <div>
-            <p className="font-bold text-[#bc8cff]">シミュレーション演習（スマホ・PC対応）</p>
-            <p className="mt-1 text-sm text-[var(--text-muted)]">
-              本番試験形式の「ドラッグ&ドロップ演習（スマホ・PC対応）」と「CLI シミュレーター（PC専用）」で実践スキルを磨けます。
-            </p>
-          </div>
-        </div>
 
         {/* クイックアクション */}
         <section aria-label="学習メニュー" className="mb-10 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">

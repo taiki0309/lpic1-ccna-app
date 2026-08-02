@@ -14,6 +14,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/", label: "ホーム", icon: "🏠", exact: true },
   { href: "/lpic1", label: "LPIC-1", icon: "🐧" },
   { href: "/ccna", label: "CCNA", icon: "🌐" },
+  { href: "/quiz", label: "総合演習", icon: "📝" },
   { href: "/dashboard", label: "学習管理", icon: "📊" },
 ];
 

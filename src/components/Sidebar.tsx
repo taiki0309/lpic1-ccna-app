@@ -1,9 +1,8 @@
 "use client";
 
-import React, { Suspense } from "react";
+import React from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { useAuthenticator } from "@aws-amplify/ui-react";
+import { usePathname } from "next/navigation";
 
 const menuGroups = [
   {
@@ -23,40 +22,6 @@ const menuGroups = [
   },
 ];
 
-function SidebarAuthActions() {
-  const { authStatus, signOut } = useAuthenticator((ctx) => [ctx.authStatus]);
-  const router = useRouter();
-  const pathname = usePathname();
-
-  if (authStatus === "authenticated") {
-    return (
-      <button
-        type="button"
-        onClick={() => {
-          signOut();
-          router.push("/login");
-        }}
-        className="sidebar-item !text-red-400 hover:!bg-red-500/10 transition-colors"
-        title="ログアウト"
-      >
-        <span className="sidebar-icon">🔓</span>
-        <span>ログアウト</span>
-      </button>
-    );
-  }
-
-  const isActive = pathname?.startsWith("/login");
-  return (
-    <Link
-      href="/login"
-      className={`sidebar-item${isActive ? " active" : ""}`}
-      title="ログイン / 新規登録"
-    >
-      <span className="sidebar-icon">🔐</span>
-      <span>ログイン</span>
-    </Link>
-  );
-}
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -95,19 +60,6 @@ export default function Sidebar() {
         ))}
       </nav>
 
-      {/* 下部：ログイン/ログアウト */}
-      <div className="sidebar-bottom">
-        <Suspense
-          fallback={
-            <div className="sidebar-item">
-              <span className="sidebar-icon">👤</span>
-              <span>...</span>
-            </div>
-          }
-        >
-          <SidebarAuthActions />
-        </Suspense>
-      </div>
     </aside>
   );
 }

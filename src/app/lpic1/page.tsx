@@ -11,20 +11,20 @@ const categories = [
 
 const quickLinks = [
   {
-    href: "/lpic1/quiz",
-    icon: "📝",
-    label: "問題演習",
-    desc: "4択・コマンド補充問題",
-    color: "#58a6ff",
-    gradient: "linear-gradient(135deg, #1d6fca, #58a6ff)",
-  },
-  {
     href: "/lpic1/guide",
     icon: "📖",
     label: "学習ガイド",
     desc: "Linuxとは？・基礎概念入門",
     color: "#bc8cff",
     gradient: "linear-gradient(135deg, #6e40c9, #bc8cff)",
+  },
+  {
+    href: "/lpic1/quiz",
+    icon: "📝",
+    label: "問題演習",
+    desc: "4択・コマンド補充問題",
+    color: "#58a6ff",
+    gradient: "linear-gradient(135deg, #1d6fca, #58a6ff)",
   },
   {
     href: "/lpic1/practice",
