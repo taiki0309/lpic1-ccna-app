@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 
 const guides = [
@@ -70,6 +73,20 @@ const guides = [
 ];
 
 export default function Lpic1GuidePage() {
+  const [selectedLevel, setSelectedLevel] = useState("すべて");
+
+  const filteredGuides =
+    selectedLevel === "すべて"
+      ? guides
+      : guides.filter((g) => {
+          if (selectedLevel === "初心者初級") {
+            return g.level === "初心者入門" || g.level === "初心者" || g.level === "初級";
+          }
+          if (selectedLevel === "初心者入門") return g.level === "初心者入門";
+          if (selectedLevel === "初心者") return g.level === "初心者入門" || g.level === "初心者";
+          return g.level === selectedLevel;
+        });
+
   return (
     <main className="relative min-h-screen px-4 py-12">
       <div
@@ -104,29 +121,34 @@ export default function Lpic1GuidePage() {
         {/* レベルフィルター */}
         <div className="mb-6 flex flex-wrap gap-2">
           {[
-            { label: "すべて", color: "#bc8cff", active: true },
-            { label: "初心者入門", color: "#3fb950", active: false },
-            { label: "初心者", color: "#3fb950", active: false },
-            { label: "初級", color: "#58a6ff", active: false },
-            { label: "中級", color: "#e3b341", active: false },
-          ].map((f) => (
-            <button
-              key={f.label}
-              className="rounded-full border px-4 py-1.5 text-sm font-semibold transition-all hover:scale-105"
-              style={{
-                borderColor: f.active ? f.color : "var(--border)",
-                background: f.active ? `${f.color}20` : "var(--surface)",
-                color: f.active ? f.color : "var(--text-muted)",
-              }}
-            >
-              {f.label}
-            </button>
-          ))}
+            { label: "すべて", color: "#bc8cff" },
+            { label: "初心者入門", color: "#3fb950" },
+            { label: "初心者", color: "#3fb950" },
+            { label: "初心者初級", color: "#58a6ff" },
+            { label: "初級", color: "#58a6ff" },
+            { label: "中級", color: "#e3b341" },
+          ].map((f) => {
+            const active = selectedLevel === f.label;
+            return (
+              <button
+                key={f.label}
+                onClick={() => setSelectedLevel(f.label)}
+                className="rounded-full border px-4 py-1.5 text-sm font-semibold transition-all hover:scale-105 cursor-pointer"
+                style={{
+                  borderColor: active ? f.color : "var(--border)",
+                  background: active ? `${f.color}20` : "var(--surface)",
+                  color: active ? f.color : "var(--text-muted)",
+                }}
+              >
+                {f.label}
+              </button>
+            );
+          })}
         </div>
 
         {/* ガイドカード一覧 */}
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {guides.map((guide) => (
+          {filteredGuides.map((guide) => (
             <Link
               key={guide.slug}
               href={`/lpic1/guide/${guide.slug}`}
@@ -183,6 +205,11 @@ export default function Lpic1GuidePage() {
               </div>
             </Link>
           ))}
+          {filteredGuides.length === 0 && (
+            <div className="col-span-full py-12 text-center text-[var(--text-muted)]">
+              該当する学習ガイドはありません。
+            </div>
+          )}
         </div>
       </div>
     </main>

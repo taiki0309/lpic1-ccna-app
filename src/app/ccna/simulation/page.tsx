@@ -712,6 +712,7 @@ export default function CcnaSimulationPage() {
   );
   const [dragItem, setDragItem] = useState<string | null>(null);
   const [dndChecked, setDndChecked] = useState(false);
+  const [showDndHint, setShowDndHint] = useState(false);
 
   const handleNextDndQ = () => {
     if (dndQuestionIdx + 1 < DND_QUESTIONS.length) {
@@ -722,6 +723,7 @@ export default function CcnaSimulationPage() {
       );
       setDndChecked(false);
       setSelectedItemId(null);
+      setShowDndHint(false);
     }
   };
 
@@ -734,6 +736,7 @@ export default function CcnaSimulationPage() {
       );
       setDndChecked(false);
       setSelectedItemId(null);
+      setShowDndHint(false);
     }
   };
 
@@ -1189,17 +1192,55 @@ export default function CcnaSimulationPage() {
 
       {/* ─── 2. ドラッグ＆ドロップ ───────────────────────────── */}
       {activeTab === "dnd" && (
-        <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 space-y-6 animate-fade-in">
-          <div>
-            <h2 className="text-lg font-bold text-[var(--foreground)]">
-              {currentDndQ.title}
-            </h2>
-            <p className="text-xs text-[var(--text-muted)] mt-1">
-              {currentDndQ.description}
-            </p>
+        <div className="space-y-6 animate-fade-in">
+          {/* 問題選択番号バッジ (CLI仕様と同一) */}
+          <div className="flex flex-wrap gap-2">
+            {DND_QUESTIONS.map((q, i) => {
+              const isCurrent = i === dndQuestionIdx;
+              return (
+                <button
+                  key={q.id}
+                  type="button"
+                  onClick={() => {
+                    setDndQuestionIdx(i);
+                    setAssignments(
+                      Object.fromEntries(DND_QUESTIONS[i].items.map((it) => [it.id, null]))
+                    );
+                    setDndChecked(false);
+                    setShowDndHint(false);
+                    setSelectedItemId(null);
+                  }}
+                  className={`flex h-9 w-9 items-center justify-center rounded-xl text-xs font-extrabold transition-all cursor-pointer ${
+                    isCurrent
+                      ? "bg-[var(--accent-primary)] text-white shadow-md scale-110"
+                      : "bg-[var(--surface-2)] border border-[var(--border)] text-[var(--text-muted)] hover:border-[var(--accent-primary)] hover:text-[var(--foreground)]"
+                  }`}
+                >
+                  {i + 1}
+                </button>
+              );
+            })}
           </div>
 
-          {/* ドラッグプール */}
+          <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 space-y-6 shadow-xl sm:p-8">
+            <div>
+              <div className="mb-4 flex items-center justify-between">
+                <span className="rounded-full border border-[var(--border)] bg-[var(--surface-2)] px-3 py-1 text-xs font-bold text-[var(--accent-primary)]">
+                  {currentDndQ.category}
+                </span>
+                <span className="text-xs text-[var(--text-muted)] font-bold">
+                  問題 {dndQuestionIdx + 1} / {DND_QUESTIONS.length}
+                </span>
+              </div>
+              <h2 className="text-base font-extrabold leading-relaxed text-[var(--foreground)] sm:text-lg">
+                {currentDndQ.title}
+              </h2>
+              <p className="text-xs sm:text-sm text-[var(--text-muted)] mt-1 leading-relaxed">
+                {currentDndQ.description}
+              </p>
+            </div>
+
+            {/* ドラッグプール */}
           <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-4">
             <div className="flex items-center justify-between mb-3">
               <span className="text-xs font-bold text-[var(--text-muted)]">
@@ -1313,27 +1354,126 @@ export default function CcnaSimulationPage() {
             })}
           </div>
 
-          <div className="flex gap-3">
-            <button
-              type="button"
-              onClick={handleDndCheck}
-              disabled={unassigned.length > 0}
-              className="flex-1 rounded-xl py-3 font-bold text-white text-xs transition-all hover:opacity-90 disabled:opacity-40"
-              style={{ background: "linear-gradient(135deg, #1d6fca, #58a6ff)" }}
-            >
-              {unassigned.length > 0 ? `残り ${unassigned.length} 項目` : "採点する"}
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setAssignments(Object.fromEntries(currentDndQ.items.map((i) => [i.id, null])));
-                setDndChecked(false);
-                setSelectedItemId(null);
-              }}
-              className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-4 py-3 text-xs font-bold text-[var(--text-muted)] hover:text-[var(--foreground)]"
-            >
-              リセット
-            </button>
+          {/* 💡 ヒント表示 */}
+          {showDndHint && (
+            <div className="rounded-xl border border-amber-500/40 bg-amber-500/10 p-4 text-xs text-amber-300 space-y-2 animate-fade-in">
+              <p className="font-extrabold text-amber-400">💡 問題ヒント・アドバイス</p>
+              <p className="leading-relaxed">
+                【{currentDndQ.title}】: {currentDndQ.description}
+              </p>
+              <ul className="list-disc pl-4 space-y-1 text-amber-200">
+                {currentDndQ.items.map((i) => {
+                  const targetLayerName = (currentDndQ.layerNames as unknown as Record<number, string>)[i.correctLayer];
+                  return (
+                    <li key={i.id}>
+                      <span className="font-bold">{i.label}</span> は 「{targetLayerName}」 に対応しています。
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          )}
+
+          {/* コントロールボタン群 (CLI仕様と同一構成) */}
+          <div className="flex flex-wrap gap-2.5 pt-2">
+            {!dndChecked ? (
+              <>
+                <button
+                  type="button"
+                  onClick={handleDndCheck}
+                  disabled={unassigned.length > 0}
+                  className="flex-1 rounded-xl py-3 px-4 font-extrabold text-white transition-all hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40 shadow-md cursor-pointer"
+                  style={{ background: "linear-gradient(135deg, #196c2e, #3fb950)" }}
+                >
+                  {unassigned.length > 0 ? `残り ${unassigned.length} 項目配置で採点` : "採点する"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowDndHint(!showDndHint)}
+                  className="rounded-xl border border-amber-500/40 bg-amber-500/10 px-4 py-3 font-extrabold text-amber-400 hover:bg-amber-500/20 cursor-pointer"
+                >
+                  {showDndHint ? "ヒントを閉じる" : "💡 ヒント"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const correctMap: Record<string, number | null> = {};
+                    currentDndQ.items.forEach((i) => {
+                      correctMap[i.id] = i.correctLayer;
+                    });
+                    setAssignments(correctMap);
+                    setDndChecked(true);
+                  }}
+                  className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-4 py-3 font-extrabold text-[var(--foreground)] hover:border-[var(--accent-primary)] cursor-pointer"
+                >
+                  🔑 正解を見る
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleNextDndQ();
+                    setShowDndHint(false);
+                  }}
+                  className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-4 py-3 font-extrabold text-[var(--text-muted)] hover:text-[var(--foreground)] cursor-pointer"
+                  title="この問題をスキップして次へ"
+                >
+                  ⏭️ スキップ
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAssignments(Object.fromEntries(currentDndQ.items.map((i) => [i.id, null])));
+                    setDndChecked(false);
+                    setSelectedItemId(null);
+                    setShowDndHint(false);
+                  }}
+                  className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-4 py-3 text-xs font-bold text-[var(--text-muted)] hover:text-[var(--foreground)] cursor-pointer"
+                >
+                  リセット
+                </button>
+              </>
+            ) : (
+              <div className="flex w-full flex-col sm:flex-row gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleNextDndQ();
+                    setShowDndHint(false);
+                  }}
+                  disabled={dndQuestionIdx + 1 >= DND_QUESTIONS.length}
+                  className="flex-1 rounded-xl py-3 px-6 font-extrabold text-white transition-all hover:opacity-90 shadow-lg disabled:opacity-40 cursor-pointer"
+                  style={{ background: "linear-gradient(135deg, #1d6fca, #58a6ff)" }}
+                >
+                  {dndQuestionIdx + 1 < DND_QUESTIONS.length ? "次の問題へ ➔" : "全問題クリア！"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const correctMap: Record<string, number | null> = {};
+                    currentDndQ.items.forEach((i) => {
+                      correctMap[i.id] = i.correctLayer;
+                    });
+                    setAssignments(correctMap);
+                    setDndChecked(true);
+                  }}
+                  className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-6 py-3 font-extrabold text-[var(--foreground)] hover:border-[var(--accent-primary)] cursor-pointer"
+                >
+                  🔑 正解を見る
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAssignments(Object.fromEntries(currentDndQ.items.map((i) => [i.id, null])));
+                    setDndChecked(false);
+                    setSelectedItemId(null);
+                    setShowDndHint(false);
+                  }}
+                  className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-6 py-3 font-bold text-[var(--text-muted)] hover:text-[var(--foreground)] cursor-pointer"
+                >
+                  もう一度解く
+                </button>
+              </div>
+            )}
           </div>
 
           {dndChecked && (
@@ -1345,6 +1485,7 @@ export default function CcnaSimulationPage() {
               </p>
             </div>
           )}
+        </div>
         </div>
       )}
 
