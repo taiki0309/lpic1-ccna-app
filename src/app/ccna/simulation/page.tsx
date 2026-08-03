@@ -808,9 +808,6 @@ export default function CcnaSimulationPage() {
         window.matchMedia("(hover: none) and (pointer: coarse)").matches ||
         (window.innerWidth <= 1024 && ("ontouchstart" in window || navigator.maxTouchPoints > 0));
       setIsTouchDevice(isTouch);
-      if (isTouch) {
-        setActiveTab("dnd");
-      }
     };
     checkTouch();
     window.addEventListener("resize", checkTouch);
