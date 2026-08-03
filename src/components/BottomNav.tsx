@@ -34,9 +34,9 @@ export default function BottomNav() {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around border-t border-[var(--border)] bg-[var(--surface)] px-2 py-1.5 shadow-lg xl:hidden"
+      className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around border-t border-[var(--border)] bg-[var(--surface)] px-2 py-2 shadow-xl xl:hidden"
       style={{
-        paddingBottom: "max(0.375rem, env(safe-area-inset-bottom))",
+        paddingBottom: "max(0.5rem, env(safe-area-inset-bottom))",
       }}
     >
       {NAV_ITEMS.map((item) => {
@@ -45,26 +45,32 @@ export default function BottomNav() {
           <Link
             key={item.href}
             href={item.href}
-            className={`flex flex-1 flex-col items-center justify-center rounded-xl py-1 transition-all ${
+            className={`flex flex-1 flex-col items-center justify-center rounded-2xl py-1.5 transition-all ${
               active
-                ? "text-[var(--accent-primary)] font-extrabold scale-105"
-                : "text-[var(--text-muted)] hover:text-[var(--foreground)]"
+                ? "text-[var(--accent-primary)] font-black scale-105"
+                : "text-[var(--text-muted)] hover:text-[var(--foreground)] font-bold"
             }`}
           >
             {item.imgSrc ? (
-              <div className={`relative w-6 h-6 rounded-full overflow-hidden mb-0.5 border ${active ? "border-[var(--accent-primary)] shadow-sm" : "border-transparent"} bg-white`}>
+              <div
+                className={`relative w-8 h-8 sm:w-9 sm:h-9 rounded-2xl overflow-hidden mb-1 border-2 ${
+                  active
+                    ? "border-[var(--accent-primary)] shadow-md bg-white"
+                    : "border-[var(--border)] bg-white/90"
+                }`}
+              >
                 <Image
                   src={item.imgSrc}
                   alt={item.label}
                   fill
                   className="object-cover"
-                  sizes="24px"
+                  sizes="36px"
                 />
               </div>
             ) : (
-              <span className="text-xl leading-none mb-1">{item.icon}</span>
+              <span className="text-2xl leading-none mb-1">{item.icon}</span>
             )}
-            <span className="text-[10px] leading-tight">{item.label}</span>
+            <span className="text-xs leading-tight">{item.label}</span>
           </Link>
         );
       })}

@@ -20,17 +20,17 @@ export default function Home() {
       <div className="mx-auto max-w-5xl px-3 sm:px-8 py-6">
         {/* ── 今日のミッションカード ── */}
         <section aria-label="今日のミッション" className="mb-10">
-          <div className="mb-3 flex items-center gap-2">
-            <div className="relative w-6 h-6 rounded-full overflow-hidden border border-[var(--border)] bg-white shadow-sm">
+          <div className="mb-3.5 flex items-center gap-2.5">
+            <div className="relative w-8 h-8 sm:w-9 sm:h-9 rounded-full overflow-hidden border-2 border-[var(--border)] bg-white shadow-sm shrink-0">
               <Image
                 src="/characters/boy.png"
                 alt=""
                 fill
                 className="object-cover"
-                sizes="24px"
+                sizes="36px"
               />
             </div>
-            <h2 className="text-xs font-bold uppercase tracking-widest text-[var(--text-muted)]">
+            <h2 className="text-sm font-extrabold uppercase tracking-widest text-[var(--text-muted)]">
               今日のミッション
             </h2>
           </div>
@@ -66,17 +66,17 @@ export default function Home() {
 
         {/* ── 資格コース選択 ── */}
         <section aria-label="資格コースを選択" className="mb-10">
-          <div className="mb-4 flex items-center gap-2">
-            <div className="relative w-6 h-6 rounded-full overflow-hidden border border-[var(--border)] bg-white shadow-sm">
+          <div className="mb-4 flex items-center gap-2.5">
+            <div className="relative w-8 h-8 sm:w-9 sm:h-9 rounded-full overflow-hidden border-2 border-[var(--border)] bg-white shadow-sm shrink-0">
               <Image
                 src="/characters/teacher.png"
                 alt=""
                 fill
                 className="object-cover"
-                sizes="24px"
+                sizes="36px"
               />
             </div>
-            <h2 className="text-xs font-bold uppercase tracking-widest text-[var(--text-muted)]">
+            <h2 className="text-sm font-extrabold uppercase tracking-widest text-[var(--text-muted)]">
               資格学習コース
             </h2>
           </div>
@@ -115,28 +115,28 @@ export default function Home() {
         {/* ── 学習管理・サポート ── */}
         <section aria-label="学習サポート" className="mb-8">
           <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-4 text-center sm:text-left">
-              <div className="relative w-12 h-12 rounded-full overflow-hidden shrink-0 border-2 border-[var(--accent-primary)] bg-white shadow-md">
+            <div className="flex items-center gap-4 sm:gap-6 text-center sm:text-left">
+              <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden shrink-0 border-2 border-[var(--accent-primary)] bg-white shadow-lg">
                 <Image
                   src="/characters/advisor.png"
                   alt="アドバイザー"
                   fill
                   className="object-cover"
-                  sizes="48px"
+                  sizes="80px"
                 />
               </div>
               <div className="space-y-1">
-                <h3 className="text-base font-extrabold text-[var(--foreground)]">
+                <h3 className="text-lg sm:text-xl font-extrabold text-[var(--foreground)]">
                   学習の進捗状況をチェック
                 </h3>
-                <p className="text-xs text-[var(--text-muted)]">
+                <p className="text-xs sm:text-sm text-[var(--text-muted)]">
                   どのカテゴリが得意でどこが苦手か、グラフと正答率でひと目で確認できます。
                 </p>
               </div>
             </div>
             <Link
               href="/dashboard"
-              className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-[var(--accent-primary)] px-5 py-2.5 text-xs font-bold text-white hover:opacity-90 transition-opacity"
+              className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-[var(--accent-primary)] px-6 py-3 text-sm font-bold text-white hover:opacity-90 transition-opacity shadow-md"
             >
               <span>進捗ボードを見る</span>
               <span>→</span>
@@ -183,15 +183,15 @@ function MissionCard({
   return (
     <Link
       href={href}
-      className={`card-hover group relative flex items-center justify-between gap-2.5 sm:gap-4 overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-3.5 sm:p-5 animate-fade-in-up ${animDelay}`}
+      className={`card-hover group relative flex items-center justify-between gap-3.5 sm:gap-5 overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 sm:p-6 animate-fade-in-up ${animDelay}`}
     >
       <div
-        className="absolute left-0 top-0 h-full w-1.5 rounded-l-2xl"
+        className="absolute left-0 top-0 h-full w-2 rounded-l-2xl"
         style={{ background: iconColor }}
         aria-hidden="true"
       />
       <div
-        className="relative flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-2xl overflow-hidden border border-[var(--border)] bg-white shadow-sm"
+        className="relative flex h-16 w-16 sm:h-20 sm:w-20 shrink-0 items-center justify-center rounded-2xl overflow-hidden border-2 border-[var(--border)] bg-white shadow-md transition-transform duration-300 group-hover:scale-105"
         style={{ background: iconBg }}
         aria-hidden="true"
       >
@@ -201,28 +201,28 @@ function MissionCard({
             alt={title}
             fill
             className="object-cover"
-            sizes="48px"
+            sizes="80px"
           />
         ) : (
-          <span className="text-2xl">{icon}</span>
+          <span className="text-3xl sm:text-4xl">{icon}</span>
         )}
       </div>
       <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 mb-0.5">
+        <div className="flex items-center gap-2 mb-1">
           <span
-            className="rounded-full px-2 py-0.5 text-[10px] font-bold"
+            className="rounded-full px-2.5 py-0.5 text-xs font-bold"
             style={{ background: `${badgeColor}22`, color: badgeColor }}
           >
             {badge}
           </span>
         </div>
-        <p className="font-bold text-sm sm:text-base text-[var(--foreground)] truncate">{title}</p>
-        <p className="text-xs text-[var(--text-muted)] mt-0.5 truncate">
+        <p className="font-extrabold text-base sm:text-lg text-[var(--foreground)] truncate">{title}</p>
+        <p className="text-xs sm:text-sm text-[var(--text-muted)] mt-0.5 truncate">
           {desc}
         </p>
       </div>
       <div
-        className="shrink-0 rounded-xl px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-bold text-white transition-all duration-200 group-hover:scale-105 group-hover:opacity-90"
+        className="shrink-0 rounded-xl px-4 py-2 sm:px-5 sm:py-2.5 text-xs sm:text-sm font-bold text-white transition-all duration-200 group-hover:scale-105 group-hover:opacity-90 shadow-sm"
         style={{ background: iconColor }}
       >
         {ctaLabel}
@@ -262,7 +262,7 @@ function CertCard({
     <Link
       id={id}
       href={href}
-      className={`card-hover group relative flex flex-col gap-4 overflow-hidden rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-5 sm:p-7 animate-fade-in-up ${animDelay}`}
+      className={`card-hover group relative flex flex-col gap-4 overflow-hidden rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-6 sm:p-8 animate-fade-in-up ${animDelay}`}
     >
       <div
         aria-hidden="true"
@@ -273,7 +273,7 @@ function CertCard({
       />
       <div className="flex items-center justify-between">
         <div
-          className="relative flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl overflow-hidden border border-[var(--border)] bg-white shadow-lg animate-float"
+          className="relative flex h-16 w-16 sm:h-20 sm:w-20 shrink-0 items-center justify-center rounded-2xl overflow-hidden border-2 border-[var(--border)] bg-white shadow-lg animate-float"
           style={{ background: gradient }}
           aria-hidden="true"
         >
@@ -283,24 +283,24 @@ function CertCard({
               alt={title}
               fill
               className="object-cover"
-              sizes="56px"
+              sizes="80px"
             />
           ) : (
-            <span className="text-3xl">{emoji}</span>
+            <span className="text-4xl sm:text-5xl">{emoji}</span>
           )}
         </div>
         <span
-          className="rounded-full border px-3 py-1 text-xs font-semibold"
+          className="rounded-full border px-3.5 py-1 text-xs font-bold"
           style={{ borderColor: accentColor, color: accentColor }}
         >
           {subtitle.split(" ")[0]}
         </span>
       </div>
       <div>
-        <h2 className="mb-1.5 text-xl font-extrabold text-[var(--foreground)]">
+        <h2 className="mb-1.5 text-xl sm:text-2xl font-extrabold text-[var(--foreground)]">
           {title}
         </h2>
-        <p className="text-xs text-[var(--text-muted)] leading-relaxed">
+        <p className="text-xs sm:text-sm text-[var(--text-muted)] leading-relaxed">
           {desc}
         </p>
       </div>
@@ -308,14 +308,14 @@ function CertCard({
         {tags.map((tag) => (
           <li
             key={tag}
-            className="rounded-full bg-[var(--surface-2)] px-2.5 py-1 text-[11px] text-[var(--text-muted)]"
+            className="rounded-full bg-[var(--surface-2)] px-3 py-1 text-xs text-[var(--text-muted)]"
           >
             {tag}
           </li>
         ))}
       </ul>
       <div
-        className="flex items-center gap-1 text-sm font-bold transition-transform duration-300 group-hover:translate-x-1"
+        className="flex items-center gap-1 text-sm font-extrabold transition-transform duration-300 group-hover:translate-x-1 mt-1"
         style={{ color: accentColor }}
       >
         コース学習を開始する →

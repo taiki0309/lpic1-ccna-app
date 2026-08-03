@@ -18,19 +18,19 @@ export default function Header() {
       <div className="flex items-center shrink-0 min-w-0">
         <Link
           href="/"
-          className="flex items-center gap-2.5 hover:opacity-85 transition-opacity"
+          className="flex items-center gap-3 hover:opacity-85 transition-opacity"
         >
-          <div className="relative w-8 h-8 sm:w-9 sm:h-9 rounded-full overflow-hidden border-2 border-[var(--accent-primary)] shrink-0 bg-white shadow-sm">
+          <div className="relative w-10 h-10 sm:w-11 sm:h-11 rounded-full overflow-hidden border-2 border-[var(--accent-primary)] shrink-0 bg-white shadow-md">
             <Image
               src="/characters/boy.png"
               alt="ちびキャラ男の子ロゴ"
               fill
               className="object-cover"
-              sizes="36px"
+              sizes="44px"
               priority
             />
           </div>
-          <span className="font-extrabold text-sm sm:text-base text-[var(--foreground)] tracking-tight whitespace-nowrap">
+          <span className="font-extrabold text-base sm:text-lg text-[var(--foreground)] tracking-tight whitespace-nowrap">
             <span className="sm:hidden">ITインフラ学習アプリ</span>
             <span className="hidden sm:inline lg:hidden">ITインフラ学習アプリ</span>
             <span className="hidden lg:inline">ITインフラ技術者認定学習アプリ</span>

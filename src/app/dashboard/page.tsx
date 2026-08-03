@@ -206,7 +206,7 @@ export default function DashboardPage() {
               <div className="mb-5 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div
-                    className="relative flex h-14 w-14 overflow-hidden items-center justify-center rounded-2xl bg-white shadow-md border border-[var(--border)] shrink-0"
+                    className="relative flex h-16 w-16 sm:h-20 sm:w-20 overflow-hidden items-center justify-center rounded-2xl bg-white shadow-lg border-2 border-[var(--border)] shrink-0"
                     style={{ background: cert.gradient }}
                   >
                     {cert.imageSrc ? (
@@ -215,18 +215,18 @@ export default function DashboardPage() {
                         alt={`${cert.cert} アイコン`}
                         fill
                         className="object-cover"
-                        sizes="56px"
+                        sizes="80px"
                       />
                     ) : (
-                      <span className="text-2xl font-black text-white">{cert.icon}</span>
+                      <span className="text-3xl sm:text-4xl font-black text-white">{cert.icon}</span>
                     )}
                   </div>
                   <div>
-                    <p className="font-bold text-[var(--foreground)]">{cert.cert}</p>
-                    <p className="text-xs text-[var(--text-muted)]">
+                    <p className="font-extrabold text-base sm:text-lg text-[var(--foreground)]">{cert.cert}</p>
+                    <p className="text-xs sm:text-sm text-[var(--text-muted)] mt-0.5">
                       {cert.answered} / {cert.totalQuestions} 問回答済み
                       {cert.answered > 0 && (
-                        <span className="ml-2 font-semibold text-[var(--accent-primary)]">
+                        <span className="ml-2 font-bold text-[var(--accent-primary)]">
                           (正解: {cert.correct}問)
                         </span>
                       )}

@@ -70,17 +70,17 @@ export default function CcnaTopPage() {
               }`}
             >
               <div
-                className="flex h-12 w-12 items-center justify-center rounded-xl text-2xl"
+                className="flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl text-3xl sm:text-4xl shrink-0 shadow-sm"
                 style={{ background: `${link.color}20` }}
               >
                 {link.icon}
               </div>
               <div>
-                <p className="font-bold text-[var(--foreground)]">{link.label}</p>
-                <p className="text-sm text-[var(--text-muted)]">{link.desc}</p>
+                <p className="font-extrabold text-base sm:text-lg text-[var(--foreground)]">{link.label}</p>
+                <p className="text-sm text-[var(--text-muted)] mt-0.5">{link.desc}</p>
               </div>
               <div
-                className="text-xs font-semibold transition-transform duration-300 group-hover:translate-x-1"
+                className="text-xs sm:text-sm font-bold transition-transform duration-300 group-hover:translate-x-1"
                 style={{ color: link.color }}
               >
                 始める →
@@ -91,33 +91,33 @@ export default function CcnaTopPage() {
 
         {/* カテゴリ別 */}
         <section aria-label="カテゴリ別学習">
-          <h2 className="mb-4 text-lg font-bold text-[var(--foreground)]">
+          <h2 className="mb-4 text-lg sm:text-xl font-extrabold text-[var(--foreground)]">
             カテゴリ別に学ぶ
           </h2>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
             {categories.map((cat) => (
               <Link
                 key={cat.slug}
                 href={`/ccna/quiz?category=${cat.slug}`}
-                className="flex items-center gap-4 rounded-xl border border-[var(--border)] bg-[var(--surface)] p-4 transition-all duration-200 hover:border-[var(--accent-purple)] hover:bg-[var(--surface-2)]"
+                className="flex items-center gap-4 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 sm:p-5 transition-all duration-200 hover:border-[var(--accent-purple)] hover:bg-[var(--surface-2)] shadow-sm hover:shadow-md"
               >
                 <div
-                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-lg"
+                  className="flex h-12 w-12 sm:h-14 sm:w-14 shrink-0 items-center justify-center rounded-xl text-2xl sm:text-3xl"
                   style={{ background: `${cat.color}20` }}
                 >
                   {cat.icon}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-semibold text-[var(--foreground)]">
+                  <p className="truncate text-base font-extrabold text-[var(--foreground)]">
                     {cat.name}
                   </p>
-                  <p className="text-xs text-[var(--text-muted)]">{cat.count} 問</p>
+                  <p className="text-xs sm:text-sm text-[var(--text-muted)] mt-0.5">{cat.count} 問</p>
                 </div>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"
                   fill="currentColor"
-                  className="h-4 w-4 shrink-0 text-[var(--text-muted)]"
+                  className="h-5 w-5 shrink-0 text-[var(--text-muted)]"
                 >
                   <path
                     fillRule="evenodd"

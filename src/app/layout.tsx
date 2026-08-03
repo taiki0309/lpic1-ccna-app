@@ -7,6 +7,7 @@ import AuthGuard from "@/components/AuthGuard";
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
 import BottomNav from "@/components/BottomNav";
+import ZoomPreventer from "@/components/ZoomPreventer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,6 +40,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
+  minimumScale: 1,
   userScalable: false,
 };
 
@@ -54,6 +56,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body>
+        <ZoomPreventer />
         <AmplifyProvider>
           <ThemeProvider>
             <AuthGuard>
