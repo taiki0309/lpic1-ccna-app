@@ -47,17 +47,6 @@ export default function LoginPage() {
           <p className="mt-2 text-xs sm:text-sm text-[var(--text-muted)]">
             社内エンジニアのスキルアップを応援！ログインして学習を進めましょう
           </p>
-
-          {/* セキュリティ＆利用上のご案内バッジ */}
-          <div className="mt-4 rounded-xl border border-[var(--border)] bg-[var(--surface-2)]/80 p-3 text-left text-[11px] text-[var(--text-muted)]">
-            <div className="flex items-center gap-1.5 font-bold text-[var(--foreground)] mb-1">
-              <span>🛡️</span>
-              <span>セキュア認証・登録者把握システム対応</span>
-            </div>
-            <p className="leading-relaxed">
-              ご登録いただいたメールアドレスや表示名は、不正アクセス防止および社内学習状況確認のため安全に管理されます。
-            </p>
-          </div>
         </div>
 
         {/* Authenticator */}
